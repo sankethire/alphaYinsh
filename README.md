@@ -1,0 +1,2 @@
+# alphaYinsh
+Yinsh AI
