@@ -6,8 +6,10 @@
 #include "Move.h"
 
 #include <vector>
+#include <tuple>
 
 class Game {
+public:
     /* FIELDS */
 
     // Board DS
@@ -16,13 +18,23 @@ class Game {
     int ringNum;
 
     // players in game. 0 moves first.
-    Player playerArray [2];
+    std::tuple<Player, Player> playerTuple;
+
+    // possibles moves for player which has current chance
+    std::vector<std::vector<Move>> currentPlayerPossibleMovesAllRings;
 
     /* FUNCTIONS */
     Game();
+
+    // Moves() parses HexCoord in string format and gives it to this function
     std::vector<Move> possibleMovesForRing(Point ring);
+    
+    // changes board configuration to
     void ExecuteMove(Move m);
     std::vector<int> calculateScore();
+
+    // checks validity of move before it is execute.
+    // searchs move 
     bool checkMoveValidity(Move m);
 };
 

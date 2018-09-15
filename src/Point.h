@@ -2,6 +2,7 @@
 #define POINT_H
 
 #include <vector>
+#include <tuple>
 
 class Point {
 public:
@@ -14,12 +15,16 @@ public:
     pieceType piece;
     colorType color;
 
-    // Immediate neighbours of a point
-    std::vector<Point> crystalNeighbours;
+    // // Immediate neighbours of a point
+    // std::vector<Point> crystalNeighbours;
 
     /* FUNCTIONS */
 
     Point(pieceType p, colorType c);
+    
+    // convert hexagon coordinates to triLinear coordinates and vice versa
+    std::tuple<int, int, int> conversionToTriLinearCoord(std::tuple<int, int> hexCoord);
+    std::tuple<int, int> conversionToHexCoord(std::tuple<int, int, int> triCoord);
 };
 
 #endif /* POINT_H */
