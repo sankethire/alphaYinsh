@@ -4,6 +4,10 @@
 #include <vector>
 #include <tuple>
 
+
+extern std::vector<std::tuple<int,int>> triLinearDirection;
+
+
 class Point {
 public:
     /* FIELDS */
@@ -26,5 +30,7 @@ public:
     std::tuple<int, int> conversionToTriLinearCoord(std::tuple<int, int> hexCoord);
     std::tuple<int, int> conversionToHexCoord(std::tuple<int, int> triCoord);
 };
+
+void defineTrilinearDirection();
 
 #endif /* POINT_H */
