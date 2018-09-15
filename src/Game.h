@@ -26,15 +26,18 @@ public:
     /* FUNCTIONS */
     Game();
 
+    std::vector<Move> possibleMovesForRingInDirection(Point ring, std::tuple<int, int> direction);
     // Moves() parses HexCoord in string format and gives it to this function
-    std::vector<Move> possibleMovesForRing(Point ring);
-    
-    // changes board configuration to
+    std::vector<Move> possibleMovesForRingAllDirection(Point ring);
+    // find all possible moves for rings of current player
+    std::vector<std::vector<Move>> possibleMovesAllRingAllDirection(Player currentPlayer);
+
+    // changes board configuration according to move(if valid)
     void ExecuteMove(Move m);
-    std::vector<int> calculateScore();
+    std::tuple<int, int> calculateScore();
 
     // checks validity of move before it is execute.
-    // searchs move 
+    // searchs moves in currentPlayerPossibleMovesAllRings array
     bool checkMoveValidity(Move m);
 };
 

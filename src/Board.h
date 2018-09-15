@@ -14,7 +14,7 @@ public:
 
     /* FUNCTIONS */
 
-    Board();
+    Board(int boardSize);
 };
 
 #endif /* BOARD_H */

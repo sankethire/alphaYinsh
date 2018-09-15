@@ -14,17 +14,17 @@ public:
 
     pieceType piece;
     colorType color;
-
-    // // Immediate neighbours of a point
-    // std::vector<Point> crystalNeighbours;
+    // tri linear coordinate of point. point knows where it is and 
+    // its coordinates will never change
+    std::tuple<int, int> triLinearCoord;
 
     /* FUNCTIONS */
 
     Point(pieceType p, colorType c);
-    
+
     // convert hexagon coordinates to triLinear coordinates and vice versa
-    std::tuple<int, int, int> conversionToTriLinearCoord(std::tuple<int, int> hexCoord);
-    std::tuple<int, int> conversionToHexCoord(std::tuple<int, int, int> triCoord);
+    std::tuple<int, int> conversionToTriLinearCoord(std::tuple<int, int> hexCoord);
+    std::tuple<int, int> conversionToHexCoord(std::tuple<int, int> triCoord);
 };
 
 #endif /* POINT_H */
