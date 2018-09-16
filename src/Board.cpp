@@ -74,5 +74,5 @@ std::string Board::toStringBoard() {
     strstream << " " << "     " << getColoredPoint(-3,-5) << "     " << getColoredPoint(-1,-4) << "     " << getColoredPoint(1,-3) << "     " << getColoredPoint(3,-2) << std::endl;
     strstream << "   " << " " << "     " << getColoredPoint(-2,-5) << "     " << getColoredPoint(0,-4) <<  "     " << getColoredPoint(2,-3) <<std::endl;
     strstream << " " << "     " << " " << "     " << getColoredPoint(-1,-5) << "     " << getColoredPoint(1,-4) << std::endl;
-    strstream << "   " << "     " << " " << "     " << " " << " " << std::std::endl;
+    strstream << "   " << "     " << " " << "     " << " " << " " << std::endl;
 }
