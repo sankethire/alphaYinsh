@@ -31,7 +31,7 @@ std::string Point::toColoredStringPoint() {
         return "";
     }
     std::stringstream ss;
-    ss << piece.str() << ", " << color.str();
+    ss << to_string(piece) << ", " << to_string(color);
     return ss.str()
     // Some logic for above
     // if (piece == Point::ring) {
