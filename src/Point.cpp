@@ -70,8 +70,30 @@ std::tuple<int, int> conversionToHexCoord(std::tuple<int, int> triCoord) {
             }
         }
     }
-    
 
+    // a*cornerDirection + b*sideDirection = triLinearCoord
+    // hexagon = a, position = hexant*hexagon + b 
+    // +2 to get sideDirection.
+    std::tuple<int, int> sideDirection = triLinearDirection[(hexant+2)%6];
+    std::tuple<int, int> cornerDirection = triLinearDirection[hexant];
+    
+    int sideDirection0 = std::get<0>(sideDirection);
+    int sideDirection1 = std::get<1>(sideDirection);
+    int cornerDirection0 = std::get<0>(cornerDirection);
+    int cornerDirection1 = std::get<1>(cornerDirection);
+    int triCoord0 = std::get<0>(triCoord);
+    int triCoord1 = std::get<1>(triCoord);
+
+    int hexagon, position;
+
+    int coeffA = (triCoord1*sideDirection0 - triCoord0*sideDirection1)/
+    (cornerDirection1*sideDirection0 - cornerDirection0*sideDirection1); 
+    int coeffB = (triCoord1*cornerDirection0 - triCoord0*cornerDirection1)/
+    (sideDirection1*cornerDirection0 - sideDirection0*cornerDirection1);
+
+    hexagon = coeffA;
+    position = hexant*hexagon + coeffB;
+    return std::make_tuple(hexagon, position);
 }
 
 void defineTrilinearDirection() {
