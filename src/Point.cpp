@@ -2,6 +2,8 @@
 
 #include <tuple>
 #include <vector>
+#include <sstream>
+#include <string>
 
 Point::Point(std::tuple<int, int> triLinearCoordinate) {
     triLinearCoord = triLinearCoordinate;
@@ -12,29 +14,71 @@ void Point::setPointState(pieceType p, colorType c) {
     color = c;
 }
 
+std::string Point::toColoredStringPoint() {
+    if (piece == Point::ring) {
+        if (color == Point::orange) {
+            return "\033[1;33mO\033[0m\n";
+        } else if (color == Point::blue) {
+            return "\033[1;34mO\033[0m\n";
+    } else if (piece = Point::marker) {
+        if (color == Point::orange) {
+            return "\033[0;43m_\033[0m\n";
+        } else if (color == Point::blue) {
+            return "\033[0;44m_\033[0m\n";
+    } else if (piece = Point::emptyPiece) {
+        return "*";
+    } else {
+        return "";
+    }
+    std::stringstream ss;
+    ss << piece.str() << ", " << color.str();
+    return ss.str()
+    // Some logic for above
+    // if (piece == Point::ring) {
+    //     strstream << "\033[1;";
+    // } else {
+    //     strstream << "\033[0;";
+    // }
+    // if (piece == Point::marker) {
+    //     if (color == Point::orange) {
+    //         strstream << "43m";
+    //     } else if (color == Point::blue) {
+    //         strstream << "44m";
+    // } else if (color == Point::orange) {
+    //     strstream << "33m";
+    // } else if (color == Point::blue) {
+    //     strstream << "34m";
+    // }
+    // if (piece == Point::marker) {
+
+    // } 
+    // if (piece == Point::emptyPiece || piece == Point::nonExistentPiece) {
+    //     return "*";
+    // }else
+}
 
 std::tuple<int, int> Point::conversionToTriLinearCoord(std::tuple<int, int> hexCoord){
-    std::tuple<int,int> triLinearCoord;
+    std::tuple<int,int> triLinearCoordinate;
     if(std::get<0>(hexCoord)==0 && std::get<1>(hexCoord)==0 ){
-        triLinearCoord = std::make_tuple(0,0);
-        return triLinearCoord;
+        triLinearCoordinate = std::make_tuple(0,0);
+        return triLinearCoordinate;
     }
 
     int cornerNum = std::get<1>(hexCoord) / std::get<0>(hexCoord);
     
     std::tuple<int, int> cornerDirection = triLinearDirection[cornerNum];
     // 0 + hexagon*cornerDirection
-    triLinearCoord = std::make_tuple(std::get<0>(hexCoord) * std::get<0>(cornerDirection),std::get<0>(hexCoord) * std::get<1>(cornerDirection));
+    triLinearCoordinate = std::make_tuple(std::get<0>(hexCoord) * std::get<0>(cornerDirection),std::get<0>(hexCoord) * std::get<1>(cornerDirection));
     
     
     int posModHex = std::get<1>(hexCoord) % std::get<0>(hexCoord);
 
     std::tuple<int, int> sideDirection = triLinearDirection[(cornerNum+2)%6];
     //  + (postion%hexagon)*sideDirection
-    int triLinearCoordX = std::get<0>(triLinearCoord) + (posModHex * std::get<0>(sideDirection));
-    int triLinearCoordY = std::get<1>(triLinearCoord) + (posModHex * std::get<1>(sideDirection));
-    triLinearCoord = std::make_tuple(triLinearCoordX, triLinearCoordY);
-    return triLinearCoord;
+    int triLinearCoordX = std::get<0>(triLinearCoordinate) + (posModHex * std::get<0>(sideDirection));
+    int triLinearCoordY = std::get<1>(triLinearCoordinate) + (posModHex * std::get<1>(sideDirection));
+    triLinearCoordinate = std::make_tuple(triLinearCoordX, triLinearCoordY);
+    return triLinearCoordinate;
 }
 
 std::tuple<int, int> Point::conversionToHexCoord(std::tuple<int, int> triCoord) {

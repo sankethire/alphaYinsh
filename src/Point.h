@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <tuple>
+#include <string>
 
 
 extern std::vector<std::tuple<int,int>> triLinearDirection;
@@ -14,7 +15,8 @@ public:
 
     // nonExistent is the points in last hexagon that doesn't exist
     enum pieceType {ring, marker, emptyPiece, nonExistentPiece};
-    enum colorType {white, black, emptyColor, nonExistentColor};
+    // orange moves first like white.
+    enum colorType {orange, blue, emptyColor, nonExistentColor};
 
     pieceType piece;
     colorType color;
@@ -27,6 +29,9 @@ public:
     Point(std::tuple<int, int> triLinearCoordinate);
 
     void setPointState(pieceType p, colorType c);
+
+    // point string in color to print in terminal further.
+    std::string toColoredStringPoint();
 
     // convert hexagon coordinates to triLinear coordinates and vice versa
     static std::tuple<int, int> conversionToTriLinearCoord(std::tuple<int, int> hexCoord);
