@@ -8,31 +8,31 @@ Point::Point(pieceType p, colorType c) {
 }
 
 
-std::tuple<int, int> Point:: conversionToTriLinearCoord(std::tuple<int, int> hexCoord){
-    std::tuple<int,int> triLinear_vector;
+std::tuple<int, int> Point::conversionToTriLinearCoord(std::tuple<int, int> hexCoord){
+    std::tuple<int,int> triLinearCoord;
     if(std::get<0>(hexCoord)==0 && std::get<1>(hexCoord)==0 ){
-        triLinear_vector = std::make_tuple(0,0);
-        return triLinear_vector;
+        triLinearCoord = std::make_tuple(0,0);
+        return triLinearCoord;
     }
 
     int cornerNum = std::get<1>(hexCoord) / std::get<0>(hexCoord);
-    // std::cout << cornerNum << std::endl;
-    std::tuple<int, int> cornerDirection = triLinearDirection[cornerNum];
-    triLinear_vector = std::make_tuple(std::get<0>(hexCoord) * std::get<0>(cornerDirection),std::get<0>(hexCoord) * std::get<1>(cornerDirection));
-    // std::cout << std::get<0>(triLinear_vector) << ", " << std::get<1>(triLinear_vector)<< std::endl;
     
-    int mod = std::get<1>(hexCoord) % std::get<0>(hexCoord);
-    // std::cout << mod << std::endl;
+    std::tuple<int, int> cornerDirection = triLinearDirection[cornerNum];
+    // 0 + hexagon*cornerDirection
+    triLinearCoord = std::make_tuple(std::get<0>(hexCoord) * std::get<0>(cornerDirection),std::get<0>(hexCoord) * std::get<1>(cornerDirection));
+    
+    
+    int posModHex = std::get<1>(hexCoord) % std::get<0>(hexCoord);
 
     std::tuple<int, int> sideDirection = triLinearDirection[(cornerNum+2)%6];
-    // std::cout << std::get<0>(triLinear_vector) << ", " << std::get<1>(triLinear_vector)<< std::endl;
-    int x = std::get<0>(triLinear_vector) + (mod * std::get<0>(sideDirection));
-    int y = std::get<1>(triLinear_vector) + (mod * std::get<1>(sideDirection));
-    triLinear_vector = std::make_tuple(x, y);
-    return triLinear_vector;
+    //  + (postion%hexagon)*sideDirection
+    int triLinearCoordX = std::get<0>(triLinearCoord) + (posModHex * std::get<0>(sideDirection));
+    int triLinearCoordY = std::get<1>(triLinearCoord) + (posModHex * std::get<1>(sideDirection));
+    triLinearCoord = std::make_tuple(triLinearCoordX, triLinearCoordY);
+    return triLinearCoord;
 }
 
-std::tuple<int, int> conversionToHexCoord(std::tuple<int, int> triCoord) {
+std::tuple<int, int> Point::conversionToHexCoord(std::tuple<int, int> triCoord) {
     // Trilinear point in which hexant(kind of like quadrant).
     // hextant includes one of the axis/corner. Earlier corner in clockwise direction is included.
     // The one it includes is the number assingned to this variable
@@ -76,7 +76,7 @@ std::tuple<int, int> conversionToHexCoord(std::tuple<int, int> triCoord) {
     // +2 to get sideDirection.
     std::tuple<int, int> sideDirection = triLinearDirection[(hexant+2)%6];
     std::tuple<int, int> cornerDirection = triLinearDirection[hexant];
-    
+
     int sideDirection0 = std::get<0>(sideDirection);
     int sideDirection1 = std::get<1>(sideDirection);
     int cornerDirection0 = std::get<0>(cornerDirection);
