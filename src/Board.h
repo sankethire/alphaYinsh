@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <tuple>
+#include <string>
 
 class Board {
 public:
@@ -24,6 +25,11 @@ public:
     Point getPointTriLinear(std::tuple<int, int> triLinearCoordinate);
     void setPointTriLinear(std::tuple<int, int> triLinearCoordinate,
      Point::pieceType setPiece,Point::colorType setColor);
+
+    // return string format of board to be printed in game.h
+    // TODO: add possible moves option
+    std::string getColoredPoint(int x, int y);
+    std::string toStringBoard();
 };
 
 #endif /* BOARD_H */
