@@ -20,41 +20,21 @@ std::string Point::toColoredStringPoint() {
             return "\033[1;33mO\033[0m\n";
         } else if (color == Point::blue) {
             return "\033[1;34mO\033[0m\n";
+        }
     } else if (piece = Point::marker) {
         if (color == Point::orange) {
             return "\033[0;43m_\033[0m\n";
         } else if (color == Point::blue) {
             return "\033[0;44m_\033[0m\n";
+        }
     } else if (piece = Point::emptyPiece) {
         return "*";
     } else {
         return "";
     }
     std::stringstream ss;
-    ss << to_string(piece) << ", " << to_string(color);
-    return ss.str()
-    // Some logic for above
-    // if (piece == Point::ring) {
-    //     strstream << "\033[1;";
-    // } else {
-    //     strstream << "\033[0;";
-    // }
-    // if (piece == Point::marker) {
-    //     if (color == Point::orange) {
-    //         strstream << "43m";
-    //     } else if (color == Point::blue) {
-    //         strstream << "44m";
-    // } else if (color == Point::orange) {
-    //     strstream << "33m";
-    // } else if (color == Point::blue) {
-    //     strstream << "34m";
-    // }
-    // if (piece == Point::marker) {
-
-    // } 
-    // if (piece == Point::emptyPiece || piece == Point::nonExistentPiece) {
-    //     return "*";
-    // }else
+    ss << std::to_string(piece) << ", " << std::to_string(color);
+    return ss.str();
 }
 
 std::tuple<int, int> Point::conversionToTriLinearCoord(std::tuple<int, int> hexCoord){

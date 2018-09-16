@@ -1,7 +1,8 @@
 #ifndef MOVE_H
 #define MOVE_H
 
-#include <Point.h>
+#include "Point.h"
+#include "Operation.h"
 
 #include <string>
 #include <vector>
@@ -11,13 +12,7 @@ class Move {
 public:
     /* FIELDS */
 
-    // type of moves in game
-    enum moveType {P, SM, RSREX};
-    moveType move;
-
-    // According to move type, list of 3 tuple(coordinate) of point. 
-    // ex: S convertToThreeCoord(1, 2) M convertToThreeCoord(2, 4)
-    std::vector<std::tuple<int, int, int>> pointInMove;
+    
 
     /* FUNCTIONS */
 
