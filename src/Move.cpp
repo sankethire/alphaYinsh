@@ -3,19 +3,8 @@
 #include <vector>
 #include <tuple>
 #include <sstream>
+#include <string>
 #include <bits/stdc++.h>
-
-// std::vector<std::string> split(std::string str,std::string sep){
-//     char* cstr=const_cast<char*>(str.c_str());
-//     char* current;
-//     std::vector<std::string> arr;
-//     current=strtok(cstr,sep.c_str());
-//     while(current!=NULL){
-//         arr.push_back(current);
-//         current=strtok(NULL,sep.c_str());
-//     }
-//     return arr;
-// }
 
 Move::Move(std::string sFromTerminal) {
 	std::vector<std::string> splitInput = Operation::split(sFromTerminal," ");
@@ -33,7 +22,7 @@ Move::Move(std::string sFromTerminal) {
             opcNum = Operation::RS;
         } else if (opc == "RE") {
             opcNum = Operation::RE;
-        } else if (opc == "x") {
+        } else if (opc == "X") {
             opcNum = Operation::X;
         } else {
             throw std::invalid_argument("Invalid Opcode give to Move constructor");
@@ -41,7 +30,7 @@ Move::Move(std::string sFromTerminal) {
         
         try
         {
-            operationSequence.push_back(Operation(opcNum, std::make_tuple(stoi(splitInput[i+1]),stoi(splitInput[i+2]))));
+            operationSequence.push_back(Operation(opcNum, std::make_tuple(std::stoi(splitInput[i+1]),std::stoi(splitInput[i+2]))));
         }
         catch(std::out_of_range)
         {
@@ -50,6 +39,31 @@ Move::Move(std::string sFromTerminal) {
 	}
 }
 
-// std::string Move::toStr() {
-//     std::
-// }
+std::string Move::toStr() {
+    std::stringstream ss;
+    for (int i = 0; i < operationSequence.size(); i++) {
+        Operation op = operationSequence[i];
+        if (op.opcode = Operation::P) {
+            ss << "P ";
+        } else if (op.opcode = Operation::S) {
+            ss << "S ";
+        } else if (op.opcode = Operation::M) {
+            ss << "M ";
+        } else if (op.opcode = Operation::RS) {
+            ss << "RS ";
+        } else if (op.opcode = Operation::RE) {
+            ss << "RE ";
+        } else if (op.opcode = Operation::X) {
+            ss << "X ";
+        }
+
+        ss << std::to_string(std::get<0>(op.coordinate)) << " " << std::to_string(std::get<1>(op.coordinate));
+
+        if (i = operationSequence.size()-1) {
+            ss << std::endl;
+        } else {
+            ss << " ";
+        } 
+    }
+    return ss.str();
+}
