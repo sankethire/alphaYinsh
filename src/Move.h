@@ -12,12 +12,12 @@ public:
     /* FIELDS */
 
     // type of moves in game
-    enum moveType {P, SM, SM_RSREX, RSREX_SM};
+    enum moveType {P, SM, RSREX};
     moveType move;
 
     // According to move type, list of 3 tuple(coordinate) of point. 
     // ex: S convertToThreeCoord(1, 2) M convertToThreeCoord(2, 4)
-    std::vector<std::tuple<int, int, int>>  pointInMove;
+    std::vector<std::tuple<int, int, int>> pointInMove;
 
     /* FUNCTIONS */
 
