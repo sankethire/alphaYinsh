@@ -1,7 +1,6 @@
 #ifndef MOVE_H
 #define MOVE_H
 
-#include "Point.h"
 #include "Operation.h"
 
 #include <string>
@@ -11,7 +10,8 @@
 class Move {
 public:
     /* FIELDS */
-
+    // operations like P, S, M, RS, RE, X. 
+    std::vector<Operation> operationSequence;
     
 
     /* FUNCTIONS */
@@ -19,6 +19,9 @@ public:
     // constructor converts string of form of 
     // hexCoord to Move object(which stores in form of TriLinearCoord)
     Move(std::string sFromTerminal);
+
+    // convert Move object to string.
+    std::string toStr();
 };
 
 #endif /* MOVE_H */
