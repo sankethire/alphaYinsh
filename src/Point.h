@@ -13,8 +13,8 @@ public:
     /* FIELDS */
 
     // nonExistent is the points in last hexagon that doesn't exist
-    enum pieceType {ring, marker, empty, nonExistent};
-    enum colorType {white, black, empty, nonExistent};
+    enum pieceType {ring, marker, emptyPiece, nonExistentPiece};
+    enum colorType {white, black, emptyColor, nonExistentColor};
 
     pieceType piece;
     colorType color;
@@ -24,11 +24,13 @@ public:
 
     /* FUNCTIONS */
 
-    Point(pieceType p, colorType c);
+    Point(std::tuple<int, int> triLinearCoordinate);
+
+    void setPointState(pieceType p, colorType c);
 
     // convert hexagon coordinates to triLinear coordinates and vice versa
-    std::tuple<int, int> conversionToTriLinearCoord(std::tuple<int, int> hexCoord);
-    std::tuple<int, int> conversionToHexCoord(std::tuple<int, int> triCoord);
+    static std::tuple<int, int> conversionToTriLinearCoord(std::tuple<int, int> hexCoord);
+    static std::tuple<int, int> conversionToHexCoord(std::tuple<int, int> triCoord);
 };
 
 void defineTrilinearDirection();

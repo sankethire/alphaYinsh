@@ -1,8 +1,13 @@
 #include "Point.h"
+
 #include <tuple>
 #include <vector>
 
-Point::Point(pieceType p, colorType c) {
+Point::Point(std::tuple<int, int> triLinearCoordinate) {
+    triLinearCoord = triLinearCoordinate;
+}
+
+void Point::setPointState(pieceType p, colorType c) {
     piece = p;
     color = c;
 }
