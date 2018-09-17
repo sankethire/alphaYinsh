@@ -36,8 +36,7 @@ public:
     // convert hexagon coordinates to triLinear coordinates and vice versa
     static std::tuple<int, int> conversionToTriLinearCoord(std::tuple<int, int> hexCoord);
     static std::tuple<int, int> conversionToHexCoord(std::tuple<int, int> triCoord);
+    static void defineTrilinearDirection();
 };
-
-void defineTrilinearDirection();
 
 #endif /* POINT_H */

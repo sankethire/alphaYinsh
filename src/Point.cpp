@@ -5,6 +5,8 @@
 #include <sstream>
 #include <string>
 
+std::vector<std::tuple<int,int>> triLinearDirection;
+
 Point::Point(std::tuple<int, int> triLinearCoordinate) {
     triLinearCoord = triLinearCoordinate;
 }
@@ -21,13 +23,13 @@ std::string Point::toColoredStringPoint() {
         } else if (color == Point::blue) {
             return "\033[1;34mO\033[0m\n";
         }
-    } else if (piece = Point::marker) {
+    } else if (piece == Point::marker) {
         if (color == Point::orange) {
             return "\033[0;43m_\033[0m\n";
         } else if (color == Point::blue) {
             return "\033[0;44m_\033[0m\n";
         }
-    } else if (piece = Point::emptyPiece) {
+    } else if (piece == Point::emptyPiece) {
         return "*";
     } else {
         return "";
@@ -39,7 +41,7 @@ std::string Point::toColoredStringPoint() {
 
 std::tuple<int, int> Point::conversionToTriLinearCoord(std::tuple<int, int> hexCoord){
     std::tuple<int,int> triLinearCoordinate;
-    if(std::get<0>(hexCoord)==0 && std::get<1>(hexCoord)==0 ){
+    if(std::get<0>(hexCoord)==0 && std::get<1>(hexCoord)==0){
         triLinearCoordinate = std::make_tuple(0,0);
         return triLinearCoordinate;
     }
@@ -125,7 +127,7 @@ std::tuple<int, int> Point::conversionToHexCoord(std::tuple<int, int> triCoord) 
     return std::make_tuple(hexagon, position);
 }
 
-void defineTrilinearDirection() {
+void Point::defineTrilinearDirection() {
     // Possibly call in game.cpp
     std::tuple<int,int> directionCorners;
     directionCorners = std::make_tuple(0,1);

@@ -11,7 +11,7 @@ Board::Board(int size) {
     for (int i=-boardSize; i<=boardSize; i++) {
         std::vector<Point> colomnVector;
         for (int j=-boardSize; j<=boardSize; j++) {
-            Point p = Point::Point(std::make_tuple(i, j));
+            Point p = Point(std::make_tuple(i, j));
             std::tuple<int, int> hexCoord = Point::conversionToHexCoord(std::make_tuple(i, j));
             int hexagon = std::get<0>(hexCoord);
             int position = std::get<1>(hexCoord);
@@ -75,4 +75,5 @@ std::string Board::toStringBoard() {
     strstream << "   " << " " << "     " << getColoredPoint(-2,-5) << "     " << getColoredPoint(0,-4) <<  "     " << getColoredPoint(2,-3) <<std::endl;
     strstream << " " << "     " << " " << "     " << getColoredPoint(-1,-5) << "     " << getColoredPoint(1,-4) << std::endl;
     strstream << "   " << "     " << " " << "     " << " " << " " << std::endl;
+    return strstream.str();
 }
