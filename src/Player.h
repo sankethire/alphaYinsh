@@ -1,6 +1,9 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include "Point.h"
+#include "Board.h"
+
 #include <vector>
 
 class Player {
@@ -14,11 +17,20 @@ public:
     // markers owned by player. Can decrease or increase
     int markerOwn;
 
+    // Playing Board
+    Board playingBoard;
+
     /* FUNCTIONS */
 
-    Player();
-    // remove ring from list of ring left and increment ringWon
+    Player(Board playBoard);
+
+    // add ring which was placed in placement phase to ringLeft Vector.
+    void addRing(Point ringToAdd);
+    void addRing(int ringToRemoveX, int ringToRemoveY);
+
+    // remove ring from list of ring left and increment ringWon.
     void removeRing(Point ringToRemove);
+    void removeRing(int ringToRemoveX, int ringToRemoveY);
 };
 
 #endif /* PLAYER_H */
