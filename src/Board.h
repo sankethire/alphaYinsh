@@ -17,14 +17,21 @@ public:
 
     /* FUNCTIONS */
 
-    Board(int size);
+    // TODO: this "size = 5" could cause problem later.
+    // used here just so that board has defualt constructor.
+    Board(int size = 5);
 
     // gets the point
     // give cordinate x = [-boardSize, boardSize], y = [-boardSize, boardSize]
     // 5 ring game then boardSize = 5 
     Point getPointTriLinear(std::tuple<int, int> triLinearCoordinate);
+    Point getPointTriLinear(int triLinearCoordX, int triLinearCoordY);
+
+
     void setPointTriLinear(std::tuple<int, int> triLinearCoordinate,
-     Point::pieceType setPiece,Point::colorType setColor);
+     Point::pieceType setPiece, Point::colorType setColor);
+    void setPointTriLinear(int triLinearCoordX, int triLinearCoordY,
+     Point::pieceType setPiece, Point::colorType setColor);
 
     // return string format of board to be printed in game.h
     // TODO: add possible moves option

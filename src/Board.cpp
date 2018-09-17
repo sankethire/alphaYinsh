@@ -39,11 +39,22 @@ Point Board::getPointTriLinear(std::tuple<int, int> triLinearCoordinate) {
     }
 }
 
+Point Board::getPointTriLinear(int triLinearCoordX, int triLinearCoordY) {
+    return getPointTriLinear(std::make_tuple(triLinearCoordX, triLinearCoordY));
+}
+
 void Board::setPointTriLinear(std::tuple<int, int> triLinearCoordinate, 
-Point::pieceType setPiece,Point::colorType setColor) {
+Point::pieceType setPiece, Point::colorType setColor) {
     Point gotP = Board::getPointTriLinear(triLinearCoordinate);
     gotP.piece = setPiece;
     gotP.color = setColor;
+}
+
+void Board::setPointTriLinear(int triLinearCoordX, int triLinearCoordY,
+Point::pieceType setPiece, Point::colorType setColor) {
+    std::tuple<int, int> dummyTuple = std::make_tuple(triLinearCoordX, triLinearCoordY);
+    setPointTriLinear(dummyTuple,
+     setPiece, setColor);
 }
 
 // FIXME: BEWARE HARD CODE AHEAD!
