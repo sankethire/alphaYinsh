@@ -39,6 +39,10 @@ Move::Move(std::string sFromTerminal) {
 	}
 }
 
+Move::Move(std::vector<Operation> operationSeq) {
+    operationSequence = operationSeq;
+}
+
 std::string Move::toStr() {
     std::stringstream ss;
     for (int i = 0; i < operationSequence.size(); i++) {

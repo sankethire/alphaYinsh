@@ -15,6 +15,7 @@ public:
 
     /* FUNCTIONS */
     Operation(opcodeType opc, std::tuple<int, int> coord);
+    Operation(opcodeType opc = P, int coordX = 0, int coordY = 0);
 
     // split string to vector of string according to delimiter
     static std::vector<std::string> split(std::string str,std::string sep);

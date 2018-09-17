@@ -8,6 +8,10 @@ Operation::Operation(opcodeType opc, std::tuple<int, int> coord) {
     coordinate = coord;
 }
 
+Operation::Operation(opcodeType opc, int coordX, int coordY) {
+    Operation(opc, std::make_tuple(coordX, coordY));
+}
+
 std::vector<std::string> Operation::split(std::string str,std::string sep){
     char* cstr=const_cast<char*>(str.c_str());
     char* current;

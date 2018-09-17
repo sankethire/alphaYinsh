@@ -19,6 +19,7 @@ public:
     // constructor converts string of form of 
     // hexCoord to Move object(which stores in form of TriLinearCoord)
     Move(std::string sFromTerminal);
+    Move(std::vector<Operation> operationSeq);
 
     // convert Move object to string.
     std::string toStr();

@@ -31,6 +31,7 @@ void Player::removeRing(int ringToRemoveX, int ringToRemoveY) {
         if ((ringToRemoveX == std::get<0>(tempCoordTuple)) 
         && (ringToRemoveY == std::get<1>(tempCoordTuple))) {
             ringLeft.erase(ringLeft.begin()+i);
+            ringWon += 1;
             return;
         }
     }

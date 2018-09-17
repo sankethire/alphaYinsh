@@ -22,7 +22,8 @@ public:
 
     /* FUNCTIONS */
 
-    Player(Board playBoard);
+    // TODO: = 5 default.
+    Player(Board playBoard = 5);
 
     // add ring which was placed in placement phase to ringLeft Vector.
     void addRing(Point ringToAdd);
