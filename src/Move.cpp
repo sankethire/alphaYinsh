@@ -43,23 +43,23 @@ std::string Move::toStr() {
     std::stringstream ss;
     for (int i = 0; i < operationSequence.size(); i++) {
         Operation op = operationSequence[i];
-        if (op.opcode = Operation::P) {
+        if (op.opcode == Operation::P) {
             ss << "P ";
-        } else if (op.opcode = Operation::S) {
+        } else if (op.opcode == Operation::S) {
             ss << "S ";
-        } else if (op.opcode = Operation::M) {
+        } else if (op.opcode == Operation::M) {
             ss << "M ";
-        } else if (op.opcode = Operation::RS) {
+        } else if (op.opcode == Operation::RS) {
             ss << "RS ";
-        } else if (op.opcode = Operation::RE) {
+        } else if (op.opcode == Operation::RE) {
             ss << "RE ";
-        } else if (op.opcode = Operation::X) {
+        } else if (op.opcode == Operation::X) {
             ss << "X ";
         }
 
         ss << std::to_string(std::get<0>(op.coordinate)) << " " << std::to_string(std::get<1>(op.coordinate));
 
-        if (i = operationSequence.size()-1) {
+        if (i == operationSequence.size()-1) {
             ss << std::endl;
         } else {
             ss << " ";
