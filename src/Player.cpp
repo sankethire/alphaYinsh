@@ -4,10 +4,11 @@
 
 #include <vector>
 
-Player::Player(Board playBoard) {
+Player::Player() {
     ringWon = 0;
     markerOwn = 0;
-    playingBoard = playBoard;
+    // TODO: currently doesn't need board
+    // playingBoard = playBoard;
 }
 
 void Player::addRing(Point ringToAdd) {

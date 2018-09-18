@@ -14,7 +14,7 @@ Game::Game(int ringAtStart) {
     chance = orange;
     ringNum = ringAtStart;
     board = Board(ringAtStart);
-    playerTuple = std::make_tuple(Player(ringAtStart), Player(ringAtStart));
+    playerTuple = std::make_tuple(Player(), Player());
 }
 
 void Game::checkAndAddContigous(int directionX, int directionY, int i, int j, chanceType playerChance,
@@ -23,7 +23,7 @@ int& numOfContiguous, Operation& rowStart, Operation& rowEnd, std::vector<Move>&
 int contiguousNum) {
     Point tempPoint = board.getPointTriLinear(i, j);
 
-            // seen same color marker
+            // seen same color marker 
             if ((static_cast<int>(tempPoint.color) == static_cast<int>(playerChance)) 
             && (tempPoint.piece == Point::marker)) {
                 if (!seenSameColorMarker) {

@@ -33,10 +33,6 @@ public:
     // TODO: defualt = 5.
     Game(int ringAtStart = 5);
 
-    // find contigous (contiguousNum) # of markers in each linear direction
-    // return something like RS (0, -2) RE (4, 2)
-    std::vector<Move> contiguousMarker(int contiguousNum, chanceType playerChance);
-
     std::vector<Move> possibleMovementForRingInDirection(Point ring, std::tuple<int, int> direction);
     // Moves() parses HexCoord in string format and gives it to this function
     std::vector<Move> possibleMovementForRingAllDirection(Point ring);
@@ -51,6 +47,10 @@ public:
     // searchs moves in currentPlayerPossibleMovesAllRings array
     bool checkMoveValidity(Move m);
 
+    // find contigous (contiguousNum) # of markers in each linear direction.
+    // return something like RS (0, -2) RE (4, 2).
+    // note this doesn't give the X part.
+    std::vector<Move> contiguousMarker(int contiguousNum, chanceType playerChance);
 
     // repetitive part for contiguousMarker
     void checkAndAddContigous(int directionX, int directionY, int i, int j, chanceType playerChance,

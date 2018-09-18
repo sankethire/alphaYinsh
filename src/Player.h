@@ -17,13 +17,12 @@ public:
     // markers owned by player. Can decrease or increase
     int markerOwn;
 
-    // Playing Board
-    Board playingBoard;
+    // TODO:  Playing Board currently uneeded
+    // Board playingBoard;
 
     /* FUNCTIONS */
 
-    // TODO: = 5 default.
-    Player(Board playBoard = 5);
+    Player();
 
     // add ring which was placed in placement phase to ringLeft Vector.
     void addRing(Point ringToAdd);
