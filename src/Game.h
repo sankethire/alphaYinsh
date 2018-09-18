@@ -35,7 +35,7 @@ public:
 
     // find contigous (contiguousNum) # of markers in each linear direction
     // return something like RS (0, -2) RE (4, 2)
-    std::vector<Move> contiguousMarker(int contiguousNum);
+    std::vector<Move> contiguousMarker(int contiguousNum, chanceType playerChance);
 
     std::vector<Move> possibleMovementForRingInDirection(Point ring, std::tuple<int, int> direction);
     // Moves() parses HexCoord in string format and gives it to this function
@@ -53,7 +53,7 @@ public:
 
 
     // repetitive part for contiguousMarker
-    void checkAndAddContigous(int directionX, int directionY, int i, int j, 
+    void checkAndAddContigous(int directionX, int directionY, int i, int j, chanceType playerChance,
     bool& seenSameColorMarker, std::vector<Operation>& tempOpQueue, 
     int& numOfContiguous, Operation& rowStart, Operation& rowEnd, std::vector<Move>& movesToReturn,
     int contiguousNum);

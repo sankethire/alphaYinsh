@@ -17,14 +17,14 @@ Game::Game(int ringAtStart) {
     playerTuple = std::make_tuple(Player(ringAtStart), Player(ringAtStart));
 }
 
-void Game::checkAndAddContigous(int directionX, int directionY, int i, int j, 
+void Game::checkAndAddContigous(int directionX, int directionY, int i, int j, chanceType playerChance,
 bool& seenSameColorMarker, std::vector<Operation>& tempOpQueue, 
 int& numOfContiguous, Operation& rowStart, Operation& rowEnd, std::vector<Move>& movesToReturn,
 int contiguousNum) {
     Point tempPoint = board.getPointTriLinear(i, j);
 
             // seen same color marker
-            if ((static_cast<int>(tempPoint.color) == static_cast<int>(chance)) 
+            if ((static_cast<int>(tempPoint.color) == static_cast<int>(playerChance)) 
             && (tempPoint.piece == Point::marker)) {
                 if (!seenSameColorMarker) {
                     tempOpQueue.clear();
@@ -48,7 +48,7 @@ int contiguousNum) {
             }
 }
 
-std::vector<Move> Game::contiguousMarker(int contiguousNum) {
+std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerChance) {
     // loop constraint variables
     std::vector<Move> movesToReturn;
     int jMin;
@@ -75,7 +75,7 @@ std::vector<Move> Game::contiguousMarker(int contiguousNum) {
             jMax = board.boardSize;
         }
         for (int j=jMin; j<=jMax; j++) {
-            checkAndAddContigous(0, 1, i, j, 
+            checkAndAddContigous(0, 1, i, j, playerChance,
             seenSameColorMarker, tempOpQueue, 
             numOfContiguous, rowStart, rowEnd, movesToReturn,
             contiguousNum);
@@ -95,7 +95,7 @@ std::vector<Move> Game::contiguousMarker(int contiguousNum) {
             iMax = board.boardSize;
         }
         for (int i=iMin; i<=iMax; i++) {
-            checkAndAddContigous(1, 0, i, j, 
+            checkAndAddContigous(1, 0, i, j, playerChance,
             seenSameColorMarker, tempOpQueue, 
             numOfContiguous, rowStart, rowEnd, movesToReturn,
             contiguousNum);
@@ -111,7 +111,7 @@ std::vector<Move> Game::contiguousMarker(int contiguousNum) {
         numOfContiguous = 0;
         seenSameColorMarker = false;
         for (i = iMin, j = -board.boardSize; (i <= board.boardSize) && (j <= board.boardSize); i++, j++) {
-            checkAndAddContigous(1, 1, i, j, 
+            checkAndAddContigous(1, 1, i, j, playerChance,
             seenSameColorMarker, tempOpQueue, 
             numOfContiguous, rowStart, rowEnd, movesToReturn,
             contiguousNum);
@@ -124,7 +124,7 @@ std::vector<Move> Game::contiguousMarker(int contiguousNum) {
         numOfContiguous = 0;
         seenSameColorMarker = false;
         for (i = -board.boardSize, j = jMin; (i <= board.boardSize) && (j <= board.boardSize); i++, j++) {
-            checkAndAddContigous(1, 1, i, j, 
+            checkAndAddContigous(1, 1, i, j, playerChance,
             seenSameColorMarker, tempOpQueue, 
             numOfContiguous, rowStart, rowEnd, movesToReturn,
             contiguousNum);

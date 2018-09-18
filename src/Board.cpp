@@ -45,7 +45,7 @@ Point& Board::getPointTriLinear(int triLinearCoordX, int triLinearCoordY) {
 
 void Board::setPointTriLinear(std::tuple<int, int> triLinearCoordinate, 
 Point::pieceType setPiece, Point::colorType setColor) {
-    Point gotP = Board::getPointTriLinear(triLinearCoordinate);
+    Point& gotP = Board::getPointTriLinear(triLinearCoordinate);
     gotP.piece = setPiece;
     gotP.color = setColor;
 }
