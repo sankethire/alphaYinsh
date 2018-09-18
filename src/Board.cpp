@@ -26,7 +26,7 @@ Board::Board(int size) {
     }
 }
 
-Point Board::getPointTriLinear(std::tuple<int, int> triLinearCoordinate) {
+Point& Board::getPointTriLinear(std::tuple<int, int> triLinearCoordinate) {
     int triLinearCoordX = std::get<0>(triLinearCoordinate);
     int triLinearCoordY = std::get<1>(triLinearCoordinate);
     if ((-boardSize<=triLinearCoordX) && (triLinearCoordX<=boardSize) 
@@ -39,7 +39,7 @@ Point Board::getPointTriLinear(std::tuple<int, int> triLinearCoordinate) {
     }
 }
 
-Point Board::getPointTriLinear(int triLinearCoordX, int triLinearCoordY) {
+Point& Board::getPointTriLinear(int triLinearCoordX, int triLinearCoordY) {
     return getPointTriLinear(std::make_tuple(triLinearCoordX, triLinearCoordY));
 }
 
