@@ -24,7 +24,8 @@ int contiguousNum) {
     Point tempPoint = board.getPointTriLinear(i, j);
 
             // seen same color marker
-            if ((tempPoint.color == chance) && (tempPoint.piece == Point::marker)) {
+            if ((static_cast<int>(tempPoint.color) == static_cast<int>(chance)) 
+            && (tempPoint.piece == Point::marker)) {
                 if (!seenSameColorMarker) {
                     tempOpQueue.clear();
                     rowStart = Operation(Operation::RS, i, j);
