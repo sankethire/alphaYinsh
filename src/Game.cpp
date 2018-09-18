@@ -120,7 +120,7 @@ std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerCha
     }
 
     // x = -boardSize starting points
-    for (jMin = -board.boardSize; jMin <= 0; jMin++) {
+    for (jMin = -board.boardSize+1; jMin <= 0; jMin++) {
         tempOpQueue.clear();
         numOfContiguous = 0;
         seenSameColorMarker = false;
