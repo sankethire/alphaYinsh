@@ -18,11 +18,11 @@ public:
     int markerOwn;
 
     // TODO:  Playing Board currently uneeded
-    // Board playingBoard;
+    Board* playingBoard;
 
     /* FUNCTIONS */
 
-    Player();
+    Player(Board& playBoard);
 
     // add ring which was placed in placement phase to ringLeft Vector.
     void addRing(Point ringToAdd);

@@ -4,11 +4,10 @@
 
 #include <vector>
 
-Player::Player() {
+Player::Player(Board& playBoard) {
     ringWon = 0;
     markerOwn = 0;
-    // TODO: currently doesn't need board
-    // playingBoard = playBoard;
+    playingBoard = &playBoard;
 }
 
 void Player::addRing(Point ringToAdd) {
@@ -16,7 +15,7 @@ void Player::addRing(Point ringToAdd) {
 }
 
 void Player::addRing(int ringToRemoveX, int ringToRemoveY) {
-    Point tempPoint = playingBoard.getPointTriLinear(ringToRemoveX, ringToRemoveY);
+    Point tempPoint = playingBoard->getPointTriLinear(ringToRemoveX, ringToRemoveY);
     if (tempPoint.piece = Point::ring) {
         addRing(tempPoint);
     } else {

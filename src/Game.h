@@ -24,7 +24,7 @@ public:
     chanceType chance;
 
     // players in game. 0 moves first.
-    std::tuple<Player, Player> playerTuple;
+    std::tuple<Player*, Player*> playerTuple;
 
     // possibles moves for player which has current chance
     std::vector<std::vector<Move>> currentPlayerPossibleMovesAllRings;
@@ -53,10 +53,10 @@ public:
     std::vector<Move> contiguousMarker(int contiguousNum, chanceType playerChance);
 
     // repetitive part for contiguousMarker
-    void checkAndAddContigous(int directionX, int directionY, int i, int j, chanceType playerChance,
-    bool& seenSameColorMarker, std::vector<Operation>& tempOpQueue, 
-    int& numOfContiguous, Operation& rowStart, Operation& rowEnd, std::vector<Move>& movesToReturn,
-    int contiguousNum);
+    // void checkAndAddContigous(int directionX, int directionY, int i, int j, chanceType playerChance,
+    // bool& seenSameColorMarker, std::vector<Operation>& tempOpQueue, 
+    // int& numOfContiguous, Operation& rowStart, Operation& rowEnd, std::vector<Move>& movesToReturn,
+    // int contiguousNum);
 };
 
 #endif /* GAME_H */
