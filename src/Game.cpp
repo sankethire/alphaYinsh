@@ -45,7 +45,8 @@ std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerCha
         Point tempPoint = board.getPointTriLinear(i, j);
 
         // seen same color marker 
-        if ((tempPoint.color == playerChance) && (tempPoint.piece == Point::marker)) {
+        if ((static_cast<int>(tempPoint.color) == static_cast<int>(playerChance)) 
+        && (tempPoint.piece == Point::marker)) {
             if (!seenSameColorMarker) {
                 tempOpQueue.clear();
                 rowStart =  new Operation(Operation::RS, i, j);
@@ -58,9 +59,10 @@ std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerCha
                 tempOpQueue.push_back(rowEnd);
                 Move tempMoveStore = Move(convertToNormalVector(tempOpQueue));
                 movesToReturn.push_back(tempMoveStore);
+                tempOpQueue.clear();
                 int tempCoordX = std::get<0>(rowStart->coordinate);
                 int tempCoordY = std::get<1>(rowStart->coordinate);
-                rowStart =  new Operation(Operation::RS, tempCoordX-directionX, tempCoordY-directionY);
+                rowStart =  new Operation(Operation::RS, tempCoordX+directionX, tempCoordY+directionY);
             }
         } else {
             numOfContiguous = 0;
