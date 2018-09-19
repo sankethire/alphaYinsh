@@ -11,16 +11,16 @@ Player::Player(Board& playBoard) {
 }
 
 void Player::addRing(Point ringToAdd) {
-    ringLeft.push_back(ringToAdd);
+    if (ringToAdd.piece = Point::ring) {
+        ringLeft.push_back(ringToAdd);
+    } else {
+        std::invalid_argument("Added Non-Ring to ring list in addRing");
+    }
 }
 
 void Player::addRing(int ringToRemoveX, int ringToRemoveY) {
     Point tempPoint = playingBoard->getPointTriLinear(ringToRemoveX, ringToRemoveY);
-    if (tempPoint.piece = Point::ring) {
-        addRing(tempPoint);
-    } else {
-        std::invalid_argument("Added Non-Ring to ring list in addRing");
-    }
+    addRing(tempPoint);
 }
 
 void Player::removeRing(int ringToRemoveX, int ringToRemoveY) {
