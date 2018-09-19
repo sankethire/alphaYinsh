@@ -18,8 +18,8 @@ public:
     // orange moves first like white.
     enum colorType {orange, blue, emptyColor, nonExistentColor};
 
-    pieceType piece;
-    colorType color;
+    pieceType piece = nonExistentPiece;
+    colorType color = nonExistentColor;
     // tri linear coordinate of point. point knows where it is and 
     // its coordinates will never change
     std::tuple<int, int> triLinearCoord;
@@ -27,6 +27,7 @@ public:
     /* FUNCTIONS */
 
     Point(std::tuple<int, int> triLinearCoordinate);
+    Point(int CoordX = 0, int CoordY = 0);
 
     void setPointState(pieceType p, colorType c);
 

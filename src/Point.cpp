@@ -11,6 +11,10 @@ Point::Point(std::tuple<int, int> triLinearCoordinate) {
     triLinearCoord = triLinearCoordinate;
 }
 
+Point::Point(int CoordX, int CoordY) {
+    triLinearCoord = std::make_tuple(CoordX, CoordY);
+}
+
 void Point::setPointState(pieceType p, colorType c) {
     piece = p;
     color = c;

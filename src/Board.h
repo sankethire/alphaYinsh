@@ -16,9 +16,6 @@ public:
     std::vector<std::vector<Point>> triLinearBoard;
 
     /* FUNCTIONS */
-
-    // TODO: this "size = 5" could cause problem later.
-    // used here just so that board has defualt constructor.
     Board(int size = 5);
 
     // gets the point

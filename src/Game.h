@@ -30,7 +30,6 @@ public:
     std::vector<std::vector<Move>> currentPlayerPossibleMovesAllRings;
 
     /* FUNCTIONS */
-    // TODO: defualt = 5.
     Game(int ringAtStart = 5);
 
     std::vector<Move> possibleMovementForRingInDirection(Point ring, std::tuple<int, int> direction);
@@ -51,12 +50,6 @@ public:
     // return something like RS (0, -2) RE (4, 2).
     // note this doesn't give the X part.
     std::vector<Move> contiguousMarker(int contiguousNum, chanceType playerChance);
-
-    // repetitive part for contiguousMarker
-    // void checkAndAddContigous(int directionX, int directionY, int i, int j, chanceType playerChance,
-    // bool& seenSameColorMarker, std::vector<Operation>& tempOpQueue, 
-    // int& numOfContiguous, Operation& rowStart, Operation& rowEnd, std::vector<Move>& movesToReturn,
-    // int contiguousNum);
 };
 
 #endif /* GAME_H */
