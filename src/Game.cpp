@@ -17,6 +17,7 @@ Game::Game(int ringAtStart) {
     Player* p1 = new Player(board);
     Player* p2 = new Player(board);
     playerTuple = std::make_tuple(p1, p2);
+    Point::defineTrilinearDirection();
 }
 
 std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerChance) {
@@ -28,8 +29,8 @@ std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerCha
     int iMax;
     bool seenSameColorMarker;
     int numOfContiguous;
-    Operation* rowStart;
-    Operation* rowEnd;
+    Operation* rowStart = NULL;
+    Operation* rowEnd = NULL;
     std::vector<Operation*> tempOpQueue;
 
     auto convertToNormalVector = [&] (std::vector<Operation*> opPtrVector) {

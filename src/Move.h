@@ -10,7 +10,7 @@
 class Move {
 public:
     /* FIELDS */
-    // operations like P, S, M, RS, RE, X. 
+    // operations like P, S, M, RS, RE, X.
     std::vector<Operation> operationSequence;
     
 
