@@ -159,7 +159,8 @@ std::vector<Move> Game::possibleMovementForRingInDirection
             if (seenAnyMarker) {
                 break;
             }
-        } else if (tempPoint.piece == Point::nonExistentPiece) {
+        } else if ((tempPoint.piece == Point::nonExistentPiece) && 
+        (tempPoint.piece == Point::ring)) {
             break;
         } 
     }
