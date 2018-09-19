@@ -182,3 +182,51 @@ std::vector<std::vector<std::vector<Move>>> Game::possibleMovementAllRingAllDire
     return vecToReturn;
 
 }
+
+std::tuple<double, double> Game::calculateScore(){
+    double scoreA, scoreB;
+    std::tuple<double,double> scoreTuple;
+    int ringsA = (std::get<0>(playerTuple))->ringWon;
+    int ringsB = std::get<1>(playerTuple)->ringWon;
+    int markersA = std::get<0>(playerTuple)->markerOwn;
+    int markersB = std::get<1>(playerTuple)->markerOwn;
+
+    if(ringsA == 3){
+        scoreA = 10 - ringsB;
+        scoreB = ringsB;
+    }
+    else if(ringsB == 3){
+        scoreA = ringsA;
+        scoreB = 10 - ringsA;
+    }
+    else if(ringsB == ringsA){
+        scoreA = 5;
+        scoreB = 5;
+    }
+    else if((ringsA - ringsB) == 2){
+        scoreA = 7;
+        scoreB = 3;
+    }
+    else if((ringsB - ringsA) == 2){
+        scoreA = 3;
+        scoreB = 7;
+    }
+    else if(ringsA > ringsB){
+        scoreA = 6;
+        scoreB = 4;
+    }
+    else if(ringsB > ringsA){
+        scoreA = 4;
+        scoreB = 6;
+    }
+    
+    scoreA = scoreA + double(markersA)/ 1000.0;
+    scoreB = scoreB + double(markersB)/ 1000.0;
+    
+    
+    scoreTuple = std::make_tuple(scoreA, scoreB);
+
+    return scoreTuple;
+
+}
+
