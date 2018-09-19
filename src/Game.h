@@ -32,15 +32,17 @@ public:
     /* FUNCTIONS */
     Game(int ringAtStart = 5);
 
-    std::vector<Move> possibleMovementForRingInDirection(Point ring, std::tuple<int, int> direction);
+    std::vector<Move> possibleMovementForRingInDirection
+    (Point& ring, std::tuple<int, int> direction);
     // Moves() parses HexCoord in string format and gives it to this function
-    std::vector<Move> possibleMovementForRingAllDirection(Point ring);
+    std::vector<std::vector<Move>> possibleMovementForRingAllDirection(Point ring);
     // find all possible moves for rings of current player
-    std::vector<std::vector<Move>> possibleMovementAllRingAllDirection(Player currentPlayer);
+    std::vector<std::vector<std::vector<Move>>> possibleMovementAllRingAllDirection
+    (Player currentPlayer);
 
     // changes board configuration according to move(if valid)
     void ExecuteMove(Move m);
-    std::tuple<int, int> calculateScore();
+    std::tuple<double, double> calculateScore();
 
     // checks validity of move before it is execute.
     // searchs moves in currentPlayerPossibleMovesAllRings array

@@ -132,3 +132,52 @@ std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerCha
     delete rowEnd;
     return movesToReturn;
 }
+
+std::vector<Move> Game::possibleMovementForRingInDirection
+(Point& ring, std::tuple<int, int> direction) {
+    int directionX = std::get<0>(direction);
+    int directionY = std::get<1>(direction);
+    int ringX = std::get<0>(ring.triLinearCoord);
+    int ringY = std::get<1>(ring.triLinearCoord);
+    int i, j;
+    bool seenAnyMarker = false;
+    Operation selectRing = Operation(Operation::S, ringX, ringY);
+    std::vector<Move> moveVectorReturn;
+
+    for (i=ringX, j=ringY; (-board.boardSize<=i) && (i<=board.boardSize) &&
+    (-board.boardSize<=j) && (j<=board.boardSize); i+=directionX, j+=directionY) {
+        Point tempPoint = board.getPointTriLinear(i, j);
+        if (tempPoint.piece == Point::marker) {
+            seenAnyMarker = true;
+        } else if (tempPoint.piece == Point::emptyPiece) {
+            // FIXME: care here initialize new vector.
+            std::vector<Operation> tempOpSequence;
+            tempOpSequence.push_back(selectRing);
+            tempOpSequence.push_back(Operation(Operation::M, i, j));
+            moveVectorReturn.push_back(tempOpSequence);
+            if (seenAnyMarker) {
+                break;
+            }
+        } else if (tempPoint.piece == Point::nonExistentPiece) {
+            break;
+        } 
+    }
+}
+
+std::vector<std::vector<Move>> Game::possibleMovementForRingAllDirection(Point ring) {
+    std::vector<std::vector<Move>> vecToReturn;
+    for (std::tuple<int, int>& directionTup: triLinearDirection) {
+        vecToReturn.push_back(possibleMovementForRingInDirection(ring, directionTup));
+    }
+    return vecToReturn;
+}
+
+std::vector<std::vector<std::vector<Move>>> Game::possibleMovementAllRingAllDirection (
+    Player currentPlayer) {
+    std::vector<std::vector<std::vector<Move>>> vecToReturn;
+    for (Point& ring: currentPlayer.ringLeft) {
+        vecToReturn.push_back(possibleMovementForRingAllDirection(ring));
+    }
+    return vecToReturn;
+
+}
