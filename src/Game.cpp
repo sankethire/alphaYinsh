@@ -17,7 +17,6 @@ Game::Game(int ringAtStart) {
     Player* p1 = new Player(board);
     Player* p2 = new Player(board);
     playerTuple = std::make_tuple(p1, p2);
-    Point::defineTrilinearDirection();
 }
 
 std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerChance) {
@@ -145,13 +144,13 @@ std::vector<Move> Game::possibleMovementForRingInDirection
     Operation selectRing = Operation(Operation::S, ringX, ringY);
     std::vector<Move> moveVectorReturn;
 
-    for (i=ringX, j=ringY; (-board.boardSize<=i) && (i<=board.boardSize) &&
+    for (i=ringX+directionX, j=ringY+directionY; 
+    (-board.boardSize<=i) && (i<=board.boardSize) &&
     (-board.boardSize<=j) && (j<=board.boardSize); i+=directionX, j+=directionY) {
         Point tempPoint = board.getPointTriLinear(i, j);
         if (tempPoint.piece == Point::marker) {
             seenAnyMarker = true;
         } else if (tempPoint.piece == Point::emptyPiece) {
-            // FIXME: care here initialize new vector.
             std::vector<Operation> tempOpSequence;
             tempOpSequence.push_back(selectRing);
             tempOpSequence.push_back(Operation(Operation::M, i, j));
@@ -164,18 +163,19 @@ std::vector<Move> Game::possibleMovementForRingInDirection
             break;
         } 
     }
+    return moveVectorReturn;
 }
 
-std::vector<std::vector<Move>> Game::possibleMovementForRingAllDirection(Point ring) {
+std::vector<std::vector<Move>> Game::possibleMovementForRingAllDirection(Point& ring) {
     std::vector<std::vector<Move>> vecToReturn;
-    for (std::tuple<int, int>& directionTup: triLinearDirection) {
-        vecToReturn.push_back(possibleMovementForRingInDirection(ring, directionTup));
+    for (int i=0; i<6; i++) {
+        vecToReturn.push_back(possibleMovementForRingInDirection(ring, triLinearDirection[i]));
     }
     return vecToReturn;
 }
 
 std::vector<std::vector<std::vector<Move>>> Game::possibleMovementAllRingAllDirection (
-    Player currentPlayer) {
+    Player& currentPlayer) {
     std::vector<std::vector<std::vector<Move>>> vecToReturn;
     for (Point& ring: currentPlayer.ringLeft) {
         vecToReturn.push_back(possibleMovementForRingAllDirection(ring));
@@ -230,4 +230,3 @@ std::tuple<double, double> Game::calculateScore(){
     return scoreTuple;
 
 }
-

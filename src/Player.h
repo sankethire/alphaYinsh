@@ -25,11 +25,11 @@ public:
     Player(Board& playBoard);
 
     // add ring which was placed in placement phase to ringLeft Vector.
-    void addRing(Point ringToAdd);
+    void addRing(Point& ringToAdd);
     void addRing(int ringToRemoveX, int ringToRemoveY);
 
     // remove ring from list of ring left and increment ringWon.
-    void removeRing(Point ringToRemove);
+    void removeRing(Point& ringToRemove);
     void removeRing(int ringToRemoveX, int ringToRemoveY);
 };
 

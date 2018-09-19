@@ -35,10 +35,10 @@ public:
     std::vector<Move> possibleMovementForRingInDirection
     (Point& ring, std::tuple<int, int> direction);
     // Moves() parses HexCoord in string format and gives it to this function
-    std::vector<std::vector<Move>> possibleMovementForRingAllDirection(Point ring);
+    std::vector<std::vector<Move>> possibleMovementForRingAllDirection(Point& ring);
     // find all possible moves for rings of current player
     std::vector<std::vector<std::vector<Move>>> possibleMovementAllRingAllDirection
-    (Player currentPlayer);
+    (Player& currentPlayer);
 
     // changes board configuration according to move(if valid)
     void ExecuteMove(Move m);

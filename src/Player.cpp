@@ -10,8 +10,8 @@ Player::Player(Board& playBoard) {
     playingBoard = &playBoard;
 }
 
-void Player::addRing(Point ringToAdd) {
-    if (ringToAdd.piece = Point::ring) {
+void Player::addRing(Point& ringToAdd) {
+    if (ringToAdd.piece == Point::ring) {
         ringLeft.push_back(ringToAdd);
     } else {
         std::invalid_argument("Added Non-Ring to ring list in addRing");
@@ -38,7 +38,7 @@ void Player::removeRing(int ringToRemoveX, int ringToRemoveY) {
     throw std::invalid_argument("No ring in ringLeft could be removed: Player.cpp");
 }
 
-void Player::removeRing(Point ringToRemove) {
+void Player::removeRing(Point& ringToRemove) {
     std::tuple<int, int> tempTuple = ringToRemove.triLinearCoord;
     removeRing(std::get<0>(tempTuple), std::get<1>(tempTuple));
 }
