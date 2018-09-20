@@ -44,6 +44,11 @@ public:
     // get TrilinearDirection tuple from triLinearDirection
     static std::tuple<int, int> getTriLinearDirection(std::tuple<int, int> endTuple, 
     std::tuple<int, int> startTuple);
+
+    // check if a point is in between two points
+    static bool checkInBetween(int x, int y, 
+    std::tuple<int, int> tup1, std::tuple<int, int> tup2);
+
     static void defineTriLinearDirection();
 };
 

@@ -274,7 +274,7 @@ void Game::ExecuteMove(Move fullMove) {
                 ("move must have M opcode after S opcode. Something else after S");
             }
             std::vector<Operation> subMove (fullMove.operationSequence.begin()+i, 
-            fullMove.operationSequence.begin()+i+1);
+            fullMove.operationSequence.begin()+i+2);
             ExecuteSM(Move(subMove));
             doneSM = true;
             i += 1;
@@ -284,7 +284,7 @@ void Game::ExecuteMove(Move fullMove) {
 
 void Game::ExecuteP(Operation placeOp) {
     Point& gotPoint = board.getPointTriLinear(placeOp.coordinate);
-    if (gotPoint.piece == Point::emptyPiece) {
+    if (gotPoint.piece != Point::emptyPiece) {
         throw std::invalid_argument
         ("Can only place on points that are empty and exist");
     }
@@ -318,7 +318,9 @@ void Game::ExecuteSM(Move SMMove) {
 
     int i, j;
     bool seenAnyMarker = false;
-    for (i=sCoordX, j=sCoordY; i<mCoordX, j<mCoordY; i+=directionX, j+=directionY) {
+    for (i=sCoordX+directionX, j=sCoordY+directionY; 
+    Point::checkInBetween(i, j, std::make_tuple(sCoordX+directionX, sCoordY+directionY), 
+    std::make_tuple(mCoordX-directionX, mCoordY-directionY)); i+=directionX, j+=directionY) {
         Point& tempPoint = board.getPointTriLinear(i, j);
         if (tempPoint.piece == Point::marker) {
             tempPoint.flip();
@@ -349,13 +351,13 @@ void Game::ExecuteSM(Move SMMove) {
         throw std::invalid_argument("cooridinate of point M are not empty");
     }
 
-    
+
     int whichPlayer = static_cast<int>(chance);
     if (whichPlayer == 1) {
         std::get<1>(playerTuple)->removeRing(sPoint);
         std::get<1>(playerTuple)->addRing(mPoint);
     } else {
-        std::get<1>(playerTuple)->removeRing(sPoint);
+        std::get<0>(playerTuple)->removeRing(sPoint);
         std::get<0>(playerTuple)->addRing(mPoint);
     }
 }

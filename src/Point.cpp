@@ -184,6 +184,21 @@ std::tuple<int, int> startTuple) {
     return triLinearDirection[indexOfTriLinearDirection];
 }
 
+bool Point::checkInBetween(int x, int y, 
+std::tuple<int, int> tup1, std::tuple<int, int> tup2) {
+    int tup1X = std::get<0>(tup1);
+    int tup1Y = std::get<1>(tup1);
+    int tup2X = std::get<0>(tup2);
+    int tup2Y = std::get<1>(tup2);
+
+    if (((tup1X<=x) && (x<=tup2X)) || ((tup2X<=x) && (x<=tup1X))) {
+        if (((tup1Y<=y) && (y<=tup2Y)) || ((tup2Y<=y) && (y<=tup1Y))) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void Point::defineTriLinearDirection() {
     // Possibly call in game.cpp
     std::tuple<int,int> directionCorners;
