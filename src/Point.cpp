@@ -131,7 +131,45 @@ std::tuple<int, int> Point::conversionToHexCoord(std::tuple<int, int> triCoord) 
     return std::make_tuple(hexagon, position);
 }
 
-void Point::defineTrilinearDirection() {
+std::tuple<int, int> Point::getTriLinearDirection(std::tuple<int, int> endTuple, 
+std::tuple<int, int> startTuple) {
+    int diffX = std::get<0>(endTuple) - std::get<0>(startTuple);
+    int diffY = std::get<1>(endTuple) - std::get<1>(startTuple);
+    int indexOfTriLinearDirection = -1;
+    if (diffX > 0) {
+        if (diffY > 0) {
+            if (diffX == diffY) {
+                indexOfTriLinearDirection = 1;
+            }
+        } else if (diffY == 0) {
+            indexOfTriLinearDirection = 2;
+        }
+    } else if (diffX == 0) {
+        if (diffY > 0) {
+            indexOfTriLinearDirection = 0;
+        } else if (diffY == 0) {
+            throw std::invalid_argument("0, 0 direction. getTriLinearDirection");
+        } else {
+        indexOfTriLinearDirection = 3;
+        }
+    } else {
+        if (diffY == 0) {
+            indexOfTriLinearDirection = 2;
+        } else if (diffY < 0) {
+            if (diffX == diffY) {
+                indexOfTriLinearDirection = 4;
+            }
+        }
+    }
+
+    if (indexOfTriLinearDirection = -1) {
+        throw std::invalid_argument("no valid triLinear direction. getTriLinearDirection");
+    }
+
+    return triLinearDirection[indexOfTriLinearDirection];
+}
+
+void Point::defineTriLinearDirection() {
     // Possibly call in game.cpp
     std::tuple<int,int> directionCorners;
     directionCorners = std::make_tuple(0,1);
