@@ -263,7 +263,7 @@ void Game::ExecuteMove(Move fullMove) {
                 ("Game must be in movement phase to move rings");
             }
 
-            if (fullMove.operationSequence.size()-1 >= i+1) {
+            if (fullMove.operationSequence.size()-1 < i+1) {
                 throw std::invalid_argument
                 ("move must have M opcode after S opcode. Move too short");
             }
