@@ -29,6 +29,9 @@ public:
     Point(std::tuple<int, int> triLinearCoordinate);
     Point(int CoordX = 0, int CoordY = 0);
 
+    // flips marker
+    void flip();
+
     void setPointState(pieceType p, colorType c);
 
     // point string in color to print in terminal further.

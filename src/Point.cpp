@@ -15,6 +15,21 @@ Point::Point(int CoordX, int CoordY) {
     triLinearCoord = std::make_tuple(CoordX, CoordY);
 }
 
+void Point::flip() {
+    if (piece == marker) {
+        if (color == orange) {
+            color = blue;
+        } else if (color == blue) {
+            color = orange;
+        } else {
+            throw std::invalid_argument
+            ("Point is marker but has no color. this point was set wrong somewhere");
+        }
+    } else {
+        throw std::invalid_argument("Trying to flip non-marker");
+    }
+}
+
 void Point::setPointState(pieceType p, colorType c) {
     piece = p;
     color = c;
@@ -162,7 +177,7 @@ std::tuple<int, int> startTuple) {
         }
     }
 
-    if (indexOfTriLinearDirection = -1) {
+    if (indexOfTriLinearDirection == -1) {
         throw std::invalid_argument("no valid triLinear direction. getTriLinearDirection");
     }
 
