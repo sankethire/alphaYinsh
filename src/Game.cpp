@@ -348,4 +348,14 @@ void Game::ExecuteSM(Move SMMove) {
     } else {
         throw std::invalid_argument("cooridinate of point M are not empty");
     }
+
+    
+    int whichPlayer = static_cast<int>(chance);
+    if (whichPlayer == 1) {
+        std::get<1>(playerTuple)->removeRing(sPoint);
+        std::get<1>(playerTuple)->addRing(mPoint);
+    } else {
+        std::get<1>(playerTuple)->removeRing(sPoint);
+        std::get<0>(playerTuple)->addRing(mPoint);
+    }
 }

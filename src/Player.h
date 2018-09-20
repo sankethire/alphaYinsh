@@ -28,7 +28,7 @@ public:
     void addRing(Point& ringToAdd);
     void addRing(int ringToRemoveX, int ringToRemoveY);
 
-    // remove ring from list of ring left and increment ringWon.
+    // remove ring from list of ring left. Doesn't increment ringWon.
     void removeRing(Point& ringToRemove);
     void removeRing(int ringToRemoveX, int ringToRemoveY);
 };
