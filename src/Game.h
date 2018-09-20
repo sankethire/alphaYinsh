@@ -42,6 +42,8 @@ public:
 
     // changes board configuration according to move(if valid)
     void ExecuteMove(Move m);
+
+    // default score constructor.
     std::tuple<double, double> calculateScore();
 
     // checks validity of move before it is execute.

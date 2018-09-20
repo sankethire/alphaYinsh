@@ -158,7 +158,7 @@ std::vector<Move> Game::possibleMovementForRingInDirection
             if (seenAnyMarker) {
                 break;
             }
-        } else if ((tempPoint.piece == Point::nonExistentPiece) && 
+        } else if ((tempPoint.piece == Point::nonExistentPiece) || 
         (tempPoint.piece == Point::ring)) {
             break;
         } 
@@ -184,7 +184,7 @@ std::vector<std::vector<std::vector<Move>>> Game::possibleMovementAllRingAllDire
 
 }
 
-std::tuple<double, double> Game::calculateScore(){
+std::tuple<double, double> Game::calculateScore() {
     double scoreA, scoreB;
     std::tuple<double,double> scoreTuple;
     int ringsA = (std::get<0>(playerTuple))->ringWon;
