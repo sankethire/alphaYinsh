@@ -41,7 +41,11 @@ public:
     (Player& currentPlayer);
 
     // changes board configuration according to move(if valid)
-    void ExecuteMove(Move m);
+    void ExecuteMove(Move fullMove);
+
+    // Sub parts of execute move
+    void ExecuteP(Operation placeOp);
+    void ExecuteSM(Move SMMove);
 
     // default score constructor.
     std::tuple<double, double> calculateScore();

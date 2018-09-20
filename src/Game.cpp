@@ -45,7 +45,7 @@ std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerCha
         Point tempPoint = board.getPointTriLinear(i, j);
 
         // seen same color marker 
-        if ((static_cast<int>(tempPoint.color) == static_cast<int>(playerChance)) 
+        if ((tempPoint.color == static_cast<Point::colorType>(playerChance)) 
         && (tempPoint.piece == Point::marker)) {
             if (!seenSameColorMarker) {
                 tempOpQueue.clear();
@@ -187,7 +187,7 @@ std::vector<std::vector<std::vector<Move>>> Game::possibleMovementAllRingAllDire
 std::tuple<double, double> Game::calculateScore() {
     double scoreA, scoreB;
     std::tuple<double,double> scoreTuple;
-    int ringsA = (std::get<0>(playerTuple))->ringWon;
+    int ringsA = std::get<0>(playerTuple)->ringWon;
     int ringsB = std::get<1>(playerTuple)->ringWon;
     int markersA = std::get<0>(playerTuple)->markerOwn;
     int markersB = std::get<1>(playerTuple)->markerOwn;
@@ -229,4 +229,123 @@ std::tuple<double, double> Game::calculateScore() {
 
     return scoreTuple;
 
+}
+
+void Game::ExecuteMove(Move fullMove) {
+    bool doneSM = false;
+    for (int i=0; i<fullMove.operationSequence.size(); i++) {
+        Operation& tempOp = fullMove.operationSequence[i];
+
+        // P
+        if (tempOp.opcode == Operation::P) {
+            if (phase != Game::placement) {
+                throw std::invalid_argument
+                ("Game must be in placement phase to place rings");
+            }
+
+            if (fullMove.operationSequence.size() != 1) {
+                throw std::invalid_argument
+                ("Only one P and no other move or submove can be done during placement phase");
+            }
+
+            ExecuteP(fullMove.operationSequence[0]);
+        }
+
+        // S M
+        if (tempOp.opcode == Operation::S) {
+            if (doneSM) {
+                throw std::invalid_argument
+                ("Each chance can have only one SM");
+            }
+
+            if (phase != Game::movement) {
+                throw std::invalid_argument
+                ("Game must be in movement phase to move rings");
+            }
+
+            if (fullMove.operationSequence.size()-1 >= i+1) {
+                throw std::invalid_argument
+                ("move must have M opcode after S opcode. Move too short");
+            }
+
+            Operation& tempOpM = fullMove.operationSequence[i+1];
+            if (tempOpM.opcode != Operation::M) {
+                throw std::invalid_argument
+                ("move must have M opcode after S opcode. Something else after S");
+            }
+            std::vector<Operation> subMove (fullMove.operationSequence.begin()+i, 
+            fullMove.operationSequence.begin()+i+1);
+            ExecuteSM(Move(subMove));
+            doneSM = true;
+            i += 1;
+        }
+    }
+}
+
+void Game::ExecuteP(Operation placeOp) {
+    Point& gotPoint = board.getPointTriLinear(placeOp.coordinate);
+    if (gotPoint.piece == Point::emptyPiece) {
+        throw std::invalid_argument
+        ("Can only place on points that are empty and exist");
+    }
+    gotPoint.color = static_cast<Point::colorType>(chance);
+    gotPoint.piece = Point::ring;
+    int whichPlayer = static_cast<int>(chance);
+    if (whichPlayer == 1) {
+        std::get<1>(playerTuple)->addRing(gotPoint);
+    } else {
+        std::get<0>(playerTuple)->addRing(gotPoint);
+    }
+}
+
+void Game::ExecuteSM(Move SMMove) {
+    std::tuple<int,int> mCoord = SMMove.operationSequence[1].coordinate;
+    std::tuple<int,int> sCoord = SMMove.operationSequence[0].coordinate;
+    std::tuple<int,int> direction = Point::getTriLinearDirection(
+    mCoord, sCoord);
+
+    int mCoordX = std::get<0>(mCoord);
+    int mCoordY = std::get<1>(mCoord);
+    int sCoordX = std::get<0>(sCoord);
+    int sCoordY = std::get<1>(sCoord);
+    int directionX = std::get<0>(direction);
+    int directionY = std::get<1>(direction);
+
+    Point& mPoint = board.getPointTriLinear(mCoord);
+    Point& sPoint = board.getPointTriLinear(sCoord);
+
+    Point::colorType colorChance = static_cast<Point::colorType>(chance);
+
+    int i, j;
+    bool seenAnyMarker = false;
+    for (i=sCoordX, j=sCoordY; i<mCoordX, j<mCoordY; i+=directionX, j+=directionY) {
+        Point& tempPoint = board.getPointTriLinear(i, j);
+        if (tempPoint.piece == Point::marker) {
+            tempPoint.flip();
+            seenAnyMarker = true;
+        } else if (tempPoint.piece == Point::emptyPiece) {
+            if (seenAnyMarker) {
+                throw std::invalid_argument("Ring jumped over markers then a empty");
+            }
+        } else {
+            throw std::invalid_argument("During marker movement S -> M just passed over ring or nonExistent.");
+        }
+    }
+
+    if (sPoint.piece == Point::ring) {
+        if (sPoint.color == colorChance) {
+            sPoint.piece = Point::marker;
+        } else {
+            throw std::invalid_argument("cooridinate of point S is not same color");
+        }
+    } else {
+        throw std::invalid_argument("cooridinate of point S is not ring");
+    }
+
+    if (mPoint.piece == Point::emptyPiece) {
+        mPoint.piece = Point::ring;
+        mPoint.color = colorChance;
+    } else {
+        throw std::invalid_argument("cooridinate of point M are not empty");
+    }
 }
