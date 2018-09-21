@@ -14,8 +14,14 @@ public:
 
     // Board DS
     Board board;
-    // Number of rings each player has at start of game. Board coordinate range = (-ringNum, ringNum)
-    int ringNum;
+    // Number of rings each player has at start of game. 
+    // Generally Board coordinate range = (-ringNum, ringNum)
+    // Game settings
+    int sizeOfBoard;
+    int ringsToBePlacedPerPlayer;
+    int ringsToWin;
+    int numberOfMarkersToRemove;
+    
     // Game phase: Placement, Movement
     enum phaseType {placement, movement};
     phaseType phase;
@@ -30,7 +36,8 @@ public:
     std::vector<std::vector<Move>> currentPlayerPossibleMovesAllRings;
 
     /* FUNCTIONS */
-    Game(int ringAtStart = 5);
+    Game(int sizeOfBoardInput, int ringsToBePlacedPerPlayerInput, 
+    int ringsToWinInput, int numberOfMarkersToRemoveInput);
 
     std::vector<Move> possibleMovementForRingInDirection
     (Point& ring, std::tuple<int, int> direction);
@@ -49,7 +56,7 @@ public:
     void executeRSREX(Move RSREXMove);
 
     // Play game
-    void play(int ringsToBePlacedPerPlayer, int ringsToWin);
+    void play();
 
     // default score constructor.
     std::tuple<double, double> calculateScore();

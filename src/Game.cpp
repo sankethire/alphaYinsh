@@ -8,11 +8,15 @@
 #include <vector>
 #include <tuple>
 
-Game::Game(int ringAtStart) {
+Game::Game(int sizeOfBoardInput, int ringsToBePlacedPerPlayerInput, 
+int ringsToWinInput, int numberOfMarkersToRemoveInput) {
     phase = placement;
     chance = orange;
-    ringNum = ringAtStart;
-    board = Board(ringAtStart);
+    sizeOfBoard = sizeOfBoardInput;
+    ringsToBePlacedPerPlayer = ringsToBePlacedPerPlayerInput;
+    ringsToWin = ringsToWinInput;
+    numberOfMarkersToRemove = numberOfMarkersToRemoveInput;
+    board = Board(sizeOfBoardInput);
     Player* p1 = new Player(board);
     Player* p2 = new Player(board);
     playerTuple = std::make_tuple(p1, p2);
@@ -408,11 +412,12 @@ void Game::executeRSREX(Move RSREXMove) {
     Point& rsPoint = board.getPointTriLinear(rsCoord);
     Point::colorType colorChance = static_cast<Point::colorType>(chance);
 
+    int markersRemovedCount = 1;
     int i, j;
     for (i=rsCoordX, j=rsCoordY; 
     Point::checkInBetween(i, j, rsCoord, reCoord); i+=directionX, j+=directionY) {
         Point& tempPoint = board.getPointTriLinear(i, j);
-
+        markersRemovedCount++;
         if (tempPoint.piece == Point::marker) {
             if (tempPoint.color == colorChance) {
                 tempPoint.piece = Point::emptyPiece;
@@ -425,6 +430,11 @@ void Game::executeRSREX(Move RSREXMove) {
             throw std::invalid_argument
             ("Non marker piece found in between RS and RE points");
         }
+    }
+
+    if (markersRemovedCount > numberOfMarkersToRemove) {
+        throw std::invalid_argument
+        ("Cannot remove markers more than stated in Game constructor");
     }
 
     std::tuple<int,int> xCoord = RSREXMove.operationSequence[2].coordinate;
