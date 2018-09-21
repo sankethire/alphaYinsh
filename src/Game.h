@@ -59,6 +59,9 @@ public:
     void executeSM(Move SMMove);
     void executeRSREX(Move RSREXMove);
 
+    // Helpers for playing
+    void chanceFlip();
+
     // Play game
     void play();
 

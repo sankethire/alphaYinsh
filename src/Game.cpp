@@ -7,6 +7,10 @@
 
 #include <vector>
 #include <tuple>
+#include <string>
+#include <sstream>
+#include <fstream>
+#include <iostream>
 
 Game::Game(int sizeOfBoardInput, int ringsToBePlacedPerPlayerInput, 
 int ringsToWinInput, int numberOfMarkersToRemoveInput) {
@@ -348,6 +352,7 @@ void Game::executeSM(Move SMMove) {
     Point& sPoint = board.getPointTriLinear(sCoord);
 
     Point::colorType colorChance = static_cast<Point::colorType>(chance);
+    int whichPlayer = static_cast<int>(chance);
 
     int i, j;
     bool seenAnyMarker = false;
@@ -357,6 +362,18 @@ void Game::executeSM(Move SMMove) {
         Point& tempPoint = board.getPointTriLinear(i, j);
         if (tempPoint.piece == Point::marker) {
             tempPoint.flip();
+
+            // Note after flip. update markers owned count.
+            if (tempPoint.color == orange) {
+                std::get<1>(playerTuple)->markerOwn--;
+                std::get<0>(playerTuple)->markerOwn++;
+            } else if (tempPoint.color == blue) {
+                std::get<0>(playerTuple)->markerOwn--;
+                std::get<1>(playerTuple)->markerOwn++;
+            } else {
+                throw std::invalid_argument("Marker colors messed up");
+            }
+
             seenAnyMarker = true;
         } else if (tempPoint.piece == Point::emptyPiece) {
             if (seenAnyMarker) {
@@ -385,13 +402,14 @@ void Game::executeSM(Move SMMove) {
     }
 
 
-    int whichPlayer = static_cast<int>(chance);
     if (whichPlayer == 1) {
         std::get<1>(playerTuple)->removeRing(sPoint);
         std::get<1>(playerTuple)->addRing(mPoint);
+        std::get<1>(playerTuple)->markerOwn++;
     } else {
         std::get<0>(playerTuple)->removeRing(sPoint);
         std::get<0>(playerTuple)->addRing(mPoint);
+        std::get<0>(playerTuple)->markerOwn++;
     }
 }
 
@@ -412,7 +430,7 @@ void Game::executeRSREX(Move RSREXMove) {
     Point& rsPoint = board.getPointTriLinear(rsCoord);
     Point::colorType colorChance = static_cast<Point::colorType>(chance);
 
-    int markersRemovedCount = 1;
+    int markersRemovedCount = 0;
     int i, j;
     for (i=rsCoordX, j=rsCoordY; 
     Point::checkInBetween(i, j, rsCoord, reCoord); i+=directionX, j+=directionY) {
@@ -432,9 +450,9 @@ void Game::executeRSREX(Move RSREXMove) {
         }
     }
 
-    if (markersRemovedCount > numberOfMarkersToRemove) {
+    if (markersRemovedCount != numberOfMarkersToRemove) {
         throw std::invalid_argument
-        ("Cannot remove markers more than stated in Game constructor");
+        ("Cannot remove markers not equal to stated in Game constructor");
     }
 
     std::tuple<int,int> xCoord = RSREXMove.operationSequence[2].coordinate;
@@ -457,8 +475,59 @@ void Game::executeRSREX(Move RSREXMove) {
     if (whichPlayer == 1) {
         std::get<1>(playerTuple)->removeRing(xPoint);
         std::get<1>(playerTuple)->ringWon += 1;
+        std::get<1>(playerTuple)->markerOwn -= numberOfMarkersToRemove;
     } else {
         std::get<0>(playerTuple)->removeRing(xPoint);
         std::get<0>(playerTuple)->ringWon += 1;
+        std::get<0>(playerTuple)->markerOwn -= numberOfMarkersToRemove;
     }
+}
+
+void Game::chanceFlip() {
+    if (chance == orange) {
+        chance = blue;
+    } else {
+        chance = orange;
+    }
+}
+
+void Game::play() {
+    // TODO: uses cout, cin, cerr.
+    int placementMovesDone = 2*ringsToBePlacedPerPlayer - 1;
+    std::string moveInputString;
+    std::stringstream ss;
+    std::ofstream outfile;
+    outfile.open("prevGameMoves.txt",  std::ios::out | std::ios::trunc);
+    while (true) {
+        try {
+            std::cout << board.toStringBoard();
+            std::getline(std::cin, moveInputString);
+            executeMove(Move(moveInputString));
+            chanceFlip();
+            ss << moveInputString << std::endl;
+        } catch (const std::invalid_argument& e) {
+            std::cerr << e.what() << std::endl;
+            continue;
+        } catch (const std::exception& exc) {
+            std::cerr << exc.what() << std::endl;
+            outfile << ss.str();
+            return;
+        } 
+
+
+        if (placementMovesDone < 0) {
+            phase = movement;
+        } else {
+            placementMovesDone--;
+        }
+
+        if (std::get<0>(playerTuple)->ringWon >= ringsToWin) {
+            std::cout << board.toStringBoard();
+            std::cout << "0 orange wins" << std::endl;
+        } else if (std::get<1>(playerTuple)->ringWon >= ringsToWin) {
+            std::cout << board.toStringBoard();
+            std::cout << "1 blue wins" << std::endl;
+        }
+    }
+    outfile << ss.str();
 }
