@@ -500,6 +500,7 @@ void Game::play() {
     outfile.open("prevGameMoves.txt",  std::ios::out | std::ios::trunc);
     while (true) {
         try {
+            std::cout << "chance of" << chance << std::endl;
             std::cout << board.toStringBoard();
             std::getline(std::cin, moveInputString);
             executeMove(Move(moveInputString));
