@@ -364,10 +364,10 @@ void Game::executeSM(Move SMMove) {
             tempPoint.flip();
 
             // Note after flip. update markers owned count.
-            if (tempPoint.color == orange) {
+            if (tempPoint.color == Point::orange) {
                 std::get<1>(playerTuple)->markerOwn--;
                 std::get<0>(playerTuple)->markerOwn++;
-            } else if (tempPoint.color == blue) {
+            } else if (tempPoint.color == Point::blue) {
                 std::get<0>(playerTuple)->markerOwn--;
                 std::get<1>(playerTuple)->markerOwn++;
             } else {
