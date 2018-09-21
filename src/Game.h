@@ -15,13 +15,17 @@ public:
     // Board DS
     Board board;
     // Number of rings each player has at start of game. 
-    // Generally Board coordinate range = (-ringNum, ringNum)
     // Game settings
+
+    // Generally Board coordinate range = (-ringNum, ringNum)
     int sizeOfBoard;
+    // initially 2*ringsToBePlacedPerPlayer moves are done then movement phase starts.
     int ringsToBePlacedPerPlayer;
+    // number of rings to be removed to win the game.
     int ringsToWin;
+    // number of marker that are legal to remove in one move.
     int numberOfMarkersToRemove;
-    
+
     // Game phase: Placement, Movement
     enum phaseType {placement, movement};
     phaseType phase;
