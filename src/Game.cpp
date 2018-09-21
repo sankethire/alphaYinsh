@@ -5,7 +5,6 @@
 #include "Move.h"
 #include "Operation.h"
 
-
 #include <vector>
 #include <tuple>
 
@@ -231,7 +230,7 @@ std::tuple<double, double> Game::calculateScore() {
 
 }
 
-void Game::ExecuteMove(Move fullMove) {
+void Game::executeMove(Move fullMove) {
     bool doneSM = false;
     for (int i=0; i<fullMove.operationSequence.size(); i++) {
         Operation& tempOp = fullMove.operationSequence[i];
@@ -248,7 +247,7 @@ void Game::ExecuteMove(Move fullMove) {
                 ("Only one P and no other move or submove can be done during placement phase");
             }
 
-            ExecuteP(fullMove.operationSequence[0]);
+            executeP(fullMove.operationSequence[0]);
         }
 
         // S M
@@ -276,13 +275,13 @@ void Game::ExecuteMove(Move fullMove) {
 
             std::vector<Operation> subMove (fullMove.operationSequence.begin()+i, 
             fullMove.operationSequence.begin()+i+2);
-            ExecuteSM(Move(subMove));
+            executeSM(Move(subMove));
             doneSM = true;
             i += 1;
         }
 
         // RS RE X
-        if (tempOp.opcode == Operation::RE) {
+        if (tempOp.opcode == Operation::RS) {
 
             if (phase != Game::movement) {
                 throw std::invalid_argument
@@ -305,14 +304,14 @@ void Game::ExecuteMove(Move fullMove) {
 
             std::vector<Operation> subMove (fullMove.operationSequence.begin()+i, 
             fullMove.operationSequence.begin()+i+3);
-            ExecuteRSREX(Move(subMove));
+            executeRSREX(Move(subMove));
 
             i += 2;
         }
     }
 }
 
-void Game::ExecuteP(Operation placeOp) {
+void Game::executeP(Operation placeOp) {
     Point& gotPoint = board.getPointTriLinear(placeOp.coordinate);
     if (gotPoint.piece != Point::emptyPiece) {
         throw std::invalid_argument
@@ -328,7 +327,7 @@ void Game::ExecuteP(Operation placeOp) {
     }
 }
 
-void Game::ExecuteSM(Move SMMove) {
+void Game::executeSM(Move SMMove) {
     std::tuple<int,int> mCoord = SMMove.operationSequence[1].coordinate;
     std::tuple<int,int> sCoord = SMMove.operationSequence[0].coordinate;
     std::tuple<int,int> direction = Point::getTriLinearDirection(
@@ -392,7 +391,7 @@ void Game::ExecuteSM(Move SMMove) {
     }
 }
 
-void Game::ExecuteRSREX(Move RSREXMove) {
+void Game::executeRSREX(Move RSREXMove) {
     std::tuple<int,int> reCoord = RSREXMove.operationSequence[1].coordinate;
     std::tuple<int,int> rsCoord = RSREXMove.operationSequence[0].coordinate;
     std::tuple<int,int> direction = Point::getTriLinearDirection(
@@ -440,6 +439,9 @@ void Game::ExecuteRSREX(Move RSREXMove) {
         throw std::invalid_argument
         ("Can only remove ring of your own color.");
     }
+
+    xPoint.piece = Point::emptyPiece;
+    xPoint.color = Point::emptyColor;
 
     int whichPlayer = static_cast<int>(chance);
     if (whichPlayer == 1) {

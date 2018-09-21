@@ -41,12 +41,15 @@ public:
     (Player& currentPlayer);
 
     // changes board configuration according to move(if valid)
-    void ExecuteMove(Move fullMove);
+    void executeMove(Move fullMove);
 
     // Sub parts of execute move
-    void ExecuteP(Operation placeOp);
-    void ExecuteSM(Move SMMove);
-    void ExecuteRSREX(Move RSREXMove);
+    void executeP(Operation placeOp);
+    void executeSM(Move SMMove);
+    void executeRSREX(Move RSREXMove);
+
+    // Play game
+    void play(int ringsToBePlacedPerPlayer, int ringsToWin);
 
     // default score constructor.
     std::tuple<double, double> calculateScore();
