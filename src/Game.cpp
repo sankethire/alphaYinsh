@@ -500,7 +500,9 @@ void Game::play() {
     outfile.open("prevGameMoves.txt",  std::ios::out | std::ios::trunc);
     while (true) {
         try {
-            std::cout << "chance of" << chance << std::endl;
+            std::cout << "ring won by 0: " << std::get<0>(playerTuple)->ringWon
+            << ", " << "ring won by 1: " << std::get<1>(playerTuple)->ringWon << std::endl;
+            std::cout << "chance of " << chance << std::endl;
             std::cout << board.toStringBoard();
             std::getline(std::cin, moveInputString);
             executeMove(Move(moveInputString));
@@ -512,11 +514,12 @@ void Game::play() {
         } catch (const std::exception& exc) {
             std::cerr << exc.what() << std::endl;
             outfile << ss.str();
+            outfile.close;
             return;
         } 
 
 
-        if (placementMovesDone < 0) {
+        if (placementMovesDone <= 0) {
             phase = movement;
         } else {
             placementMovesDone--;
@@ -531,4 +534,5 @@ void Game::play() {
         }
     }
     outfile << ss.str();
+    outfile.close;
 }

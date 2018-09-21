@@ -38,9 +38,9 @@ void Point::setPointState(pieceType p, colorType c) {
 std::string Point::toColoredStringPoint() {
     if (piece == Point::ring) {
         if (color == Point::orange) {
-            return "\033[1;33mO\033[0m";
+            return "\033[0;33mO\033[0m";
         } else if (color == Point::blue) {
-            return "\033[1;34mO\033[0m";
+            return "\033[0;34mO\033[0m";
         }
     } else if (piece == Point::marker) {
         if (color == Point::orange) {
