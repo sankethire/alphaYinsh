@@ -518,7 +518,6 @@ void Game::play() {
             return;
         } 
 
-
         if (placementMovesDone <= 0) {
             phase = movement;
         } else {
