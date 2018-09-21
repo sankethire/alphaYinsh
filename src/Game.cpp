@@ -273,11 +273,41 @@ void Game::ExecuteMove(Move fullMove) {
                 throw std::invalid_argument
                 ("move must have M opcode after S opcode. Something else after S");
             }
+
             std::vector<Operation> subMove (fullMove.operationSequence.begin()+i, 
             fullMove.operationSequence.begin()+i+2);
             ExecuteSM(Move(subMove));
             doneSM = true;
             i += 1;
+        }
+
+        // RS RE X
+        if (tempOp.opcode == Operation::RE) {
+
+            if (phase != Game::movement) {
+                throw std::invalid_argument
+                ("Game must be in movement phase to remove rings and markers");
+            }
+
+            if (fullMove.operationSequence.size()-1 < i+2) {
+                throw std::invalid_argument
+                ("remove must have RE and X opcode after RS opcode. Move too short");
+            }
+
+            if (fullMove.operationSequence[i+1].opcode != Operation::RE) {
+                throw std::invalid_argument
+                ("remove must have RE opcode after RS opcode. Something else after RS");
+                if (fullMove.operationSequence[i+2].opcode != Operation::X) {
+                    throw std::invalid_argument
+                    ("remove must have X opcode after RE opcode. Something else after RE");
+                }
+            }
+
+            std::vector<Operation> subMove (fullMove.operationSequence.begin()+i, 
+            fullMove.operationSequence.begin()+i+3);
+            ExecuteRSREX(Move(subMove));
+
+            i += 2;
         }
     }
 }
@@ -359,5 +389,64 @@ void Game::ExecuteSM(Move SMMove) {
     } else {
         std::get<0>(playerTuple)->removeRing(sPoint);
         std::get<0>(playerTuple)->addRing(mPoint);
+    }
+}
+
+void Game::ExecuteRSREX(Move RSREXMove) {
+    std::tuple<int,int> reCoord = RSREXMove.operationSequence[1].coordinate;
+    std::tuple<int,int> rsCoord = RSREXMove.operationSequence[0].coordinate;
+    std::tuple<int,int> direction = Point::getTriLinearDirection(
+    reCoord, rsCoord);
+
+    int reCoordX = std::get<0>(reCoord);
+    int reCoordY = std::get<1>(reCoord);
+    int rsCoordX = std::get<0>(rsCoord);
+    int rsCoordY = std::get<1>(rsCoord);
+    int directionX = std::get<0>(direction);
+    int directionY = std::get<1>(direction);
+
+    Point& rePoint = board.getPointTriLinear(reCoord);
+    Point& rsPoint = board.getPointTriLinear(rsCoord);
+    Point::colorType colorChance = static_cast<Point::colorType>(chance);
+
+    int i, j;
+    for (i=rsCoordX, j=rsCoordY; 
+    Point::checkInBetween(i, j, rsCoord, reCoord); i+=directionX, j+=directionY) {
+        Point& tempPoint = board.getPointTriLinear(i, j);
+
+        if (tempPoint.piece == Point::marker) {
+            if (tempPoint.color == colorChance) {
+                tempPoint.piece = Point::emptyPiece;
+                tempPoint.color = Point::emptyColor;
+            } else {
+                throw std::invalid_argument
+                ("Cannot remove others markers. Or some piece are messed up. marker non chance color");
+            }
+        } else {
+            throw std::invalid_argument
+            ("Non marker piece found in between RS and RE points");
+        }
+    }
+
+    std::tuple<int,int> xCoord = RSREXMove.operationSequence[2].coordinate;
+    Point& xPoint = board.getPointTriLinear(xCoord);
+
+    if (xPoint.piece != Point::ring) {
+        throw std::invalid_argument
+        ("Can only remove ring piece");
+    }
+
+    if (xPoint.color != colorChance) {
+        throw std::invalid_argument
+        ("Can only remove ring of your own color.");
+    }
+
+    int whichPlayer = static_cast<int>(chance);
+    if (whichPlayer == 1) {
+        std::get<1>(playerTuple)->removeRing(xPoint);
+        std::get<1>(playerTuple)->ringWon += 1;
+    } else {
+        std::get<0>(playerTuple)->removeRing(xPoint);
+        std::get<0>(playerTuple)->ringWon += 1;
     }
 }

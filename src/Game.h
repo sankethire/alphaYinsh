@@ -46,6 +46,7 @@ public:
     // Sub parts of execute move
     void ExecuteP(Operation placeOp);
     void ExecuteSM(Move SMMove);
+    void ExecuteRSREX(Move RSREXMove);
 
     // default score constructor.
     std::tuple<double, double> calculateScore();
