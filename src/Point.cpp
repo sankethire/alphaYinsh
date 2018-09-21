@@ -169,7 +169,7 @@ std::tuple<int, int> startTuple) {
         }
     } else {
         if (diffY == 0) {
-            indexOfTriLinearDirection = 2;
+            indexOfTriLinearDirection = 5;
         } else if (diffY < 0) {
             if (diffX == diffY) {
                 indexOfTriLinearDirection = 4;
