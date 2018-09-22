@@ -16,7 +16,8 @@ public:
     std::vector<std::vector<Point>> triLinearBoard;
 
     /* FUNCTIONS */
-    Board(int size = 5);
+    Board();
+    Board(int size);
 
     // deep copy/clone
     Board clone();
