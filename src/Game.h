@@ -57,9 +57,10 @@ public:
     void executeSM(Move SMMove);
     void executeRSREX(Move RSREXMove);
 
-    // Helpers for playing
+    // Helpers
     void chanceFlip();
     Player& getPlayerFromColor(chanceType playerChance);
+    bool hasSomeoneWon();
 
     // Play game
     void play();
@@ -83,6 +84,8 @@ public:
     // find all possible moves for rings of current player
     std::vector<std::vector<std::vector<Move>>> possibleMovementAllRingAllDirection
     (chanceType playerChance);
+    // flatten the vector of vectors of ... 
+    std::vector<Move> possibleMovementOfRings(chanceType playerChance);
 
     // Possible RS RE
     // find contigous (contiguousNum) # of markers in each linear direction.

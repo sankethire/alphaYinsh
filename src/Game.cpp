@@ -122,6 +122,19 @@ chanceType playerChance) {
 
 }
 
+std::vector<Move> Game::possibleMovementOfRings(chanceType playerChance) {
+    std::vector<Move> flattenedVecToReturn;
+    std::vector<std::vector<std::vector<Move>>> multiDimensionalVec = 
+    possibleMovementAllRingAllDirection(playerChance);
+    for (std::vector<std::vector<Move>> j: multiDimensionalVec) {
+        for (std::vector<Move> k: j) {
+            flattenedVecToReturn.insert
+            (flattenedVecToReturn.end(), k.begin(), k.end());
+        }
+    }
+    return flattenedVecToReturn;
+}
+
 std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerChance) {
     // loop constraint variables
     std::vector<Move> movesToReturn;
@@ -496,6 +509,15 @@ Player& Game::getPlayerFromColor(chanceType playerChance) {
     } else {
         return std::get<1>(playerTuple);
     }
+}
+
+bool Game::hasSomeoneWon() {
+    Player& playerOrange = getPlayerFromColor(orange);
+    Player& playerBlue = getPlayerFromColor(blue);
+    if ((playerBlue.ringWon>=ringsToWin) || (playerBlue.ringWon>=ringsToWin)) {
+        return true;
+    }
+    return false;
 }
 
 std::tuple<double, double> Game::calculateScore() {
