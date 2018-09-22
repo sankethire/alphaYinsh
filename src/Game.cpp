@@ -27,6 +27,77 @@ int ringsToWinInput, int numberOfMarkersToRemoveInput) {
     playerTuple = std::make_tuple(p1, p2);
 }
 
+std::vector<Move> Game::possiblePlacement() {
+    std::vector<Move> movesToReturn;
+    int tempBoardwidth = (2*board.boardSize);
+    int moveReserveSize = tempBoardwidth*tempBoardwidth;
+    movesToReturn.reserve(moveReserveSize*sizeof(Move));
+
+    for (int i=-board.boardSize; i<=board.boardSize; i++) {
+        for (int j=-board.boardSize; j<=board.boardSize; j++) {
+            const Point& p = board.getPointTriLinear(i, j);
+            if (p.piece == Point::emptyPiece) {
+                std::vector<Operation> tempOpSeq;
+                tempOpSeq.push_back(Operation(Operation::P, i, j));
+                movesToReturn.push_back(Move(tempOpSeq));
+            }
+        }
+    }
+
+    return movesToReturn;
+}
+
+std::vector<Move> Game::possibleMovementForRingInDirection
+(Point& ring, std::tuple<int, int> direction) {
+    int directionX = std::get<0>(direction);
+    int directionY = std::get<1>(direction);
+    int ringX = std::get<0>(ring.triLinearCoord);
+    int ringY = std::get<1>(ring.triLinearCoord);
+    int i, j;
+    bool seenAnyMarker = false;
+    Operation selectRing = Operation(Operation::S, ringX, ringY);
+    std::vector<Move> moveVectorReturn;
+
+    for (i=ringX+directionX, j=ringY+directionY; 
+    (-board.boardSize<=i) && (i<=board.boardSize) &&
+    (-board.boardSize<=j) && (j<=board.boardSize); i+=directionX, j+=directionY) {
+        Point tempPoint = board.getPointTriLinear(i, j);
+        if (tempPoint.piece == Point::marker) {
+            seenAnyMarker = true;
+        } else if (tempPoint.piece == Point::emptyPiece) {
+            std::vector<Operation> tempOpSequence;
+            tempOpSequence.push_back(selectRing);
+            tempOpSequence.push_back(Operation(Operation::M, i, j));
+            moveVectorReturn.push_back(tempOpSequence);
+            if (seenAnyMarker) {
+                break;
+            }
+        } else if ((tempPoint.piece == Point::nonExistentPiece) || 
+        (tempPoint.piece == Point::ring)) {
+            break;
+        } 
+    }
+    return moveVectorReturn;
+}
+
+std::vector<std::vector<Move>> Game::possibleMovementForRingAllDirection(Point& ring) {
+    std::vector<std::vector<Move>> vecToReturn;
+    for (int i=0; i<6; i++) {
+        vecToReturn.push_back(possibleMovementForRingInDirection(ring, triLinearDirection[i]));
+    }
+    return vecToReturn;
+}
+
+std::vector<std::vector<std::vector<Move>>> Game::possibleMovementAllRingAllDirection (
+    Player& currentPlayer) {
+    std::vector<std::vector<std::vector<Move>>> vecToReturn;
+    for (Point& ring: currentPlayer.ringLeft) {
+        vecToReturn.push_back(possibleMovementForRingAllDirection(ring));
+    }
+    return vecToReturn;
+
+}
+
 std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerChance) {
     // loop constraint variables
     std::vector<Move> movesToReturn;
@@ -139,104 +210,6 @@ std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerCha
     delete rowStart;
     delete rowEnd;
     return movesToReturn;
-}
-
-std::vector<Move> Game::possibleMovementForRingInDirection
-(Point& ring, std::tuple<int, int> direction) {
-    int directionX = std::get<0>(direction);
-    int directionY = std::get<1>(direction);
-    int ringX = std::get<0>(ring.triLinearCoord);
-    int ringY = std::get<1>(ring.triLinearCoord);
-    int i, j;
-    bool seenAnyMarker = false;
-    Operation selectRing = Operation(Operation::S, ringX, ringY);
-    std::vector<Move> moveVectorReturn;
-
-    for (i=ringX+directionX, j=ringY+directionY; 
-    (-board.boardSize<=i) && (i<=board.boardSize) &&
-    (-board.boardSize<=j) && (j<=board.boardSize); i+=directionX, j+=directionY) {
-        Point tempPoint = board.getPointTriLinear(i, j);
-        if (tempPoint.piece == Point::marker) {
-            seenAnyMarker = true;
-        } else if (tempPoint.piece == Point::emptyPiece) {
-            std::vector<Operation> tempOpSequence;
-            tempOpSequence.push_back(selectRing);
-            tempOpSequence.push_back(Operation(Operation::M, i, j));
-            moveVectorReturn.push_back(tempOpSequence);
-            if (seenAnyMarker) {
-                break;
-            }
-        } else if ((tempPoint.piece == Point::nonExistentPiece) || 
-        (tempPoint.piece == Point::ring)) {
-            break;
-        } 
-    }
-    return moveVectorReturn;
-}
-
-std::vector<std::vector<Move>> Game::possibleMovementForRingAllDirection(Point& ring) {
-    std::vector<std::vector<Move>> vecToReturn;
-    for (int i=0; i<6; i++) {
-        vecToReturn.push_back(possibleMovementForRingInDirection(ring, triLinearDirection[i]));
-    }
-    return vecToReturn;
-}
-
-std::vector<std::vector<std::vector<Move>>> Game::possibleMovementAllRingAllDirection (
-    Player& currentPlayer) {
-    std::vector<std::vector<std::vector<Move>>> vecToReturn;
-    for (Point& ring: currentPlayer.ringLeft) {
-        vecToReturn.push_back(possibleMovementForRingAllDirection(ring));
-    }
-    return vecToReturn;
-
-}
-
-std::tuple<double, double> Game::calculateScore() {
-    double scoreA, scoreB;
-    std::tuple<double,double> scoreTuple;
-    int ringsA = std::get<0>(playerTuple)->ringWon;
-    int ringsB = std::get<1>(playerTuple)->ringWon;
-    int markersA = std::get<0>(playerTuple)->markerOwn;
-    int markersB = std::get<1>(playerTuple)->markerOwn;
-
-    if(ringsA == 3){
-        scoreA = 10 - ringsB;
-        scoreB = ringsB;
-    }
-    else if(ringsB == 3){
-        scoreA = ringsA;
-        scoreB = 10 - ringsA;
-    }
-    else if(ringsB == ringsA){
-        scoreA = 5;
-        scoreB = 5;
-    }
-    else if((ringsA - ringsB) == 2){
-        scoreA = 7;
-        scoreB = 3;
-    }
-    else if((ringsB - ringsA) == 2){
-        scoreA = 3;
-        scoreB = 7;
-    }
-    else if(ringsA > ringsB){
-        scoreA = 6;
-        scoreB = 4;
-    }
-    else if(ringsB > ringsA){
-        scoreA = 4;
-        scoreB = 6;
-    }
-    
-    scoreA = scoreA + double(markersA)/ 1000.0;
-    scoreB = scoreB + double(markersB)/ 1000.0;
-    
-    
-    scoreTuple = std::make_tuple(scoreA, scoreB);
-
-    return scoreTuple;
-
 }
 
 void Game::executeMove(Move fullMove) {
@@ -496,6 +469,53 @@ void Game::chanceFlip() {
     }
 }
 
+std::tuple<double, double> Game::calculateScore() {
+    double scoreA, scoreB;
+    std::tuple<double,double> scoreTuple;
+    int ringsA = std::get<0>(playerTuple)->ringWon;
+    int ringsB = std::get<1>(playerTuple)->ringWon;
+    int markersA = std::get<0>(playerTuple)->markerOwn;
+    int markersB = std::get<1>(playerTuple)->markerOwn;
+
+    if(ringsA == 3){
+        scoreA = 10 - ringsB;
+        scoreB = ringsB;
+    }
+    else if(ringsB == 3){
+        scoreA = ringsA;
+        scoreB = 10 - ringsA;
+    }
+    else if(ringsB == ringsA){
+        scoreA = 5;
+        scoreB = 5;
+    }
+    else if((ringsA - ringsB) == 2){
+        scoreA = 7;
+        scoreB = 3;
+    }
+    else if((ringsB - ringsA) == 2){
+        scoreA = 3;
+        scoreB = 7;
+    }
+    else if(ringsA > ringsB){
+        scoreA = 6;
+        scoreB = 4;
+    }
+    else if(ringsB > ringsA){
+        scoreA = 4;
+        scoreB = 6;
+    }
+    
+    scoreA = scoreA + double(markersA)/ 1000.0;
+    scoreB = scoreB + double(markersB)/ 1000.0;
+    
+    
+    scoreTuple = std::make_tuple(scoreA, scoreB);
+
+    return scoreTuple;
+
+}
+
 void Game::play() {
     // TODO: uses cout, cin, cerr.
     int placementMovesDone = 2*ringsToBePlacedPerPlayer - 1;
@@ -519,7 +539,7 @@ void Game::play() {
         } catch (const std::exception& exc) {
             std::cerr << exc.what() << std::endl;
             outfile << ss.str();
-            outfile.close;
+            outfile.close();
             return;
         } 
 
@@ -532,5 +552,5 @@ void Game::play() {
         }
     }
     outfile << ss.str();
-    outfile.close;
+    outfile.close();
 }

@@ -66,9 +66,11 @@ public:
     // // searchs moves in currentPlayerPossibleMovesAllRings array
     // bool checkMoveValidity(Move m);
 
-    // Placement
+    // Possible SubMoves
+    // Possible P
+    std::vector<Move> possiblePlacement();
 
-    // Possible SM
+    // Possible S M
     std::vector<Move> possibleMovementForRingInDirection
     (Point& ring, std::tuple<int, int> direction);
     // Moves() parses HexCoord in string format and gives it to this function
@@ -77,6 +79,7 @@ public:
     std::vector<std::vector<std::vector<Move>>> possibleMovementAllRingAllDirection
     (Player& currentPlayer);
 
+    // Possible RS RE
     // find contigous (contiguousNum) # of markers in each linear direction.
     // return something like RS (0, -2) RE (4, 2).
     // note this doesn't give the X part.
