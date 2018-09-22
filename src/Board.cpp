@@ -50,19 +50,19 @@ Board Board::clone() {
     return newBoard;
 }
 
-Point& Board::getPointTriLinear(std::tuple<int, int> triLinearCoordinate) const {
+Point& Board::getPointTriLinear(std::tuple<int, int> triLinearCoordinate) {
     int triLinearCoordX = std::get<0>(triLinearCoordinate);
     int triLinearCoordY = std::get<1>(triLinearCoordinate);
     if ((-boardSize<=triLinearCoordX) && (triLinearCoordX<=boardSize) 
     && (-boardSize<=triLinearCoordY) && (triLinearCoordY<=boardSize)) {
-        return  triLinearBoard[triLinearCoordX+boardSize][triLinearCoordY+boardSize];
+        return triLinearBoard[triLinearCoordX+boardSize][triLinearCoordY+boardSize];
     } else {
         std::cerr << triLinearCoordX << ", " << triLinearCoordY << std::endl;
         throw std::invalid_argument("getPointTriLinear gets wrong coordinate");
     }
 }
 
-Point& Board::getPointTriLinear(int triLinearCoordX, int triLinearCoordY) const {
+Point& Board::getPointTriLinear(int triLinearCoordX, int triLinearCoordY) {
     return getPointTriLinear(std::make_tuple(triLinearCoordX, triLinearCoordY));
 }
 
