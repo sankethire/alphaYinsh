@@ -10,7 +10,7 @@ Player::Player(Board& playBoard) {
     ringWon = 0;
     markerOwn = 0;
     playingBoard = &playBoard;
-    ringLeft.resize(5*sizeof(Point));
+    ringLeft.reserve(5*sizeof(Point));
 }
 
 Player& Player::clone(Board& playBoardInput) {

@@ -111,7 +111,9 @@ std::vector<std::vector<Move>> Game::possibleMovementForRingAllDirection(Point& 
 }
 
 std::vector<std::vector<std::vector<Move>>> Game::possibleMovementAllRingAllDirection (
-    Player& currentPlayer) {
+chanceType playerChance) {
+    Player& currentPlayer = getPlayerFromColor(playerChance);
+
     std::vector<std::vector<std::vector<Move>>> vecToReturn;
     for (Point& ring: currentPlayer.ringLeft) {
         vecToReturn.push_back(possibleMovementForRingAllDirection(ring));
@@ -235,6 +237,18 @@ std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerCha
     return movesToReturn;
 }
 
+std::vector<Move> Game::possibleRingRemoval(chanceType playerChance) {
+    Player& currentPlayer = getPlayerFromColor(playerChance);
+
+    std::vector<Move> movesToReturn;
+    for (Point& ring: currentPlayer.ringLeft) {
+        std::vector<Operation> tempOpSeq;
+        tempOpSeq.push_back(Operation(Operation::X, ring.triLinearCoord));
+        movesToReturn.push_back(tempOpSeq);
+    }
+    return movesToReturn;
+}
+
 void Game::executeMove(Move fullMove) {
     bool doneSM = false;
     for (int i=0; i<fullMove.operationSequence.size(); i++) {
@@ -328,12 +342,8 @@ void Game::executeP(Operation placeOp) {
     }
     gotPoint.color = static_cast<Point::colorType>(chance);
     gotPoint.piece = Point::ring;
-    int whichPlayer = static_cast<int>(chance);
-    if (whichPlayer == 1) {
-        std::get<1>(playerTuple).addRing(gotPoint);
-    } else {
-        std::get<0>(playerTuple).addRing(gotPoint);
-    }
+    Player& whichPlayer = getPlayerFromColor(chance);
+    whichPlayer.addRing(gotPoint);
 }
 
 void Game::executeSM(Move SMMove) {
@@ -353,7 +363,6 @@ void Game::executeSM(Move SMMove) {
     Point& sPoint = board.getPointTriLinear(sCoord);
 
     Point::colorType colorChance = static_cast<Point::colorType>(chance);
-    int whichPlayer = static_cast<int>(chance);
 
     int i, j;
     bool seenAnyMarker = false;
@@ -402,16 +411,11 @@ void Game::executeSM(Move SMMove) {
         throw std::invalid_argument("cooridinate of point M are not empty");
     }
 
+    Player& whichPlayer = getPlayerFromColor(chance);
 
-    if (whichPlayer == 1) {
-        std::get<1>(playerTuple).removeRing(sPoint);
-        std::get<1>(playerTuple).addRing(mPoint);
-        std::get<1>(playerTuple).markerOwn++;
-    } else {
-        std::get<0>(playerTuple).removeRing(sPoint);
-        std::get<0>(playerTuple).addRing(mPoint);
-        std::get<0>(playerTuple).markerOwn++;
-    }
+    whichPlayer.removeRing(sPoint);
+    whichPlayer.addRing(mPoint);
+    whichPlayer.markerOwn++;
 }
 
 void Game::executeRSREX(Move RSREXMove) {
@@ -472,16 +476,10 @@ void Game::executeRSREX(Move RSREXMove) {
     xPoint.piece = Point::emptyPiece;
     xPoint.color = Point::emptyColor;
 
-    int whichPlayer = static_cast<int>(chance);
-    if (whichPlayer == 1) {
-        std::get<1>(playerTuple).removeRing(xPoint);
-        std::get<1>(playerTuple).ringWon += 1;
-        std::get<1>(playerTuple).markerOwn -= numberOfMarkersToRemove;
-    } else {
-        std::get<0>(playerTuple).removeRing(xPoint);
-        std::get<0>(playerTuple).ringWon += 1;
-        std::get<0>(playerTuple).markerOwn -= numberOfMarkersToRemove;
-    }
+    Player& whichPlayer = getPlayerFromColor(chance);
+    whichPlayer.removeRing(xPoint);
+    whichPlayer.ringWon += 1;
+    whichPlayer.markerOwn -= numberOfMarkersToRemove;
 }
 
 void Game::chanceFlip() {
@@ -489,6 +487,14 @@ void Game::chanceFlip() {
         chance = blue;
     } else {
         chance = orange;
+    }
+}
+
+Player& Game::getPlayerFromColor(chanceType playerChance) {
+    if (playerChance == orange) {
+        return std::get<0>(playerTuple);
+    } else {
+        return std::get<1>(playerTuple);
     }
 }
 

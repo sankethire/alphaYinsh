@@ -59,6 +59,7 @@ public:
 
     // Helpers for playing
     void chanceFlip();
+    Player& getPlayerFromColor(chanceType playerChance);
 
     // Play game
     void play();
@@ -81,13 +82,16 @@ public:
     std::vector<std::vector<Move>> possibleMovementForRingAllDirection(Point& ring);
     // find all possible moves for rings of current player
     std::vector<std::vector<std::vector<Move>>> possibleMovementAllRingAllDirection
-    (Player& currentPlayer);
+    (chanceType playerChance);
 
     // Possible RS RE
     // find contigous (contiguousNum) # of markers in each linear direction.
     // return something like RS (0, -2) RE (4, 2).
     // note this doesn't give the X part.
     std::vector<Move> contiguousMarker(int contiguousNum, chanceType playerChance);
+
+    // Possible X
+    std::vector<Move> possibleRingRemoval(chanceType playerChance);
 };
 
 #endif /* GAME_H */
