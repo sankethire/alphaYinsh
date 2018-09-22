@@ -8,8 +8,10 @@
 
 Board::Board(int size) {
     boardSize = size;
+    triLinearBoard.reserve(11*sizeof(std::vector<Point>));
     for (int i=-boardSize; i<=boardSize; i++) {
         std::vector<Point> colomnVector;
+        colomnVector.reserve(11*sizeof(Point));
         for (int j=-boardSize; j<=boardSize; j++) {
             Point p = Point(std::make_tuple(i, j));
             std::tuple<int, int> hexCoord = Point::conversionToHexCoord(std::make_tuple(i, j));
@@ -33,7 +35,6 @@ Point& Board::getPointTriLinear(std::tuple<int, int> triLinearCoordinate) {
     && (-boardSize<=triLinearCoordY) && (triLinearCoordY<=boardSize)) {
         return  triLinearBoard[triLinearCoordX+boardSize][triLinearCoordY+boardSize];
     } else {
-        //FIXME: COULD POSSIBLY REMOVE THIS LATER.
         std::cerr << triLinearCoordX << ", " << triLinearCoordY << std::endl;
         throw std::invalid_argument("getPointTriLinear gets wrong coordinate");
     }
@@ -57,7 +58,6 @@ Point::pieceType setPiece, Point::colorType setColor) {
      setPiece, setColor);
 }
 
-// FIXME: BEWARE HARD CODE AHEAD!
 std::string Board::getColoredPoint(int x, int y) {
     return Board::getPointTriLinear(std::make_tuple(x, y)).Point::toColoredStringPoint();
 }
