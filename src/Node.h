@@ -5,11 +5,12 @@
 #include "Move.h"
 
 #include <vector>
+#include <tuple>
 
 class Node {
     // FEILDS
     // game knows players(rings vector, number of marker), board
-    Game* gameState;
+    Game gameState;
 
     // all the tree stuff that a node should contain.
     Node* parent;
@@ -28,6 +29,16 @@ class Node {
 
     // define children in the vector.
     void defineChildren();
+
+    // helper for define Children. Not too dependent on node.
+    // generates permutation of removals
+    // isThisFirstRemoveCheck of this time
+    static std::vector<std::tuple<Move, Game>> keepCheckingRemovalOfRowAndRing 
+    (Game& gameStateTillNow, Move& moveTillNow, bool isThisFirstRemoveCheck);
+    static void flipMakeChildPushBack (Game& gameStateInput, Move& moveInput, Node* self, 
+    std::vector<std::tuple<Move, Node*>>& childrenList);
+    static void seeSMthenRSREX(Game& gameTillNow, Move& moveTillNow, 
+    Node* self, std::vector<std::tuple<Move, Node*>>& childrenList);
 };
 
 #endif /* NODE_H */
