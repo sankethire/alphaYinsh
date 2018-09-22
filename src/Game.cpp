@@ -18,6 +18,7 @@ int ringsToWinInput, int numberOfMarkersToRemoveInput) {
     chance = orange;
     sizeOfBoard = sizeOfBoardInput;
     ringsToBePlacedPerPlayer = ringsToBePlacedPerPlayerInput;
+    movesLeftTillPlacementEnd = 2*ringsToBePlacedPerPlayerInput;
     ringsToWin = ringsToWinInput;
     numberOfMarkersToRemove = numberOfMarkersToRemoveInput;
     board = Board(sizeOfBoardInput);
@@ -256,6 +257,10 @@ void Game::executeMove(Move fullMove) {
             }
 
             executeP(fullMove.operationSequence[0]);
+            movesLeftTillPlacementEnd--;
+            if (movesLeftTillPlacementEnd == 0) {
+                phase = movement;
+            }
         }
 
         // S M
@@ -517,12 +522,6 @@ void Game::play() {
             outfile.close;
             return;
         } 
-
-        if (placementMovesDone <= 0) {
-            phase = movement;
-        } else {
-            placementMovesDone--;
-        }
 
         if (std::get<0>(playerTuple)->ringWon >= ringsToWin) {
             std::cout << board.toStringBoard();
