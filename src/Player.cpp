@@ -4,10 +4,24 @@
 
 #include <vector>
 
+Player::Player() {}
+
 Player::Player(Board& playBoard) {
     ringWon = 0;
     markerOwn = 0;
     playingBoard = &playBoard;
+    ringLeft.resize(5*sizeof(Point));
+}
+
+Player& Player::clone(Board& playBoardInput) {
+    Player* copiedPlayer = new Player(playBoardInput);
+    copiedPlayer->ringWon = ringWon;
+    copiedPlayer->markerOwn = markerOwn;
+    for (Point ringToCopy : ringLeft) {
+        copiedPlayer->addRing
+        (std::get<0>(ringToCopy.triLinearCoord), std::get<1>(ringToCopy.triLinearCoord));
+    }
+    return *copiedPlayer;
 }
 
 void Player::addRing(Point& ringToAdd) {

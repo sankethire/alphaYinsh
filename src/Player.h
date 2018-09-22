@@ -21,8 +21,11 @@ public:
     Board* playingBoard;
 
     /* FUNCTIONS */
-
+    Player();
     Player(Board& playBoard);
+
+    // deep copy
+    Player& clone(Board& playBoardInput);
 
     // add ring which was placed in placement phase to ringLeft Vector.
     void addRing(Point& ringToAdd);

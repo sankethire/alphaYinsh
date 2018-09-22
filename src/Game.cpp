@@ -22,13 +22,25 @@ int ringsToWinInput, int numberOfMarkersToRemoveInput) {
     ringsToWin = ringsToWinInput;
     numberOfMarkersToRemove = numberOfMarkersToRemoveInput;
     board = Board(sizeOfBoardInput);
-    Player* p1 = new Player(board);
-    Player* p2 = new Player(board);
+    Player p1 = Player(board);
+    Player p2 = Player(board);
     playerTuple = std::make_tuple(p1, p2);
 }
 
-Game Game::clone(const Game& other) {
+Game& Game::clone() {
+    Game* copiedGame = new Game();
+    copiedGame->phase = phase;
+    copiedGame->chance = chance;
+    copiedGame->sizeOfBoard = sizeOfBoard;
+    copiedGame->ringsToBePlacedPerPlayer = ringsToBePlacedPerPlayer;
+    copiedGame->movesLeftTillPlacementEnd = movesLeftTillPlacementEnd;
+    copiedGame->ringsToWin = ringsToWin;
+    copiedGame->numberOfMarkersToRemove = numberOfMarkersToRemove;
 
+    copiedGame->board = board.clone();
+    Player p1 = std::get<0>(playerTuple).clone(copiedGame->board);
+    Player p2 = std::get<1>(playerTuple).clone(copiedGame->board);
+    copiedGame->playerTuple = std::make_tuple(p1, p2);
 }
 
 std::vector<Move> Game::possiblePlacement() {
