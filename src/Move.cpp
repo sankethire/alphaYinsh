@@ -6,6 +6,8 @@
 #include <string>
 #include <bits/stdc++.h>
 
+Move::Move(){}
+
 Move::Move(std::string sFromTerminal) {
 	std::vector<std::string> splitInput = Operation::split(sFromTerminal," ");
 	for (int i = 0; i < splitInput.size(); i=i+3)
@@ -41,6 +43,12 @@ Move::Move(std::string sFromTerminal) {
 
 Move::Move(std::vector<Operation> operationSeq) {
     operationSequence = operationSeq;
+}
+
+
+Move& Move::clone(){
+    Move* copyMove = new Move();
+    
 }
 
 void Move::append(Move& secondMove) {
