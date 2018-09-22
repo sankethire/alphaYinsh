@@ -6,7 +6,7 @@
 #include <string>
 #include <bits/stdc++.h>
 
-Move::Move(){}
+Move::Move() {}
 
 Move::Move(std::string sFromTerminal) {
 	std::vector<std::string> splitInput = Operation::split(sFromTerminal," ");
@@ -45,12 +45,17 @@ Move::Move(std::vector<Operation> operationSeq) {
     operationSequence = operationSeq;
 }
 
-
-
-
 void Move::append(Move& secondMove) {
-    operationSequence.insert(operationSequence.end(), 
-    secondMove.operationSequence.begin(), secondMove.operationSequence.end());
+    if (operationSequence.size() != 0) {
+        if (secondMove.operationSequence.size() != 0) {
+            operationSequence.insert(operationSequence.end(), 
+            secondMove.operationSequence.begin(), secondMove.operationSequence.end());
+        }
+    } else {
+        if (secondMove.operationSequence.size() != 0) {
+            operationSequence = secondMove.operationSequence;
+        }
+    }
 }
 
 std::string Move::toStr() {

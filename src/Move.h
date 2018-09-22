@@ -22,7 +22,6 @@ public:
     Move();
     Move(std::string sFromTerminal);
     Move(std::vector<Operation> operationSeq);
-
     
     // append second move after the first
     void append(Move& secondMove);
