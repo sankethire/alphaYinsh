@@ -21,6 +21,12 @@ public:
     Move(std::string sFromTerminal);
     Move(std::vector<Operation> operationSeq);
 
+    // deep copy
+    Move& clone();
+
+    // append second move after the first
+    void append(Move& secondMove);
+
     // convert Move object to string.
     std::string toStr();
 };

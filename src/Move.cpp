@@ -43,6 +43,11 @@ Move::Move(std::vector<Operation> operationSeq) {
     operationSequence = operationSeq;
 }
 
+void Move::append(Move& secondMove) {
+    operationSequence.insert(operationSequence.end(), 
+    secondMove.operationSequence.begin(), secondMove.operationSequence.end());
+}
+
 std::string Move::toStr() {
     std::stringstream ss;
     for (int i = 0; i < operationSequence.size(); i++) {
