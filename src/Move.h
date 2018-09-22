@@ -11,6 +11,7 @@ class Move {
 public:
     /* FIELDS */
     // operations like P, S, M, RS, RE, X.
+    
     std::vector<Operation> operationSequence;
     
 
@@ -22,9 +23,7 @@ public:
     Move(std::string sFromTerminal);
     Move(std::vector<Operation> operationSeq);
 
-    // deep copy
-    Move& clone();
-
+    
     // append second move after the first
     void append(Move& secondMove);
 

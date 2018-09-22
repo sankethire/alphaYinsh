@@ -46,10 +46,7 @@ Move::Move(std::vector<Operation> operationSeq) {
 }
 
 
-Move& Move::clone(){
-    Move* copyMove = new Move();
-    
-}
+
 
 void Move::append(Move& secondMove) {
     operationSequence.insert(operationSequence.end(), 
