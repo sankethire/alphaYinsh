@@ -25,6 +25,8 @@ public:
     int ringsToWin;
     // number of marker that are legal to remove in one move.
     int numberOfMarkersToRemove;
+    // moves left till end of placement phase
+    int movesLeftTillPlacementEnd;
 
     // Game phase: Placement, Movement
     enum phaseType {placement, movement};
@@ -42,14 +44,6 @@ public:
     /* FUNCTIONS */
     Game(int sizeOfBoardInput, int ringsToBePlacedPerPlayerInput, 
     int ringsToWinInput, int numberOfMarkersToRemoveInput);
-
-    std::vector<Move> possibleMovementForRingInDirection
-    (Point& ring, std::tuple<int, int> direction);
-    // Moves() parses HexCoord in string format and gives it to this function
-    std::vector<std::vector<Move>> possibleMovementForRingAllDirection(Point& ring);
-    // find all possible moves for rings of current player
-    std::vector<std::vector<std::vector<Move>>> possibleMovementAllRingAllDirection
-    (Player& currentPlayer);
 
     // changes board configuration according to move(if valid)
     void executeMove(Move fullMove);
@@ -71,6 +65,17 @@ public:
     // // checks validity of move before it is execute.
     // // searchs moves in currentPlayerPossibleMovesAllRings array
     // bool checkMoveValidity(Move m);
+
+    // Placement
+
+    // Possible SM
+    std::vector<Move> possibleMovementForRingInDirection
+    (Point& ring, std::tuple<int, int> direction);
+    // Moves() parses HexCoord in string format and gives it to this function
+    std::vector<std::vector<Move>> possibleMovementForRingAllDirection(Point& ring);
+    // find all possible moves for rings of current player
+    std::vector<std::vector<std::vector<Move>>> possibleMovementAllRingAllDirection
+    (Player& currentPlayer);
 
     // find contigous (contiguousNum) # of markers in each linear direction.
     // return something like RS (0, -2) RE (4, 2).
