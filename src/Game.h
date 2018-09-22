@@ -36,16 +36,18 @@ public:
     chanceType chance;
 
     // players in game. 0 moves first.
-    std::tuple<Player*, Player*> playerTuple;
+    std::tuple<Player, Player> playerTuple;
 
     // // possibles moves for player which has current chance
     // std::vector<std::vector<Move>> currentPlayerPossibleMovesAllRings;
 
     /* FUNCTIONS */
+    Game();
     Game(int sizeOfBoardInput, int ringsToBePlacedPerPlayerInput, 
     int ringsToWinInput, int numberOfMarkersToRemoveInput);
 
-    Game clone(const Game& other);
+    // deep copy
+    Game& clone();
 
     // changes board configuration according to move(if valid)
     void executeMove(Move fullMove);

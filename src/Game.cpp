@@ -12,6 +12,8 @@
 #include <fstream>
 #include <iostream>
 
+Game::Game() {}
+
 Game::Game(int sizeOfBoardInput, int ringsToBePlacedPerPlayerInput, 
 int ringsToWinInput, int numberOfMarkersToRemoveInput) {
     phase = placement;
@@ -41,6 +43,8 @@ Game& Game::clone() {
     Player p1 = std::get<0>(playerTuple).clone(copiedGame->board);
     Player p2 = std::get<1>(playerTuple).clone(copiedGame->board);
     copiedGame->playerTuple = std::make_tuple(p1, p2);
+
+    return *copiedGame;
 }
 
 std::vector<Move> Game::possiblePlacement() {
@@ -326,9 +330,9 @@ void Game::executeP(Operation placeOp) {
     gotPoint.piece = Point::ring;
     int whichPlayer = static_cast<int>(chance);
     if (whichPlayer == 1) {
-        std::get<1>(playerTuple)->addRing(gotPoint);
+        std::get<1>(playerTuple).addRing(gotPoint);
     } else {
-        std::get<0>(playerTuple)->addRing(gotPoint);
+        std::get<0>(playerTuple).addRing(gotPoint);
     }
 }
 
@@ -362,11 +366,11 @@ void Game::executeSM(Move SMMove) {
 
             // Note after flip. update markers owned count.
             if (tempPoint.color == Point::orange) {
-                std::get<1>(playerTuple)->markerOwn--;
-                std::get<0>(playerTuple)->markerOwn++;
+                std::get<1>(playerTuple).markerOwn--;
+                std::get<0>(playerTuple).markerOwn++;
             } else if (tempPoint.color == Point::blue) {
-                std::get<0>(playerTuple)->markerOwn--;
-                std::get<1>(playerTuple)->markerOwn++;
+                std::get<0>(playerTuple).markerOwn--;
+                std::get<1>(playerTuple).markerOwn++;
             } else {
                 throw std::invalid_argument("Marker colors messed up");
             }
@@ -400,13 +404,13 @@ void Game::executeSM(Move SMMove) {
 
 
     if (whichPlayer == 1) {
-        std::get<1>(playerTuple)->removeRing(sPoint);
-        std::get<1>(playerTuple)->addRing(mPoint);
-        std::get<1>(playerTuple)->markerOwn++;
+        std::get<1>(playerTuple).removeRing(sPoint);
+        std::get<1>(playerTuple).addRing(mPoint);
+        std::get<1>(playerTuple).markerOwn++;
     } else {
-        std::get<0>(playerTuple)->removeRing(sPoint);
-        std::get<0>(playerTuple)->addRing(mPoint);
-        std::get<0>(playerTuple)->markerOwn++;
+        std::get<0>(playerTuple).removeRing(sPoint);
+        std::get<0>(playerTuple).addRing(mPoint);
+        std::get<0>(playerTuple).markerOwn++;
     }
 }
 
@@ -470,13 +474,13 @@ void Game::executeRSREX(Move RSREXMove) {
 
     int whichPlayer = static_cast<int>(chance);
     if (whichPlayer == 1) {
-        std::get<1>(playerTuple)->removeRing(xPoint);
-        std::get<1>(playerTuple)->ringWon += 1;
-        std::get<1>(playerTuple)->markerOwn -= numberOfMarkersToRemove;
+        std::get<1>(playerTuple).removeRing(xPoint);
+        std::get<1>(playerTuple).ringWon += 1;
+        std::get<1>(playerTuple).markerOwn -= numberOfMarkersToRemove;
     } else {
-        std::get<0>(playerTuple)->removeRing(xPoint);
-        std::get<0>(playerTuple)->ringWon += 1;
-        std::get<0>(playerTuple)->markerOwn -= numberOfMarkersToRemove;
+        std::get<0>(playerTuple).removeRing(xPoint);
+        std::get<0>(playerTuple).ringWon += 1;
+        std::get<0>(playerTuple).markerOwn -= numberOfMarkersToRemove;
     }
 }
 
@@ -491,10 +495,10 @@ void Game::chanceFlip() {
 std::tuple<double, double> Game::calculateScore() {
     double scoreA, scoreB;
     std::tuple<double,double> scoreTuple;
-    int ringsA = std::get<0>(playerTuple)->ringWon;
-    int ringsB = std::get<1>(playerTuple)->ringWon;
-    int markersA = std::get<0>(playerTuple)->markerOwn;
-    int markersB = std::get<1>(playerTuple)->markerOwn;
+    int ringsA = std::get<0>(playerTuple).ringWon;
+    int ringsB = std::get<1>(playerTuple).ringWon;
+    int markersA = std::get<0>(playerTuple).markerOwn;
+    int markersB = std::get<1>(playerTuple).markerOwn;
 
     if(ringsA == 3){
         scoreA = 10 - ringsB;
@@ -544,8 +548,8 @@ void Game::play() {
     outfile.open("prevGameMoves.txt",  std::ios::out | std::ios::trunc);
     while (true) {
         try {
-            std::cout << "ring won by 0: " << std::get<0>(playerTuple)->ringWon
-            << ", " << "ring won by 1: " << std::get<1>(playerTuple)->ringWon << std::endl;
+            std::cout << "ring won by 0: " << std::get<0>(playerTuple).ringWon
+            << ", " << "ring won by 1: " << std::get<1>(playerTuple).ringWon << std::endl;
             std::cout << "chance of " << chance << std::endl;
             std::cout << board.toStringBoard();
             std::getline(std::cin, moveInputString);
@@ -562,10 +566,10 @@ void Game::play() {
             return;
         } 
 
-        if (std::get<0>(playerTuple)->ringWon >= ringsToWin) {
+        if (std::get<0>(playerTuple).ringWon >= ringsToWin) {
             std::cout << board.toStringBoard();
             std::cout << "0 orange wins" << std::endl;
-        } else if (std::get<1>(playerTuple)->ringWon >= ringsToWin) {
+        } else if (std::get<1>(playerTuple).ringWon >= ringsToWin) {
             std::cout << board.toStringBoard();
             std::cout << "1 blue wins" << std::endl;
         }
