@@ -45,6 +45,8 @@ public:
     Game(int sizeOfBoardInput, int ringsToBePlacedPerPlayerInput, 
     int ringsToWinInput, int numberOfMarkersToRemoveInput);
 
+    Game clone(const Game& other);
+
     // changes board configuration according to move(if valid)
     void executeMove(Move fullMove);
 

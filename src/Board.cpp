@@ -28,7 +28,29 @@ Board::Board(int size) {
     }
 }
 
-Point& Board::getPointTriLinear(std::tuple<int, int> triLinearCoordinate) {
+Board Board::clone() {
+    Board newBoard = Board();
+    newBoard.boardSize = boardSize;
+    newBoard.triLinearBoard.reserve(11*sizeof(std::vector<Point>));
+    
+    for (int i=-boardSize; i<=boardSize; i++) {
+        std::vector<Point> colomnVector;
+        colomnVector.reserve(11*sizeof(Point));
+
+        for (int j=-boardSize; j<=boardSize; j++) {
+            Point freshPoint = Point(std::make_tuple(i, j));
+            const Point& pointToCopy = getPointTriLinear(i, j);
+            freshPoint.setPointState(pointToCopy.piece, pointToCopy.color);
+            colomnVector.push_back(freshPoint);
+        }
+
+        newBoard.triLinearBoard.push_back(colomnVector);
+    }
+
+    return newBoard;
+}
+
+Point& Board::getPointTriLinear(std::tuple<int, int> triLinearCoordinate) const {
     int triLinearCoordX = std::get<0>(triLinearCoordinate);
     int triLinearCoordY = std::get<1>(triLinearCoordinate);
     if ((-boardSize<=triLinearCoordX) && (triLinearCoordX<=boardSize) 
@@ -40,7 +62,7 @@ Point& Board::getPointTriLinear(std::tuple<int, int> triLinearCoordinate) {
     }
 }
 
-Point& Board::getPointTriLinear(int triLinearCoordX, int triLinearCoordY) {
+Point& Board::getPointTriLinear(int triLinearCoordX, int triLinearCoordY) const {
     return getPointTriLinear(std::make_tuple(triLinearCoordX, triLinearCoordY));
 }
 

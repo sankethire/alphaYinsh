@@ -27,8 +27,14 @@ int ringsToWinInput, int numberOfMarkersToRemoveInput) {
     playerTuple = std::make_tuple(p1, p2);
 }
 
+Game Game::clone(const Game& other) {
+
+}
+
 std::vector<Move> Game::possiblePlacement() {
     std::vector<Move> movesToReturn;
+    // TODO: calculation bound is approx.
+    // Board size is currently linked to rings to place, possible make it unrelated.
     int tempBoardwidth = (2*board.boardSize);
     int moveReserveSize = tempBoardwidth*tempBoardwidth;
     movesToReturn.reserve(moveReserveSize*sizeof(Move));
@@ -107,6 +113,7 @@ std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerCha
     int iMax;
     bool seenSameColorMarker;
     int numOfContiguous;
+    // TODO: this pointer shenanigans in unnecessary. could cause problem
     Operation* rowStart = NULL;
     Operation* rowEnd = NULL;
     std::vector<Operation*> tempOpQueue;

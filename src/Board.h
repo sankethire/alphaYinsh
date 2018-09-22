@@ -18,11 +18,14 @@ public:
     /* FUNCTIONS */
     Board(int size = 5);
 
+    // deep copy/clone
+    Board clone();
+
     // gets the point
     // give cordinate x = [-boardSize, boardSize], y = [-boardSize, boardSize]
     // 5 ring game then boardSize = 5 
-    Point& getPointTriLinear(std::tuple<int, int> triLinearCoordinate);
-    Point& getPointTriLinear(int triLinearCoordX, int triLinearCoordY);
+    Point& getPointTriLinear(std::tuple<int, int> triLinearCoordinate) const;
+    Point& getPointTriLinear(int triLinearCoordX, int triLinearCoordY) const;
 
 
     void setPointTriLinear(std::tuple<int, int> triLinearCoordinate,
