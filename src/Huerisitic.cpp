@@ -223,9 +223,18 @@ double Huerisitic::combinedUtility(Game& toCalculateOnGame) {
         weigthRingMobility*mobilityRingsScoreReturned +
         weigthRingCentering*centeringRingScoreReturned +
         weightContinuousMarker*continousMarkerScoreReturned +
-        weightFlipped*flippedScoreReturned;
+        weightFlipped*flippedScoreReturned; 
 
-        combinedScore = combinedScore*(toCalculateOnGame.calculateScore())*0.5;
+        double currentPlayerScore;
+
+        if (toCalculateOnGame.chance == Game::orange) {
+            currentPlayerScore = std::get<0>(toCalculateOnGame.calculateScore());
+        } else {
+            currentPlayerScore = std::get<1>(toCalculateOnGame.calculateScore());
+        }
+
+        // FIXME: try this ai doesn't finish rings first
+        // combinedScore = combinedScore*(currentPlayerScore)*0.5;
         
         return combinedScore;
     }
