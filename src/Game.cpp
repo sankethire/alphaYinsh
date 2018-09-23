@@ -581,7 +581,7 @@ void Game::play() {
             std::cout << "chance of " << chance << std::endl;
             std::cout << board.toStringBoard();
             std::getline(std::cin, moveInputString);
-            executeMove(Move(moveInputString));
+            executeMove(Move(moveInputString, false));
             chanceFlip();
             ss << moveInputString << std::endl;
         } catch (const std::invalid_argument& e) {

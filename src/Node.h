@@ -8,6 +8,7 @@
 #include <tuple>
 
 class Node {
+public:
     // FEILDS
     // game knows players(rings vector, number of marker), board
     Game gameState;

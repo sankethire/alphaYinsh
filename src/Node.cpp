@@ -161,6 +161,7 @@ int beta, int depthLeftTillCutOff, int treeLevel,
 utilityOfGameFunction terminalUtility, compareMoveNodeTupleFunction sortComparator) {
     // odd tree level max node else min
     // at depthLeftTillCutOff 0 return utility
+    // TODO: pass placement movement different utility
     if (gameState.hasSomeoneWon()) {
         return terminalUtility(gameState);
     }
