@@ -34,7 +34,7 @@ double Huerisitic::centeringRingScore(Point& toCalculateOnRing, int gameBoardSiz
     std::tuple<int, int>  hexCoordinates = 
     Point::conversionToHexCoord(toCalculateOnRing.triLinearCoord);
     int hexagonNum = std::get<0>(hexCoordinates);
-    return pow(weightExpIncCloserToCenter, gameBoardSize-hexagonNum);
+    return pow(weightExpIncCloserToCenter, gameBoardSize-hexagonNum+1);
 }
 
 double Huerisitic::mobilityAllRingScore(Game& toCalculateOnGame) {

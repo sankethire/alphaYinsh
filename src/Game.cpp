@@ -69,8 +69,8 @@ std::vector<Move> Game::possiblePlacement() {
     return movesToReturn;
 }
 
-std::vector<Move> Game::possibleMovementForRingInDirection
-(Point& ring, std::tuple<int, int> direction) {
+std::vector<Move> Game::possibleMovementForRingInDirection(
+Point& ring, std::tuple<int, int> direction) {
     int directionX = std::get<0>(direction);
     int directionY = std::get<1>(direction);
     int ringX = std::get<0>(ring.triLinearCoord);

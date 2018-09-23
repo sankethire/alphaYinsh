@@ -9,7 +9,7 @@
 Tree::Tree() {}
 
 Tree::Tree(Node* rootInput) {
-    rootInput = rootInput;
+    root = rootInput;
 }
 
 Move Tree::pickChild(int indexOfChild) {

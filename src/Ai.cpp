@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "Huerisitic.h"
 #include "Move.h"
+#include "Point.h"
 
 #include <iostream>
 #include <string>
@@ -21,8 +22,8 @@ int timeLimitInput, int depthCutOffInput) {
 void Ai::startBot() {
     double inf = std::numeric_limits<double>::infinity();
     Node* nullParent = NULL;
-    Game* startingBoard = new Game(boardSize, 5, 3, 5);
-    Node* startingNode = new Node(*startingBoard, *nullParent);
+    Game* startingGame = new Game(boardSize, 5, 3, 5);
+    Node* startingNode = new Node(*startingGame, *nullParent);
     treeForMinMax = Tree(startingNode);
 
     std::stringstream ss;
@@ -36,7 +37,7 @@ void Ai::startBot() {
     };
 
     auto shiftInTree = [&] () {
-        while (treeForMinMax.root->gameState.hasSomeoneWon()) {
+        while (!(treeForMinMax.root->gameState.hasSomeoneWon())) {
             std::string moveInput;
             doMinMax();
             Move toDoMove = treeForMinMax.pickChild(treeForMinMax.root->childPicked);
@@ -64,14 +65,21 @@ void Ai::startBot() {
         shiftInTree();
     }
 
+    delete startingGame;
+    delete startingNode;
     outfile << ss.str();
     outfile.close();
 }
 
 int main(int argc, char** argv) {
+    Point::defineTriLinearDirection();
     int player_id, board_size, time_limit;
     // Get input from server about game specifications
-    std::cin >> player_id >> board_size >> time_limit;
-    Ai alphaYinsh = Ai(player_id, board_size, time_limit, 4);
+    // FIXME: Change this
+    // std::cin >> player_id >> board_size >> time_limit;
+    player_id = 1; 
+    board_size = 5; 
+    time_limit = 120;
+    Ai alphaYinsh = Ai(player_id, board_size, time_limit, 1);
     alphaYinsh.startBot();
 }
