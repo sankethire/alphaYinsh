@@ -1,9 +1,11 @@
 #include "Node.h"
+#include "Huerisitic.h"
 #include "Game.h"
 #include "Move.h"
 
 #include <vector>
 #include <tuple>
+#include <algorithm>
 
 Node::Node(Game& gameStateInput, Node& parentInput) {
     gameState = gameStateInput;
@@ -143,4 +145,8 @@ void Node::defineChildren() {
                 seeSMthenRSREX(gameState, dummyMove, this, children);
             }
     }
+}
+
+void Node::sortChildren(compareMoveNodeTupleFunction comparer) {
+    std::sort(children.begin(), children.end(), comparer);
 }

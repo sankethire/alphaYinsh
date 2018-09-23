@@ -24,11 +24,16 @@ class Node {
     double alpha;
     double beta;
     
+    typedef bool (*compareMoveNodeTupleFunction)(std::tuple<Move, Node>, std::tuple<Move, Node>);
+
     // FUNCTIONS
     Node(Game& gameStateInput, Node& parentInput);
 
     // define children in the vector.
     void defineChildren();
+
+    // sorting probably for effecctive alpha beta pruning
+    void sortChildren(compareMoveNodeTupleFunction comparer);
 
     // helper for define Children. Not too dependent on node.
     // generates permutation of removals
