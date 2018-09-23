@@ -13,7 +13,7 @@ public:
     // operations like P, S, M, RS, RE, X.
     
     std::vector<Operation> operationSequence;
-    
+    bool operator ==(const Move& other);
 
     /* FUNCTIONS */
 

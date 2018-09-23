@@ -57,6 +57,18 @@ Move::Move(std::vector<Operation> operationSeq) {
     operationSequence = operationSeq;
 }
 
+bool Move::operator ==(const Move& other) {
+    if (operationSequence.size() != other.operationSequence.size()) {
+        return false;
+    }
+    for (int i=0; i<operationSequence.size(); i++) {
+        if (!(operationSequence[i] == other.operationSequence[i])) {
+            return false;
+        }
+    }
+    return true;
+}
+
 void Move::append(Move& secondMove) {
     if (operationSequence.size() != 0) {
         if (secondMove.operationSequence.size() != 0) {
