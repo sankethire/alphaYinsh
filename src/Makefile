@@ -1,16 +1,16 @@
 
 # all is used for game since we compile Game.cpp by default
 all: 
-		g++ Game.cpp Player.cpp Board.cpp Point.cpp Move.cpp Operation.cpp -o game
+		g++ Ai.cpp Tree.cpp Game.cpp Huerisitic.cpp Move.cpp Point.cpp Node.cpp Board.cpp Operation.cpp Player.cpp 
 
-gameDebug:
-		g++ -g Game.cpp Player.cpp Board.cpp Point.cpp Move.cpp Operation.cpp -o game
+allDebug:
+		g++ -g Ai.cpp Tree.cpp Game.cpp Huerisitic.cpp Move.cpp Point.cpp Node.cpp Board.cpp Operation.cpp Player.cpp 
 
 board:
 		g++ Board.cpp Point.cpp 
 
 clean:
-	rm -rf game		
+	rm -rf a.out		
 
 
 
