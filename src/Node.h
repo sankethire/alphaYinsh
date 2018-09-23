@@ -19,12 +19,10 @@ class Node {
     int childPicked;
     bool childrenDefined;
     std::vector<std::tuple<Move, Node*>> children;
-
-    // for alpha beta pruning
-    double alpha;
-    double beta;
     
+    // function pointers needed
     typedef bool (*compareMoveNodeTupleFunction)(std::tuple<Move, Node>, std::tuple<Move, Node>);
+    typedef int (*utilityOfGameFunction)(Game&);
 
     // FUNCTIONS
     Node(Game& gameStateInput, Node& parentInput);
@@ -44,6 +42,14 @@ class Node {
     std::vector<std::tuple<Move, Node*>>& childrenList);
     static void seeSMthenRSREX(Game& gameTillNow, Move& moveTillNow, 
     Node* self, std::vector<std::tuple<Move, Node*>>& childrenList);
+
+    // minMax Procedures
+    int minMaxDepthCutOffSortedAlphaBetaPruning(int alpha, 
+    int beta, int depthLeftTillCutOff, int treeLevel, 
+    utilityOfGameFunction terminalUtility, compareMoveNodeTupleFunction sortComparator);
+
+    // minMax Helpers
+    void ifNotThenDefineSortChildren(compareMoveNodeTupleFunction sortComparator);
 };
 
 #endif /* NODE_H */

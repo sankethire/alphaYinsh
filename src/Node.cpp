@@ -10,8 +10,6 @@
 Node::Node(Game& gameStateInput, Node& parentInput) {
     gameState = gameStateInput;
     parent = &parentInput;
-    alpha = std::numeric_limits<double>::infinity();
-    beta = -1*std::numeric_limits<double>::infinity();
     childrenDefined = false;
     childPicked = -1;
 }
@@ -149,4 +147,60 @@ void Node::defineChildren() {
 
 void Node::sortChildren(compareMoveNodeTupleFunction comparer) {
     std::sort(children.begin(), children.end(), comparer);
+}
+
+void Node::ifNotThenDefineSortChildren(compareMoveNodeTupleFunction sortComparator) {
+    if (!childrenDefined) {
+        defineChildren();
+        sortChildren(sortComparator);
+    }
+}
+
+int Node::minMaxDepthCutOffSortedAlphaBetaPruning(int alpha, 
+int beta, int depthLeftTillCutOff, int treeLevel, 
+utilityOfGameFunction terminalUtility, compareMoveNodeTupleFunction sortComparator) {
+    // odd tree level max node else min
+    // at depthLeftTillCutOff 0 return utility
+    if (gameState.hasSomeoneWon()) {
+        return terminalUtility(gameState);
+    }
+    if (depthLeftTillCutOff == 0 || gameState.hasSomeoneWon()) {
+        return terminalUtility(gameState);
+    }
+
+    if (treeLevel%2 == 1) {
+        // Max Node
+        ifNotThenDefineSortChildren(sortComparator);
+        for (int i=0; i<children.size(); i++) {
+            std::tuple<Move, Node*> currentChild = children[i];
+            Node* nodeFromTuple = std::get<1>(currentChild);
+            int returnedValue = nodeFromTuple->minMaxDepthCutOffSortedAlphaBetaPruning(
+            alpha, beta, depthLeftTillCutOff-1, treeLevel+1, terminalUtility, sortComparator);
+            if (returnedValue > alpha) {
+                alpha = returnedValue;
+                childPicked = i;
+            }
+            if (alpha>=beta) {
+                return alpha;
+            }
+        }
+        return alpha;
+    } else {
+        // Min Node
+        ifNotThenDefineSortChildren(sortComparator);
+        for (int i=0; i<children.size(); i++) {
+            std::tuple<Move, Node*> currentChild = children[i];
+            Node* nodeFromTuple = std::get<1>(currentChild);
+            int returnedValue = nodeFromTuple->minMaxDepthCutOffSortedAlphaBetaPruning(
+            alpha, beta, depthLeftTillCutOff-1, treeLevel+1, terminalUtility, sortComparator);
+            if (returnedValue < beta) {
+                beta = returnedValue;
+                childPicked = i;
+            }
+            if (alpha>=beta) {
+                return beta;
+            }
+        }
+        return beta;
+    }
 }
