@@ -80,6 +80,6 @@ int main(int argc, char** argv) {
     player_id = 1; 
     board_size = 5; 
     time_limit = 120;
-    Ai alphaYinsh = Ai(player_id, board_size, time_limit, 1);
+    Ai alphaYinsh = Ai(player_id, board_size, time_limit, 2);
     alphaYinsh.startBot();
 }
