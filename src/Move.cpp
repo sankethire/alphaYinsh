@@ -1,4 +1,6 @@
 #include "Move.h"
+#include "Operation.h"
+#include "Point.h"
 
 #include <vector>
 #include <tuple>
@@ -8,7 +10,7 @@
 
 Move::Move() {}
 
-Move::Move(std::string sFromTerminal) {
+Move::Move(std::string sFromTerminal, bool isHex) {
 	std::vector<std::string> splitInput = Operation::split(sFromTerminal," ");
 	for (int i = 0; i < splitInput.size(); i=i+3)
 	{   
@@ -31,8 +33,18 @@ Move::Move(std::string sFromTerminal) {
         }
         
         try
-        {
-            operationSequence.push_back(Operation(opcNum, std::make_tuple(std::stoi(splitInput[i+1]),std::stoi(splitInput[i+2]))));
+        {   
+            std::tuple<int, int> gotTuple = std::make_tuple(
+            std::stoi(splitInput[i+1]),std::stoi(splitInput[i+2]));
+
+            std::tuple<int, int> toPushTuple;
+            if (isHex) {
+                toPushTuple = Point::conversionToTriLinearCoord(gotTuple);
+            } else {
+                toPushTuple = gotTuple;
+            }
+
+            operationSequence.push_back(Operation(opcNum, toPushTuple));
         }
         catch(std::out_of_range)
         {
@@ -58,7 +70,7 @@ void Move::append(Move& secondMove) {
     }
 }
 
-std::string Move::toStr() {
+std::string Move::toStr(bool isHex) {
     std::stringstream ss;
     for (int i = 0; i < operationSequence.size(); i++) {
         Operation op = operationSequence[i];
@@ -76,7 +88,15 @@ std::string Move::toStr() {
             ss << "X ";
         }
 
-        ss << std::to_string(std::get<0>(op.coordinate)) << " " << std::to_string(std::get<1>(op.coordinate));
+        std::tuple<int, int> coordinateToPrint;
+        if (isHex) {
+            coordinateToPrint = Point::conversionToHexCoord(op.coordinate);
+        } else {
+            coordinateToPrint = op.coordinate;
+        }
+
+        ss << std::to_string(std::get<0>(coordinateToPrint)) << " " 
+        << std::to_string(std::get<1>(coordinateToPrint));
 
         if (i == operationSequence.size()-1) {
             ss << std::endl;
