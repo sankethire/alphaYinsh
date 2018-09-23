@@ -1,4 +1,5 @@
 #include "Huerisitic.h"
+#include "Node.h"
 #include "Game.h"
 #include "Board.h"
 #include "Move.h"
@@ -21,11 +22,11 @@ int Huerisitic::markerDiff(Game& g) {
     return ((chancePlayer->markerOwn)-(otherPlayer->markerOwn));
 }
 
-bool Huerisitic::markerDiffComparator(std::tuple<Move, Game> tup1, 
-std::tuple<Move, Game> tup2) {
-    Game& g1 = std::get<1>(tup1);
-    Game& g2 = std::get<1>(tup2);
-    return (markerDiff(g1) < markerDiff(g2));
+bool Huerisitic::markerDiffComparator(std::tuple<Move, Node*> tup1, 
+std::tuple<Move, Node*> tup2) {
+    Node* n1 = std::get<1>(tup1);
+    Node* n2 = std::get<1>(tup2);
+    return (markerDiff(n1->gameState) < markerDiff(n2->gameState));
 }
 
 double Huerisitic::centeringRingScore(Point& toCalculateOnRing, int gameBoardSize) {
@@ -223,7 +224,7 @@ double Huerisitic::combinedUtility(Game& toCalculateOnGame) {
         weigthRingMobility*mobilityRingsScoreReturned +
         weigthRingCentering*centeringRingScoreReturned +
         weightContinuousMarker*continousMarkerScoreReturned +
-        weightFlipped*flippedScoreReturned; 
+        weightFlipped*flippedScoreReturned;
 
         double currentPlayerScore;
 

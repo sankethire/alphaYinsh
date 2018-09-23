@@ -22,7 +22,8 @@ public:
     std::vector<std::tuple<Move, Node*>> children;
     
     // function pointers needed
-    typedef bool (*compareMoveNodeTupleFunction)(std::tuple<Move, Node>, std::tuple<Move, Node>);
+    typedef bool (*compareMoveNodeTupleFunction)
+    (std::tuple<Move, Node*>, std::tuple<Move, Node*>);
     typedef double (*utilityOfGameFunction)(Game&);
 
     // FUNCTIONS
