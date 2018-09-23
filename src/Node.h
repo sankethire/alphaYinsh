@@ -23,7 +23,7 @@ public:
     
     // function pointers needed
     typedef bool (*compareMoveNodeTupleFunction)(std::tuple<Move, Node>, std::tuple<Move, Node>);
-    typedef int (*utilityOfGameFunction)(Game&);
+    typedef double (*utilityOfGameFunction)(Game&);
 
     // FUNCTIONS
     Node(Game& gameStateInput, Node& parentInput);
@@ -45,8 +45,8 @@ public:
     Node* self, std::vector<std::tuple<Move, Node*>>& childrenList);
 
     // minMax Procedures
-    int minMaxDepthCutOffSortedAlphaBetaPruning(int alpha, 
-    int beta, int depthLeftTillCutOff, int treeLevel, 
+    int minMaxDepthCutOffSortedAlphaBetaPruning(double alpha, 
+    double beta, int depthLeftTillCutOff, int treeLevel, 
     utilityOfGameFunction terminalUtility, compareMoveNodeTupleFunction sortComparator);
 
     // minMax Helpers

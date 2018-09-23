@@ -156,8 +156,8 @@ void Node::ifNotThenDefineSortChildren(compareMoveNodeTupleFunction sortComparat
     }
 }
 
-int Node::minMaxDepthCutOffSortedAlphaBetaPruning(int alpha, 
-int beta, int depthLeftTillCutOff, int treeLevel, 
+int Node::minMaxDepthCutOffSortedAlphaBetaPruning(double alpha, 
+double beta, int depthLeftTillCutOff, int treeLevel, 
 utilityOfGameFunction terminalUtility, compareMoveNodeTupleFunction sortComparator) {
     // odd tree level max node else min
     // at depthLeftTillCutOff 0 return utility
@@ -175,7 +175,7 @@ utilityOfGameFunction terminalUtility, compareMoveNodeTupleFunction sortComparat
         for (int i=0; i<children.size(); i++) {
             std::tuple<Move, Node*> currentChild = children[i];
             Node* nodeFromTuple = std::get<1>(currentChild);
-            int returnedValue = nodeFromTuple->minMaxDepthCutOffSortedAlphaBetaPruning(
+            double returnedValue = nodeFromTuple->minMaxDepthCutOffSortedAlphaBetaPruning(
             alpha, beta, depthLeftTillCutOff-1, treeLevel+1, terminalUtility, sortComparator);
             if (returnedValue > alpha) {
                 alpha = returnedValue;
@@ -192,7 +192,7 @@ utilityOfGameFunction terminalUtility, compareMoveNodeTupleFunction sortComparat
         for (int i=0; i<children.size(); i++) {
             std::tuple<Move, Node*> currentChild = children[i];
             Node* nodeFromTuple = std::get<1>(currentChild);
-            int returnedValue = nodeFromTuple->minMaxDepthCutOffSortedAlphaBetaPruning(
+            double returnedValue = nodeFromTuple->minMaxDepthCutOffSortedAlphaBetaPruning(
             alpha, beta, depthLeftTillCutOff-1, treeLevel+1, terminalUtility, sortComparator);
             if (returnedValue < beta) {
                 beta = returnedValue;

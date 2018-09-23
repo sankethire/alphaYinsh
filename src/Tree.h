@@ -10,6 +10,7 @@ public:
     Node* root;
 
     // MEMBER FUNCTIONS
+    Tree();
     Tree(Node* rootInput);
 
     // pick childs sets it as root

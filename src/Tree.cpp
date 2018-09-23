@@ -6,6 +6,8 @@
 #include <vector>
 #include <algorithm>
 
+Tree::Tree() {}
+
 Tree::Tree(Node* rootInput) {
     rootInput = rootInput;
 }
