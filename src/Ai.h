@@ -1,6 +1,8 @@
 #ifndef AI_H
 #define AI_H
 
+#include "Tree.h"
+
 class Ai {
 public:
     // DATA MEMBERS

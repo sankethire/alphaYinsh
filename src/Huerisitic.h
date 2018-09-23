@@ -1,10 +1,9 @@
 #ifndef HUERISITIC_H
 #define HUERISITIC_H
 
+#include "Node.h"
 #include "Game.h"
-#include "Board.h"
 #include "Move.h"
-#include "Point.h"
 
 #include <tuple>
 

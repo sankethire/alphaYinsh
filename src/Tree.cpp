@@ -44,6 +44,6 @@ void Tree::pickChild(Move& moveForObtainingChild) {
     }
 }
 
-bool sameMoveInTuple(std::tuple<Move, Node*> checkThisTuple, Move checkEqualToMove) {
+bool Tree::sameMoveInTuple(std::tuple<Move, Node*> checkThisTuple, Move checkEqualToMove) {
     return (checkEqualToMove == std::get<0>(checkThisTuple));
 }

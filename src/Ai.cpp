@@ -8,6 +8,7 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <limits>
 
 Ai::Ai(int playerIdInput, int boardSizeInput, 
 int timeLimitInput, int depthCutOffInput) {
@@ -40,7 +41,8 @@ void Ai::startBot() {
             doMinMax();
             Move toDoMove = treeForMinMax.pickChild(treeForMinMax.root->childPicked);
             std::cout << toDoMove.toStr(true) << std::endl;
-            ss << moveInput;
+            std::cerr << treeForMinMax.root->gameState.board.toStringBoard();
+            ss << moveInput << std::endl;
             ss << toDoMove.toStr(true) << std::endl;
             if (treeForMinMax.root->gameState.hasSomeoneWon()) {
                 break;
@@ -48,6 +50,7 @@ void Ai::startBot() {
             getline(std::cin, moveInput);
             Move tempMove = Move(moveInput, true);
             treeForMinMax.pickChild(tempMove);
+            std::cerr << treeForMinMax.root->gameState.board.toStringBoard();
         }
     };
 
