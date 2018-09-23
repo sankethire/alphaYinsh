@@ -77,13 +77,13 @@ public:
     std::vector<Move> possiblePlacement();
 
     // Possible S M
-    std::vector<Move> possibleMovementForRingInDirection
-    (Point& ring, std::tuple<int, int> direction);
+    std::vector<Move> possibleMovementForRingInDirection(
+    Point& ring, std::tuple<int, int> direction);
     // Moves() parses HexCoord in string format and gives it to this function
     std::vector<std::vector<Move>> possibleMovementForRingAllDirection(Point& ring);
     // find all possible moves for rings of current player
-    std::vector<std::vector<std::vector<Move>>> possibleMovementAllRingAllDirection
-    (chanceType playerChance);
+    std::vector<std::vector<std::vector<Move>>> possibleMovementAllRingAllDirection(
+    chanceType playerChance);
     // flatten the vector of vectors of ... 
     std::vector<Move> possibleMovementOfRings(chanceType playerChance);
 
