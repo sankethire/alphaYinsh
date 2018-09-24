@@ -19,6 +19,8 @@ public:
 
     // helper to find child
     static bool sameMoveInTuple(std::tuple<Move, Node*> checkThisTuple, Move checkEqualToMove);
+
+    int findInChildren(Move equlToThisMove);
 };
 
 #endif /* TREE_H */

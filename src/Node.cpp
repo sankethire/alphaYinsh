@@ -110,7 +110,7 @@ Node* self, std::vector<std::tuple<Move, Node*>>& childrenList) {
 void Node::defineChildren() {
     childrenDefined = true;
     
-    if (gameState.phase == Game::placement) {
+    if (gameState.movesLeftTillPlacementEnd >= 1) {
         std::vector<Move> possiblePlaceMoves;
         possiblePlaceMoves.reserve(85*sizeof(Move));
         possiblePlaceMoves = gameState.possiblePlacement();

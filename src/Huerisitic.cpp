@@ -66,7 +66,7 @@ double Huerisitic::centeringAllRingScore(Game& toCalculateOnGame) {
 double Huerisitic::combinedUtility(Game& toCalculateOnGame) {
     if (toCalculateOnGame.phase == Game::placement) {
         double weigthRingMobility = 1;
-        double weigthRingCentering = 1;
+        double weigthRingCentering = 100;
 
         double mobilityRingsScoreReturned = mobilityAllRingScore(toCalculateOnGame);
         double centeringRingScoreReturned = centeringAllRingScore(toCalculateOnGame);

@@ -3,6 +3,8 @@
 
 #include "Tree.h"
 
+#include <sstream>
+
 class Ai {
 public:
     // DATA MEMBERS
@@ -18,6 +20,8 @@ public:
     Ai(int playerIdInput, int boardSizeInput, int timeLimitInput, 
     int depthCutOffInput);
 
+    void doMinMax(double infi);
+    void shiftInTree(std::stringstream& ss);
     void startBot();
 };
 

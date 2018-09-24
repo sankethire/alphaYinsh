@@ -48,7 +48,6 @@ Board Board::clone() {
 
         newBoard->triLinearBoard.push_back(colomnVector);
     }
-
     return *newBoard;
 }
 

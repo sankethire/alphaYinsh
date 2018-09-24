@@ -245,8 +245,6 @@ std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerCha
             checkAndAddContigous(1, 1, i, j);
         }
     }
-    delete rowStart;
-    delete rowEnd;
     return movesToReturn;
 }
 
@@ -421,7 +419,7 @@ void Game::executeSM(Move SMMove) {
         mPoint.piece = Point::ring;
         mPoint.color = colorChance;
     } else {
-        throw std::invalid_argument("cooridinate of point M are not empty");
+        throw std::invalid_argument("cooridinate of point M are not empty or non existent");
     }
 
     Player& whichPlayer = getPlayerFromColor(chance);
