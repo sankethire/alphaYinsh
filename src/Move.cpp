@@ -12,7 +12,7 @@ Move::Move() {}
 
 Move::Move(std::string sFromTerminal, bool isHex) {
 	std::vector<std::string> splitInput = Operation::split(sFromTerminal," ");
-	for (int i = 0; i < splitInput.size(); i=i+3)
+	for (int i = 0; i < splitInput.size(); i+=3)
 	{   
         std::string opc = splitInput[i];
         Operation::opcodeType opcNum;

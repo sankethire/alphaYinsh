@@ -38,16 +38,16 @@ void Ai::startBot() {
 
     auto shiftInTree = [&] () {
         while (!(treeForMinMax.root->gameState.hasSomeoneWon())) {
-            std::string moveInput;
             doMinMax();
             Move toDoMove = treeForMinMax.pickChild(treeForMinMax.root->childPicked);
             std::cout << toDoMove.toStr(true) << std::endl;
             std::cerr << treeForMinMax.root->gameState.board.toStringBoard();
-            ss << moveInput << std::endl;
+            // ss << moveInput << std::endl;
             ss << toDoMove.toStr(true) << std::endl;
             if (treeForMinMax.root->gameState.hasSomeoneWon()) {
                 break;
             }
+            std::string moveInput;
             getline(std::cin, moveInput);
             Move tempMove = Move(moveInput, true);
             treeForMinMax.pickChild(tempMove);
@@ -80,6 +80,6 @@ int main(int argc, char** argv) {
     player_id = 1; 
     board_size = 5; 
     time_limit = 120;
-    Ai alphaYinsh = Ai(player_id, board_size, time_limit, 2);
+    Ai alphaYinsh = Ai(player_id, board_size, time_limit, 1);
     alphaYinsh.startBot();
 }

@@ -6,6 +6,7 @@
 #include <vector>
 #include <tuple>
 #include <algorithm>
+#include <iostream>
 
 Node::Node(Game& gameStateInput, Node& parentInput) {
     gameState = gameStateInput;
@@ -134,9 +135,10 @@ void Node::defineChildren() {
                         flipMakeChildPushBack
                         (gameFromTuple1, moveFromTuple1, this, children);
                         continue;
+                    } else {
+                        seeSMthenRSREX(gameFromTuple1, moveFromTuple1, this, children);
                     }
 
-                    seeSMthenRSREX(gameFromTuple1, moveFromTuple1, this, children);
                 }
             // first removal sequence not possible
             } else {
