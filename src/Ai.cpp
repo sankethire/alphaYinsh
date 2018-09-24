@@ -32,10 +32,10 @@ void Ai::shiftInTree(std::stringstream& ss) {
         doMinMax(inf);
         Move toDoMove = treeForMinMax.pickChild(treeForMinMax.root->childPicked);
         std::cout << toDoMove.toStr(true) << std::endl;
-        std::cerr << "-----------------------------------" << std::endl;
-        std::cerr << toDoMove.toStr(true) << std::endl;
-        std::cerr << treeForMinMax.root->gameState.board.toStringBoard();
-        std::cerr << "-----------------------------------" << std::endl;
+        // std::cerr << "-----------------------------------" << std::endl;
+        // std::cerr << toDoMove.toStr(true) << std::endl;
+        // std::cerr << treeForMinMax.root->gameState.board.toStringBoard();
+        // std::cerr << "-----------------------------------" << std::endl;
         treeForMinMax.root->deleteParentAndCousins();
         ss << toDoMove.toStr(true) << std::endl;
         if (treeForMinMax.root->gameState.hasSomeoneWon()) {
@@ -49,10 +49,10 @@ void Ai::shiftInTree(std::stringstream& ss) {
         Move tempMove = Move(moveInput, true);
         treeForMinMax.pickChild(tempMove);
         ss << moveInput << std::endl;
-        std::cerr << "-----------------------------------" << std::endl;
-        std::cerr << tempMove.toStr(true) << std::endl;
-        std::cerr << treeForMinMax.root->gameState.board.toStringBoard();
-        std::cerr << "-----------------------------------" << std::endl;
+        // std::cerr << "-----------------------------------" << std::endl;
+        // std::cerr << tempMove.toStr(true) << std::endl;
+        // std::cerr << treeForMinMax.root->gameState.board.toStringBoard();
+        // std::cerr << "-----------------------------------" << std::endl;
         treeForMinMax.root->deleteParentAndCousins();
     }
 };
@@ -81,6 +81,7 @@ void Ai::startBot() {
 
     outfile << sst.str();
     outfile.close();
+    treeForMinMax.root->deleteAllChildrenAndSelf();
     delete startingGame;
     delete startingNode;
     delete nullParent;

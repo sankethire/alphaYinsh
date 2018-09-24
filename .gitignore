@@ -1,5 +1,6 @@
 # Custom
 *.log
+**/prevGameMoves.txt
 
 # Prerequisites
 *.d
@@ -34,24 +35,6 @@
 *.out
 *.app
 
-Skip to content
- 
-Search or jump to…
-
-Pull requests
-Issues
-Marketplace
-Explore
- @yash98 Sign out
-2,669
-72,587 33,804 github/gitignore
- Code  Pull requests 159  Projects 0  Insights
-gitignore/Python.gitignore
-34e8d3e  4 days ago
-@SethMichaelLarson SethMichaelLarson Add .nox directory for the nox testing tool
-@arcresu @shiftkey @Lucretiel @Harrison-G @jwg4 @GabrielC101 @Metallicow @misaelnieto @pmsosa @svkampen @vltr @matheussl @hugovk @ghisvail @EvandroLG @DSIW @amigcamel @toanant @2Cubed @weinihou @Visgean @nvie @skuschel @sigo @SethMichaelLarson @borntyping
-    
-112 lines (90 sloc)  1.25 KB
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

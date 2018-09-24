@@ -225,6 +225,7 @@ void Node::deleteChildrenExceptBest() {
         if (i != childPicked) {
             Node* eachChild = std::get<1>(children[i]);
             eachChild->deleteAllChildrenAndSelf();
+            // delete std::get<1>(children[i]);
         }
     }
     this->~Node();
@@ -234,7 +235,9 @@ void Node::deleteAllChildrenAndSelf() {
     for (int i=0; i<children.size(); i++) {
         Node* eachChild = std::get<1>(children[i]);
         eachChild->deleteAllChildrenAndSelf();
+        // delete std::get<1>(children[i]);
     }
+    // delete parent;
     this->~Node();
 }
 
@@ -242,5 +245,6 @@ void Node::deleteParentAndCousins() {
     if (parent != NULL) {
         parent->deleteChildrenExceptBest();
     }
+    // delete parent;
     parent = NULL;
 }

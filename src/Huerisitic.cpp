@@ -75,11 +75,12 @@ double Huerisitic::combinedUtility(Game& toCalculateOnGame) {
         weigthRingCentering*centeringRingScoreReturned;
 
     } else {
-        double weigthRingMobility = 1;
-        double weigthRingCentering = 0.1;
-        double weightContinuousMarker = 1;
-        double weightFlipped = 1;
-        double weightRingWon = 20;
+        double weigthRingMobility = 0.1;
+        double weigthRingCentering = 0.2;
+        double weightMarkerScore = 0.5;
+        double weightFlipped = 5;
+        double weightRingWon = 100;
+        double weightContiguousMarker = 10;
 
         double weightSuccessiveMarker = 3;
         double weightExpIncPerIncMarkerTillLimit = 3;
@@ -87,19 +88,26 @@ double Huerisitic::combinedUtility(Game& toCalculateOnGame) {
 
         double mobilityRingsScoreReturned = mobilityAllRingScore(toCalculateOnGame);
         double centeringRingScoreReturned = centeringAllRingScore(toCalculateOnGame);
-        double continousMarkerScoreReturned;
+        double markerScoreReturned;
         double flippedScoreReturned;
         double ringWonScoreReturned;
+        double contiguousMarkerScoreReturned;
+        
 
-        double continuousMarkerScoreOrange = 0;
+        double markerScoreOrange = 0;
         double flippedScoreOrange = 0;
-        double continuousMarkerScoreBlue = 0;
+        double markerScoreBlue = 0;
         double flippedScoreBlue = 0;
 
         int ringInRowOrange;
         int ringInRowBlue;
         int markerInRowOrange;
         int markerInRowBlue;
+
+        double contiguousMarkerOrange = 
+        toCalculateOnGame.contiguousMarker(toCalculateOnGame.numberOfMarkersToRemove - 1, Game::orange).size();
+        double contiguousMarkerBlue = 
+        toCalculateOnGame.contiguousMarker(toCalculateOnGame.numberOfMarkersToRemove - 1, Game::blue).size();
 
         auto resetNumInRow = [&] () {
             ringInRowOrange = 0;
@@ -126,11 +134,11 @@ double Huerisitic::combinedUtility(Game& toCalculateOnGame) {
             }
             
             if (markerInRowBlue < weightExpIncPerIncMarkerTillLimit) {
-                continuousMarkerScoreOrange += 
+                markerScoreOrange += 
                 std::pow(weightSuccessiveMarker, markerInRowBlue);
             }
             if (markerInRowOrange < weightExpIncPerIncMarkerTillLimit) {
-                continuousMarkerScoreOrange += 
+                markerScoreOrange += 
                 std::pow(weightSuccessiveMarker, markerInRowOrange);
             }
         };
@@ -214,12 +222,13 @@ double Huerisitic::combinedUtility(Game& toCalculateOnGame) {
         }
 
         // calculate for orange
-        continousMarkerScoreReturned = 
-        continuousMarkerScoreOrange - continuousMarkerScoreBlue;
+        markerScoreReturned = 
+        markerScoreOrange - markerScoreBlue;
         flippedScoreReturned = flippedScoreOrange - flippedScoreBlue;
+        contiguousMarkerScoreReturned = contiguousMarkerOrange - contiguousMarkerBlue;
         if (toCalculateOnGame.chance == Game::blue) {
             // reverse sign if blue
-            continousMarkerScoreReturned = -continousMarkerScoreReturned;
+            markerScoreReturned = -markerScoreReturned;
             flippedScoreReturned = -flippedScoreReturned;
         }
 
@@ -241,9 +250,10 @@ double Huerisitic::combinedUtility(Game& toCalculateOnGame) {
         double combinedScore = 
         weigthRingMobility*mobilityRingsScoreReturned +
         weigthRingCentering*centeringRingScoreReturned +
-        weightContinuousMarker*continousMarkerScoreReturned +
+        weightMarkerScore*markerScoreReturned +
         weightFlipped*flippedScoreReturned +
-        weightRingWon*ringWonScoreReturned;
+        weightRingWon*ringWonScoreReturned +
+        weightContiguousMarker*contiguousMarkerScoreReturned;
         
         return combinedScore;
     }
