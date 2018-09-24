@@ -52,6 +52,10 @@ public:
 
     // minMax Helpers
     void ifNotThenDefineSortChildren(compareMoveNodeTupleFunction sortComparator);
+
+    void deleteParentAndCousins();
+    void deleteChildrenExceptBest();
+    void deleteAllChildrenAndSelf();
 };
 
 #endif /* NODE_H */

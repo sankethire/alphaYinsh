@@ -110,9 +110,7 @@ std::string Move::toStr(bool isHex) {
         ss << std::to_string(std::get<0>(coordinateToPrint)) << " " 
         << std::to_string(std::get<1>(coordinateToPrint));
 
-        if (i == operationSequence.size()-1) {
-            ss << std::endl;
-        } else {
+        if (i != operationSequence.size()-1) {
             ss << " ";
         } 
     }

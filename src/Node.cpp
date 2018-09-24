@@ -111,7 +111,9 @@ void Node::defineChildren() {
     childrenDefined = true;
     
     if (gameState.phase == Game::placement) {
-        std::vector<Move> possiblePlaceMoves = gameState.possiblePlacement();
+        std::vector<Move> possiblePlaceMoves;
+        possiblePlaceMoves.reserve(85*sizeof(Move));
+        possiblePlaceMoves = gameState.possiblePlacement();
         for (Move eachMove : possiblePlaceMoves) {
             Game tempGameState = gameState.clone();
             tempGameState.executeMove(eachMove);
@@ -206,4 +208,30 @@ utilityOfGameFunction terminalUtility, compareMoveNodeTupleFunction sortComparat
         }
         return beta;
     }
+}
+
+
+void Node::deleteChildrenExceptBest() {
+    for (int i=0; i<children.size(); i++) {
+        if (i != childPicked) {
+            Node* eachChild = std::get<1>(children[i]);
+            eachChild->deleteAllChildrenAndSelf();
+        }
+    }
+    this->~Node();
+}
+
+void Node::deleteAllChildrenAndSelf() {
+    for (int i=0; i<children.size(); i++) {
+        Node* eachChild = std::get<1>(children[i]);
+        eachChild->deleteAllChildrenAndSelf();
+    }
+    this->~Node();
+}
+
+void Node::deleteParentAndCousins() {
+    if (parent != NULL) {
+        parent->deleteChildrenExceptBest();
+    }
+    parent = NULL;
 }
