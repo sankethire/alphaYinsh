@@ -38,8 +38,10 @@ public:
     // helper for define Children. Not too dependent on node.
     // generates permutation of removals
     // isThisFirstRemoveCheck of this time
-    static std::vector<std::tuple<Move, Game>> keepCheckingRemovalOfRowAndRing 
-    (Game& gameStateTillNow, Move& moveTillNow, bool isThisFirstRemoveCheck);
+    static std::vector<std::tuple<Move, Game>> keepCheckingRemovalOfRowAndRing(
+        Game& gameStateTillNow, Move& moveTillNow);
+    // static std::vector<std::tuple<Move, Game>> keepCheckingRemovalOfRowAndRing(
+    //     Game& gameStateTillNow, Move& moveTillNow, bool isThisFirstRemoveCheck);
     static void flipMakeChildPushBack (Game& gameStateInput, Move& moveInput, Node* self, 
     std::vector<std::tuple<Move, Node*>>& childrenList);
     static void seeSMthenRSREX(Game& gameTillNow, Move& moveTillNow, 

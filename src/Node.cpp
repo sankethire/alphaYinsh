@@ -15,8 +15,8 @@ Node::Node(Game& gameStateInput, Node& parentInput) {
     childPicked = -1;
 }
 
-std::vector<std::tuple<Move, Game>> Node::keepCheckingRemovalOfRowAndRing
-(Game& gameStateTillNow, Move& moveTillNow, bool isThisFirstRemoveCheck) {
+std::vector<std::tuple<Move, Game>> Node::keepCheckingRemovalOfRowAndRing(
+    Game& gameStateTillNow, Move& moveTillNow) {
 
     std::vector<std::tuple<Move, Game>> vecToReturn;
     std::vector<Move> possibleRowRemoveMoves = gameStateTillNow.contiguousMarker
@@ -33,12 +33,14 @@ std::vector<std::tuple<Move, Game>> Node::keepCheckingRemovalOfRowAndRing
                 // TODO: just want to use shallow copy here.
                 // just keeps record of fullMove. appends after appends
                 Move tempMove;
-                if (isThisFirstRemoveCheck) {
-                    tempMove = eachRingRemoval;
-                } else {
-                    tempMove = moveTillNow;
-                    tempMove.append(eachRingRemoval);
-                }
+                // if (moveTillNow.operationSequence.size() == 0) {
+                //     tempMove = eachRowRemoval;
+                //     tempMove.append(eachRingRemoval);
+                // } else {
+                tempMove = moveTillNow;
+                tempMove.append(eachRowRemoval);
+                tempMove.append(eachRingRemoval);
+                // }
 
                 Game tempGameState = gameStateTillNow.clone();
                 // This tempRSREX actually executes.
@@ -51,8 +53,10 @@ std::vector<std::tuple<Move, Game>> Node::keepCheckingRemovalOfRowAndRing
                 if (tempGameState.hasSomeoneWon()) {
                     tempReturnedVec.push_back(std::make_tuple(tempMove, tempGameState));
                 } else {
+                    // tempReturnedVec = keepCheckingRemovalOfRowAndRing
+                    // (tempGameState, tempMove, false);
                     tempReturnedVec = keepCheckingRemovalOfRowAndRing
-                    (tempGameState, tempMove, false);
+                    (tempGameState, tempMove);
                 }
 
                 tempCombinedVec.insert
@@ -87,9 +91,12 @@ Node* self, std::vector<std::tuple<Move, Node*>>& childrenList) {
         Move tempMoveStateFromTuple1 = moveTillNow;
         tempMoveStateFromTuple1.append(eachSMMove);
 
+        // std::vector<std::tuple<Move, Game>> possibleRemove2 =
+        // Node::keepCheckingRemovalOfRowAndRing
+        // (tempGameStateFromTuple1, tempMoveStateFromTuple1, true);
         std::vector<std::tuple<Move, Game>> possibleRemove2 =
         Node::keepCheckingRemovalOfRowAndRing
-        (tempGameStateFromTuple1, tempMoveStateFromTuple1, true);
+        (tempGameStateFromTuple1, tempMoveStateFromTuple1);
 
         if (possibleRemove2.size() != 0) {
             for (std::tuple<Move, Game> moveGameTuple2: possibleRemove2) {
@@ -121,8 +128,10 @@ void Node::defineChildren() {
         }
     } else {
         Move dummyMove = Move();
+        // std::vector<std::tuple<Move, Game>> possibleRemove1 = 
+        // Node::keepCheckingRemovalOfRowAndRing(gameState, dummyMove, true);
         std::vector<std::tuple<Move, Game>> possibleRemove1 = 
-        Node::keepCheckingRemovalOfRowAndRing(gameState, dummyMove, true);
+        Node::keepCheckingRemovalOfRowAndRing(gameState, dummyMove);
 
             // although it is tried that keepCheckingRemovalOfRowAndRing 
             // returns same game state and move in case nothing can be done 

@@ -245,6 +245,9 @@ std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerCha
             checkAndAddContigous(1, 1, i, j);
         }
     }
+    delete rowStart;
+    delete rowEnd;
+
     return movesToReturn;
 }
 
@@ -451,11 +454,11 @@ void Game::executeRSREX(Move RSREXMove) {
     for (i=rsCoordX, j=rsCoordY; 
     Point::checkInBetween(i, j, rsCoord, reCoord); i+=directionX, j+=directionY) {
         Point& tempPoint = board.getPointTriLinear(i, j);
-        markersRemovedCount++;
         if (tempPoint.piece == Point::marker) {
             if (tempPoint.color == colorChance) {
                 tempPoint.piece = Point::emptyPiece;
                 tempPoint.color = Point::emptyColor;
+                markersRemovedCount++;
             } else {
                 throw std::invalid_argument
                 ("Cannot remove others markers. Or some piece are messed up. marker non chance color");

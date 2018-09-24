@@ -66,7 +66,7 @@ double Huerisitic::centeringAllRingScore(Game& toCalculateOnGame) {
 double Huerisitic::combinedUtility(Game& toCalculateOnGame) {
     if (toCalculateOnGame.phase == Game::placement) {
         double weigthRingMobility = 1;
-        double weigthRingCentering = 100;
+        double weigthRingCentering = 10;
 
         double mobilityRingsScoreReturned = mobilityAllRingScore(toCalculateOnGame);
         double centeringRingScoreReturned = centeringAllRingScore(toCalculateOnGame);
@@ -76,17 +76,20 @@ double Huerisitic::combinedUtility(Game& toCalculateOnGame) {
 
     } else {
         double weigthRingMobility = 1;
-        double weigthRingCentering = 0.01;
+        double weigthRingCentering = 0.1;
         double weightContinuousMarker = 1;
         double weightFlipped = 1;
+        double weightRingWon = 20;
 
         double weightSuccessiveMarker = 3;
-        double weightExpIncPerIncMarkerTillLimit = 4;
+        double weightExpIncPerIncMarkerTillLimit = 3;
+        double successiveRingCollectIncrease = 2;
 
         double mobilityRingsScoreReturned = mobilityAllRingScore(toCalculateOnGame);
         double centeringRingScoreReturned = centeringAllRingScore(toCalculateOnGame);
         double continousMarkerScoreReturned;
         double flippedScoreReturned;
+        double ringWonScoreReturned;
 
         double continuousMarkerScoreOrange = 0;
         double flippedScoreOrange = 0;
@@ -122,13 +125,13 @@ double Huerisitic::combinedUtility(Game& toCalculateOnGame) {
                 }
             }
             
-            if (markerInRowBlue < toCalculateOnGame.sizeOfBoard) {
+            if (markerInRowBlue < weightExpIncPerIncMarkerTillLimit) {
                 continuousMarkerScoreOrange += 
-                std::pow(weightExpIncPerIncMarkerTillLimit, markerInRowBlue);
+                std::pow(weightSuccessiveMarker, markerInRowBlue);
             }
-            if (markerInRowOrange < toCalculateOnGame.sizeOfBoard) {
+            if (markerInRowOrange < weightExpIncPerIncMarkerTillLimit) {
                 continuousMarkerScoreOrange += 
-                std::pow(weightExpIncPerIncMarkerTillLimit, markerInRowOrange);
+                std::pow(weightSuccessiveMarker, markerInRowOrange);
             }
         };
 
@@ -220,22 +223,27 @@ double Huerisitic::combinedUtility(Game& toCalculateOnGame) {
             flippedScoreReturned = -flippedScoreReturned;
         }
 
-        double combinedScore = 
-        weigthRingMobility*mobilityRingsScoreReturned +
-        weigthRingCentering*centeringRingScoreReturned +
-        weightContinuousMarker*continousMarkerScoreReturned +
-        weightFlipped*flippedScoreReturned;
+        Player& orangePlayer = toCalculateOnGame.getPlayerFromColor(Game::orange);
+        Player& bluePlayer = toCalculateOnGame.getPlayerFromColor(Game::blue);
 
-        double currentPlayerScore;
-
+        // ring player score
         if (toCalculateOnGame.chance == Game::orange) {
-            currentPlayerScore = std::get<0>(toCalculateOnGame.calculateScore());
+            ringWonScoreReturned = pow(orangePlayer.ringWon, successiveRingCollectIncrease) 
+            - pow(bluePlayer.ringWon, successiveRingCollectIncrease);
         } else {
-            currentPlayerScore = std::get<1>(toCalculateOnGame.calculateScore());
+            ringWonScoreReturned = pow(bluePlayer.ringWon, successiveRingCollectIncrease) 
+            - pow(orangePlayer.ringWon, successiveRingCollectIncrease);
         }
 
         // FIXME: try this ai doesn't finish rings first
         // combinedScore = combinedScore*(currentPlayerScore)*0.5;
+
+        double combinedScore = 
+        weigthRingMobility*mobilityRingsScoreReturned +
+        weigthRingCentering*centeringRingScoreReturned +
+        weightContinuousMarker*continousMarkerScoreReturned +
+        weightFlipped*flippedScoreReturned +
+        weightRingWon*ringWonScoreReturned;
         
         return combinedScore;
     }

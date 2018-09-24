@@ -79,11 +79,11 @@ void Ai::startBot() {
         shiftInTree(sst);
     }
 
+    outfile << sst.str();
+    outfile.close();
     delete startingGame;
     delete startingNode;
     delete nullParent;
-    outfile << sst.str();
-    outfile.close();
 }
 
 int main(int argc, char** argv) {
