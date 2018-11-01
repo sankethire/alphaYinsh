@@ -1,6 +1,11 @@
 # Custom
 *.log
 **/prevGameMoves.txt
+.vscode/
+otherExec/
+test/
+**/compile.sh
+**/run.sh
 
 # Prerequisites
 *.d

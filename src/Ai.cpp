@@ -31,13 +31,13 @@ void Ai::shiftInTree(std::stringstream& ss) {
     while (!(treeForMinMax.root->gameState.hasSomeoneWon())) {
         doMinMax(inf);
         Move toDoMove = treeForMinMax.pickChild(treeForMinMax.root->childPicked);
-        std::cout << toDoMove.toStr(true) << std::endl;
-        // std::cerr << "-----------------------------------" << std::endl;
-        // std::cerr << toDoMove.toStr(true) << std::endl;
-        // std::cerr << treeForMinMax.root->gameState.board.toStringBoard();
-        // std::cerr << "-----------------------------------" << std::endl;
+        std::cout << toDoMove.toStr(false) << std::endl;
+        std::cerr << "-----------------------------------" << std::endl;
+        std::cerr << toDoMove.toStr(false) << std::endl;
+        std::cerr << treeForMinMax.root->gameState.board.toStringBoard();
+        std::cerr << "-----------------------------------" << std::endl;
         treeForMinMax.root->deleteParentAndCousins();
-        ss << toDoMove.toStr(true) << std::endl;
+        ss << toDoMove.toStr(false) << std::endl;
         if (treeForMinMax.root->gameState.hasSomeoneWon()) {
             break;
         }
@@ -46,13 +46,13 @@ void Ai::shiftInTree(std::stringstream& ss) {
         while (moveInput == "") {
             std::getline(std::cin, moveInput);
         }
-        Move tempMove = Move(moveInput, true);
+        Move tempMove = Move(moveInput, false);
         treeForMinMax.pickChild(tempMove);
         ss << moveInput << std::endl;
-        // std::cerr << "-----------------------------------" << std::endl;
-        // std::cerr << tempMove.toStr(true) << std::endl;
-        // std::cerr << treeForMinMax.root->gameState.board.toStringBoard();
-        // std::cerr << "-----------------------------------" << std::endl;
+        std::cerr << "-----------------------------------" << std::endl;
+        std::cerr << tempMove.toStr(false) << std::endl;
+        std::cerr << treeForMinMax.root->gameState.board.toStringBoard();
+        std::cerr << "-----------------------------------" << std::endl;
         treeForMinMax.root->deleteParentAndCousins();
     }
 };
