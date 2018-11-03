@@ -1,10 +1,10 @@
 #include "Ai.h"
 #include "Tree.h"
 #include "Node.h"
-#include "Game.h"
+#include "../Game/Game.h"
 #include "Huerisitic.h"
-#include "Move.h"
-#include "Point.h"
+#include "../Game/Move.h"
+#include "../Game/Point.h"
 
 #include <iostream>
 #include <string>

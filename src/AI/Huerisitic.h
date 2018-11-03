@@ -2,8 +2,8 @@
 #define HUERISITIC_H
 
 #include "Node.h"
-#include "Game.h"
-#include "Move.h"
+#include "../Game/Game.h"
+#include "../Game/Move.h"
 
 #include <tuple>
 

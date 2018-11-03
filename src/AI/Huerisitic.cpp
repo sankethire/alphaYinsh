@@ -1,9 +1,9 @@
 #include "Huerisitic.h"
 #include "Node.h"
-#include "Game.h"
-#include "Board.h"
-#include "Move.h"
-#include "Point.h"
+#include "../Game/Game.h"
+#include "../Game/Board.h"
+#include "../Game/Move.h"
+#include "../Game/Point.h"
 
 #include <tuple>
 #include <vector>

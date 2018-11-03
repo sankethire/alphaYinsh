@@ -6,6 +6,9 @@ otherExec/
 test/
 **/compile.sh
 **/run.sh
+*.pyc
+bin/
+build/
 
 # Prerequisites
 *.d

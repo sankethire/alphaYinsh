@@ -1,8 +1,8 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include "Game.h"
-#include "Move.h"
+#include "../Game/Game.h"
+#include "../Game/Move.h"
 
 #include <vector>
 #include <tuple>

@@ -1,7 +1,7 @@
 #include "Node.h"
 #include "Huerisitic.h"
-#include "Game.h"
-#include "Move.h"
+#include "../Game/Game.h"
+#include "../Game/Move.h"
 
 #include <vector>
 #include <tuple>

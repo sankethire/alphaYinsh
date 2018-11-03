@@ -1,6 +1,6 @@
 #include "Tree.h"
 #include "Node.h"
-#include "Move.h"
+#include "../Game/Move.h"
 
 #include <tuple>
 #include <vector>

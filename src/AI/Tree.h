@@ -2,7 +2,7 @@
 #define TREE_H
 
 #include "Node.h"
-#include "Move.h"
+#include "../Game/Move.h"
 
 class Tree {
 public:
