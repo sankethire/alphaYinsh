@@ -12,9 +12,9 @@ GAME_REQ = $(GAME_DIR)/Game.cpp $(GAME_DIR)/Board.cpp $(GAME_DIR)/Player.cpp $(G
 
 .PHONY: all
 all: $(AI_REQ) $(GAME_REQ)
-	$(BIN_DIR)/ai
+	make $(BIN_DIR)/ai
 
-$(BIN_DIR)/ai: $(AI_REQ)
+$(BIN_DIR)/ai: $(AI_REQ) $(GAME_REQ)
 	$(CXX) $^ -o $@
 
 $(BIN_DIR)/aiDebug: $(AI_REQ)
@@ -28,4 +28,4 @@ $(BIN_DIR)/gameDebug: $(GAME_REQ)
 
 .PHONY: clean
 clean:
-	rm *.out; rm *.o
+	rm -rf bin/
