@@ -3,6 +3,8 @@ SRC_DIR = src
 OBJ_DIR = build
 BIN_DIR = bin
 
+OUT_DIR = $(OBJ_DIR) $(BIN_DIR)
+
 AI_DIR = $(SRC_DIR)/AI
 GAME_DIR = $(SRC_DIR)/Game
 
@@ -12,20 +14,25 @@ GAME_REQ = $(GAME_DIR)/Game.cpp $(GAME_DIR)/Board.cpp $(GAME_DIR)/Player.cpp $(G
 
 .PHONY: all
 all: $(AI_REQ) $(GAME_REQ)
-	make $(BIN_DIR)/ai
+	make directories;
+	make $(BIN_DIR)/ai;
+
+.PHONY: directories
+directories:
+	mkdir -p $(OUT_DIR)
 
 $(BIN_DIR)/ai: $(AI_REQ) $(GAME_REQ)
-	$(CXX) $^ -o $@
+	$(CXX) -Ofast $^ -o $@
 
 $(BIN_DIR)/aiDebug: $(AI_REQ)
 	$(CXX) -g $^ -o $@ 
 
 $(BIN_DIR)/game: $(GAME_REQ)
-	$(CXX) $^ -o $@
+	$(CXX) -Ofast $^ -o $@
 
 $(BIN_DIR)/gameDebug: $(GAME_REQ)
 	$(CXX) -g $^ -o $@
 
 .PHONY: clean
 clean:
-	rm -rf bin/
+	rm -rf $(OUT_DIR)
