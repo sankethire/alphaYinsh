@@ -47,4 +47,4 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 
 .PHONY: clean
 clean:
-	rm -rf $(OUT_DIR)
+	rm -rf bin/ build/
