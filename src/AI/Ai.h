@@ -9,7 +9,7 @@ class Ai {
 public:
     // DATA MEMBERS
     // given by server
-    int playerId, boardSize, timeLimit;
+    int playerId, boardSize, continousMarker, timeLimit;
 
     // alpha beta pruning related
     int depthCutOff;
@@ -17,7 +17,7 @@ public:
     Tree treeForMinMax;
 
     // MEMBER FUNCTIONS
-    Ai(int playerIdInput, int boardSizeInput, int timeLimitInput, 
+    Ai(int playerIdInput, int boardSizeInput, int continousMarker, int timeLimitInput, 
     int depthCutOffInput);
 
     void doMinMax(double infi);

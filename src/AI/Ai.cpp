@@ -12,10 +12,11 @@
 #include <fstream>
 #include <limits>
 
-Ai::Ai(int playerIdInput, int boardSizeInput, 
+Ai::Ai(int playerIdInput, int boardSizeInput, int continousMarker, 
 int timeLimitInput, int depthCutOffInput) {
     playerId = playerIdInput;
     boardSize = boardSizeInput;
+    continousMarker = continousMarker;
     timeLimit = timeLimitInput;
     depthCutOff = depthCutOffInput;
 }
@@ -31,13 +32,13 @@ void Ai::shiftInTree(std::stringstream& ss) {
     while (!(treeForMinMax.root->gameState.hasSomeoneWon())) {
         doMinMax(inf);
         Move toDoMove = treeForMinMax.pickChild(treeForMinMax.root->childPicked);
-        std::cout << toDoMove.toStr(false) << std::endl;
+        std::cout << toDoMove.toStr(true) << std::endl;
         std::cerr << "-----------------------------------" << std::endl;
-        std::cerr << toDoMove.toStr(false) << std::endl;
+        std::cerr << toDoMove.toStr(true) << std::endl;
         std::cerr << treeForMinMax.root->gameState.board.toStringBoard();
         std::cerr << "-----------------------------------" << std::endl;
         treeForMinMax.root->deleteParentAndCousins();
-        ss << toDoMove.toStr(false) << std::endl;
+        ss << toDoMove.toStr(true) << std::endl;
         if (treeForMinMax.root->gameState.hasSomeoneWon()) {
             break;
         }
@@ -46,11 +47,11 @@ void Ai::shiftInTree(std::stringstream& ss) {
         while (moveInput == "") {
             std::getline(std::cin, moveInput);
         }
-        Move tempMove = Move(moveInput, false);
+        Move tempMove = Move(moveInput, true);
         treeForMinMax.pickChild(tempMove);
         ss << moveInput << std::endl;
         std::cerr << "-----------------------------------" << std::endl;
-        std::cerr << tempMove.toStr(false) << std::endl;
+        std::cerr << tempMove.toStr(true) << std::endl;
         std::cerr << treeForMinMax.root->gameState.board.toStringBoard();
         std::cerr << "-----------------------------------" << std::endl;
         treeForMinMax.root->deleteParentAndCousins();
@@ -59,7 +60,7 @@ void Ai::shiftInTree(std::stringstream& ss) {
 
 void Ai::startBot() {
     Node* nullParent = NULL;
-    Game* startingGame = new Game(boardSize, 5, 3, 5);
+    Game* startingGame = new Game(boardSize, 5, 3, continousMarker);
     Node* startingNode = new Node(*startingGame, *nullParent);
     treeForMinMax = Tree(startingNode);
 
@@ -89,13 +90,13 @@ void Ai::startBot() {
 
 int main(int argc, char** argv) {
     Point::defineTriLinearDirection();
-    int player_id, board_size, time_limit;
+    int player_id, board_size, seq_len, time_limit;
     // Get input from server about game specifications
     // FIXME: Change this
-    std::cin >> player_id >> board_size >> time_limit;
+    std::cin >> player_id >> board_size >> seq_len >> time_limit;
     // player_id = 1;
     // board_size = 5; 
     // time_limit = 120;
-    Ai alphaYinsh = Ai(player_id, board_size, time_limit, 2);
+    Ai alphaYinsh = Ai(player_id, board_size, seq_len, time_limit, 2);
     alphaYinsh.startBot();
 }
