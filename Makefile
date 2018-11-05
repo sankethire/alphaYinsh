@@ -1,19 +1,32 @@
+#Compiler
+# we dont want other compiler to be used yet.
+CXX = g++
+
+#Flags
+# CXX_LINKER_FLAGS
+
+# Remove warning and add -Wall Flag
+CXX_ASSEMBLER_FLAGS := -std=c++11 $(ADD_G++_FLAGS)
+
 # Directories
 SRC_DIR = src
 OBJ_DIR = build
 BIN_DIR = bin
 
-OUT_DIR = $(OBJ_DIR) $(BIN_DIR)
+PARENT_DIR := $(OBJ_DIR)
 
-AI_DIR = $(SRC_DIR)/AI
-GAME_DIR = $(SRC_DIR)/Game
+AI_DIR := $(PARENT_DIR)/AI
+GAME_DIR := $(PARENT_DIR)/Game
 
+FILE_EXT := o
+
+OUT_DIR = $(AI_DIR) $(GAME_DIR) $(BIN_DIR)
 # Prereqs
-AI_REQ = $(AI_DIR)/Ai.cpp $(AI_DIR)/Tree.cpp $(AI_DIR)/Huerisitic.cpp $(AI_DIR)/Node.cpp
-GAME_REQ = $(GAME_DIR)/Game.cpp $(GAME_DIR)/Board.cpp $(GAME_DIR)/Player.cpp $(GAME_DIR)/Move.cpp $(GAME_DIR)/Operation.cpp $(GAME_DIR)/Point.cpp
+AI_REQ := $(AI_DIR)/Ai.$(FILE_EXT) $(AI_DIR)/Tree.$(FILE_EXT) $(AI_DIR)/Huerisitic.$(FILE_EXT) $(AI_DIR)/Node.$(FILE_EXT)
+GAME_REQ := $(GAME_DIR)/Game.$(FILE_EXT) $(GAME_DIR)/Board.$(FILE_EXT) $(GAME_DIR)/Player.$(FILE_EXT) $(GAME_DIR)/Move.$(FILE_EXT) $(GAME_DIR)/Operation.$(FILE_EXT) $(GAME_DIR)/Point.$(FILE_EXT)
 
 .PHONY: all
-all: $(AI_REQ) $(GAME_REQ)
+all:
 	make directories;
 	make $(BIN_DIR)/ai;
 
@@ -21,17 +34,16 @@ all: $(AI_REQ) $(GAME_REQ)
 directories:
 	mkdir -p $(OUT_DIR)
 
+# BIN/Executable Rules
 $(BIN_DIR)/ai: $(AI_REQ) $(GAME_REQ)
-	$(CXX) -Ofast $^ -o $@
-
-$(BIN_DIR)/aiDebug: $(AI_REQ)
-	$(CXX) -g $^ -o $@ 
+	$(CXX) $^ -o $@
 
 $(BIN_DIR)/game: $(GAME_REQ)
-	$(CXX) -Ofast $^ -o $@
+	$(CXX) $^ -o $@
 
-$(BIN_DIR)/gameDebug: $(GAME_REQ)
-	$(CXX) -g $^ -o $@
+# OBJ/object Rules
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	$(CXX) $(CXX_ASSEMBLER_FLAGS) -c $^ -o $@
 
 .PHONY: clean
 clean:
