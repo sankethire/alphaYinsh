@@ -145,14 +145,14 @@ std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerCha
     bool seenSameColorMarker;
     int numOfContiguous;
     // TODO: this pointer shenanigans in unnecessary. could cause problem
-    Operation* rowStart = NULL;
-    Operation* rowEnd = NULL;
-    std::vector<Operation*> tempOpQueue;
+    Operation rowStart;
+    Operation rowEnd;
+    std::vector<Operation> tempOpQueue;
 
-    auto convertToNormalVector = [&] (std::vector<Operation*> opPtrVector) {
+    auto convertToNormalVector = [&] (std::vector<Operation> opPtrVector) {
         std::vector<Operation> opVector;
         for (int i=0; i<opPtrVector.size(); i++) {
-            opVector.push_back(*(opPtrVector[i]));
+            opVector.push_back((opPtrVector[i]));
         }
         return opVector;
     };
@@ -166,20 +166,20 @@ std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerCha
         && (tempPoint.piece == Point::marker)) {
             if (!seenSameColorMarker) {
                 tempOpQueue.clear();
-                rowStart =  new Operation(Operation::RS, i, j);
+                rowStart = Operation(Operation::RS, i, j);
                 seenSameColorMarker = true;
             }
             numOfContiguous++;
             if (numOfContiguous >= contiguousNum) {
-                rowEnd = new Operation(Operation::RE, i, j);
+                rowEnd = Operation(Operation::RE, i, j);
                 tempOpQueue.push_back(rowStart);
                 tempOpQueue.push_back(rowEnd);
                 Move tempMoveStore = Move(convertToNormalVector(tempOpQueue));
                 movesToReturn.push_back(tempMoveStore);
                 tempOpQueue.clear();
-                int tempCoordX = std::get<0>(rowStart->coordinate);
-                int tempCoordY = std::get<1>(rowStart->coordinate);
-                rowStart =  new Operation(Operation::RS, tempCoordX+directionX, tempCoordY+directionY);
+                int tempCoordX = std::get<0>(rowStart.coordinate);
+                int tempCoordY = std::get<1>(rowStart.coordinate);
+                rowStart = Operation(Operation::RS, tempCoordX+directionX, tempCoordY+directionY);
             }
         } else {
             numOfContiguous = 0;
@@ -245,8 +245,6 @@ std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerCha
             checkAndAddContigous(1, 1, i, j);
         }
     }
-    delete rowStart;
-    delete rowEnd;
 
     return movesToReturn;
 }
