@@ -229,6 +229,7 @@ void Node::deleteChildrenExceptBest() {
         }
     }
     this->~Node();
+    delete this;
 }
 
 void Node::deleteAllChildrenAndSelf() {
@@ -239,6 +240,7 @@ void Node::deleteAllChildrenAndSelf() {
     }
     // delete parent;
     this->~Node();
+    delete this;
 }
 
 void Node::deleteParentAndCousins() {
