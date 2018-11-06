@@ -31,9 +31,9 @@ Board::Board(int size) {
 }
 
 Board Board::clone() {
-    Board* newBoard = new Board();
-    newBoard->boardSize = boardSize;
-    newBoard->triLinearBoard.reserve(11*sizeof(std::vector<Point>));
+    Board* cloneBoard = new Board();
+    cloneBoard->boardSize = boardSize;
+    cloneBoard->triLinearBoard.reserve(11*sizeof(std::vector<Point>));
     
     for (int i=-boardSize; i<=boardSize; i++) {
         std::vector<Point> colomnVector;
@@ -46,9 +46,9 @@ Board Board::clone() {
             colomnVector.push_back(freshPoint);
         }
 
-        newBoard->triLinearBoard.push_back(colomnVector);
+        cloneBoard->triLinearBoard.push_back(colomnVector);
     }
-    return *newBoard;
+    return *cloneBoard;
 }
 
 Point& Board::getPointTriLinear(std::tuple<int, int> triLinearCoordinate) {

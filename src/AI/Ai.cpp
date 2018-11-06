@@ -60,7 +60,7 @@ void Ai::shiftInTree(std::stringstream& ss) {
 
 void Ai::startBot() {
     Node* nullParent = NULL;
-    Game* startingGame = new Game(boardSize, 5, 3, continousMarker);
+    Game* startingGame = new Game(boardSize, boardSize, 3, continousMarker);
     Node* startingNode = new Node(*startingGame, *nullParent);
     treeForMinMax = Tree(startingNode);
 
