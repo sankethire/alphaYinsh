@@ -93,7 +93,7 @@ int main(int argc, char** argv) {
     int player_id, board_size, seq_len, time_limit;
     // Get input from server about game specifications
     // FIXME: Change this
-    std::cin >> player_id >> board_size >> seq_len >> time_limit;
+    std::cin >> player_id >> board_size >> time_limit >> seq_len;
     // player_id = 1;
     // board_size = 5; 
     // time_limit = 120;
