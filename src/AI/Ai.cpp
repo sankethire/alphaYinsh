@@ -12,11 +12,11 @@
 #include <fstream>
 #include <limits>
 
-Ai::Ai(int playerIdInput, int boardSizeInput, int continousMarker, 
+Ai::Ai(int playerIdInput, int boardSizeInput, int continousMarkerInput, 
 int timeLimitInput, int depthCutOffInput) {
     playerId = playerIdInput;
     boardSize = boardSizeInput;
-    continousMarker = continousMarker;
+    continousMarker = continousMarkerInput;
     timeLimit = timeLimitInput;
     depthCutOff = depthCutOffInput;
 }
@@ -97,6 +97,7 @@ int main(int argc, char** argv) {
     // player_id = 1;
     // board_size = 5; 
     // time_limit = 120;
+    // seq_len = 5;
     Ai alphaYinsh = Ai(player_id, board_size, seq_len, time_limit, 2);
     alphaYinsh.startBot();
 }

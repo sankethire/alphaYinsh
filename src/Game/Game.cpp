@@ -245,7 +245,7 @@ std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerCha
             checkAndAddContigous(1, 1, i, j);
         }
     }
-
+    
     return movesToReturn;
 }
 

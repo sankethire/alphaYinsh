@@ -17,7 +17,7 @@ public:
     Tree treeForMinMax;
 
     // MEMBER FUNCTIONS
-    Ai(int playerIdInput, int boardSizeInput, int continousMarker, int timeLimitInput, 
+    Ai(int playerIdInput, int boardSizeInput, int continousMarkerInput, int timeLimitInput, 
     int depthCutOffInput);
 
     void doMinMax(double infi);
