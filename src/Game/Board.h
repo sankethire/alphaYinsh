@@ -6,6 +6,7 @@
 #include <vector>
 #include <tuple>
 #include <string>
+#include <memory>
 
 class Board {
 public:
@@ -20,7 +21,7 @@ public:
     Board(int size);
 
     // deep copy/clone
-    Board clone();
+    std::shared_ptr<Board> clone();
 
     // gets the point
     // give cordinate x = [-boardSize, boardSize], y = [-boardSize, boardSize]

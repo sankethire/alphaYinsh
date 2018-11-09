@@ -3,25 +3,26 @@
 #include "Board.h"
 
 #include <vector>
+#include <memory>
 
 Player::Player() {}
 
-Player::Player(Board& playBoard) {
+Player::Player(std::shared_ptr<Board> playBoard) {
     ringWon = 0;
     markerOwn = 0;
-    playingBoard = &playBoard;
+    playingBoard = playBoard;
     ringLeft.reserve(5*sizeof(Point));
 }
 
-Player& Player::clone(Board& playBoardInput) {
-    Player* copiedPlayer = new Player(playBoardInput);
+std::shared_ptr<Player> Player::clone(std::shared_ptr<Board> playBoardInput) {
+    std::shared_ptr<Player> copiedPlayer = std::make_shared<Player>(playBoardInput);
     copiedPlayer->ringWon = ringWon;
     copiedPlayer->markerOwn = markerOwn;
     for (Point ringToCopy : ringLeft) {
         copiedPlayer->addRing
         (std::get<0>(ringToCopy.triLinearCoord), std::get<1>(ringToCopy.triLinearCoord));
     }
-    return *copiedPlayer;
+    return copiedPlayer;
 }
 
 void Player::addRing(Point& ringToAdd) {

@@ -6,28 +6,30 @@
 
 #include <vector>
 #include <tuple>
+#include <memory>
 
-class Node {
+class Node : public std::enable_shared_from_this<Node> {
 public:
     // FEILDS
     // game knows players(rings vector, number of marker), board
-    Game gameState;
+    std::shared_ptr<Game> gameState;
 
     // all the tree stuff that a node should contain.
-    Node* parent;
+    std::shared_ptr<Node> parent;
 
     // children information
     int childPicked;
     bool childrenDefined;
-    std::vector<std::tuple<Move, Node*>> children;
+    std::vector<std::tuple<Move, std::shared_ptr<Node>>> children;
     
     // function pointers needed
     typedef bool (*compareMoveNodeTupleFunction)
-    (std::tuple<Move, Node*>, std::tuple<Move, Node*>);
+    (std::tuple<Move, std::shared_ptr<Node>>, std::tuple<Move, std::shared_ptr<Node>>);
     typedef double (*utilityOfGameFunction)(Game&);
 
     // FUNCTIONS
-    Node(Game& gameStateInput, Node& parentInput);
+    // Node();
+    Node(std::shared_ptr<Game> gameStateInput, std::shared_ptr<Node> parentInput);
 
     // define children in the vector.
     void defineChildren();
@@ -38,14 +40,14 @@ public:
     // helper for define Children. Not too dependent on node.
     // generates permutation of removals
     // isThisFirstRemoveCheck of this time
-    static std::vector<std::tuple<Move, Game>> keepCheckingRemovalOfRowAndRing(
-        Game& gameStateTillNow, Move& moveTillNow);
+    static std::vector<std::tuple<Move, std::shared_ptr<Game>>> keepCheckingRemovalOfRowAndRing(
+    std::shared_ptr<Game> gameStateTillNow, Move& moveTillNow);
     // static std::vector<std::tuple<Move, Game>> keepCheckingRemovalOfRowAndRing(
     //     Game& gameStateTillNow, Move& moveTillNow, bool isThisFirstRemoveCheck);
-    static void flipMakeChildPushBack (Game& gameStateInput, Move& moveInput, Node* self, 
-    std::vector<std::tuple<Move, Node*>>& childrenList);
-    static void seeSMthenRSREX(Game& gameTillNow, Move& moveTillNow, 
-    Node* self, std::vector<std::tuple<Move, Node*>>& childrenList);
+    static void flipMakeChildPushBack (std::shared_ptr<Game> gameStateInput, Move& moveInput, std::shared_ptr<Node> self, 
+    std::vector<std::tuple<Move, std::shared_ptr<Node>>>& childrenList);
+    static void seeSMthenRSREX(std::shared_ptr<Game> gameTillNow, Move& moveTillNow, 
+    std::shared_ptr<Node> self, std::vector<std::tuple<Move, std::shared_ptr<Node>>>& childrenList);
 
     // minMax Procedures
     int minMaxDepthCutOffSortedAlphaBetaPruning(double alpha, 

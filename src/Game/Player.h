@@ -5,6 +5,7 @@
 #include "Board.h"
 
 #include <vector>
+#include <memory>
 
 class Player {
 public:
@@ -18,14 +19,14 @@ public:
     int markerOwn;
 
     // TODO:  Playing Board currently uneeded
-    Board* playingBoard;
+    std::shared_ptr<Board> playingBoard;
 
     /* FUNCTIONS */
     Player();
-    Player(Board& playBoard);
+    Player(std::shared_ptr<Board> playBoard);
 
     // deep copy
-    Player& clone(Board& playBoardInput);
+    std::shared_ptr<Player> clone(std::shared_ptr<Board> playBoardInput);
 
     // add ring which was placed in placement phase to ringLeft Vector.
     void addRing(Point& ringToAdd);

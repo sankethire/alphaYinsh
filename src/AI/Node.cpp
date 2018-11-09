@@ -7,27 +7,35 @@
 #include <tuple>
 #include <algorithm>
 #include <iostream>
+#include <memory>
 
-Node::Node(Game& gameStateInput, Node& parentInput) {
+// Node::Node() {
+//     gameState = Game();
+//     parent = NULL;
+//     childrenDefined = false;
+//     childPicked = -1;
+// }
+
+Node::Node(std::shared_ptr<Game> gameStateInput, std::shared_ptr<Node> parentInput) {
     gameState = gameStateInput;
-    parent = &parentInput;
+    parent = parentInput;
     childrenDefined = false;
     childPicked = -1;
 }
 
-std::vector<std::tuple<Move, Game>> Node::keepCheckingRemovalOfRowAndRing(
-    Game& gameStateTillNow, Move& moveTillNow) {
+std::vector<std::tuple<Move, std::shared_ptr<Game>>> Node::keepCheckingRemovalOfRowAndRing(
+    std::shared_ptr<Game> gameStateTillNow, Move& moveTillNow) {
 
-    std::vector<std::tuple<Move, Game>> vecToReturn;
-    std::vector<Move> possibleRowRemoveMoves = gameStateTillNow.contiguousMarker
-    (gameStateTillNow.numberOfMarkersToRemove, gameStateTillNow.chance);
+    std::vector<std::tuple<Move, std::shared_ptr<Game>>> vecToReturn;
+    std::vector<Move> possibleRowRemoveMoves = gameStateTillNow->contiguousMarker
+    (gameStateTillNow->numberOfMarkersToRemove, gameStateTillNow->chance);
 
     if (possibleRowRemoveMoves.size() != 0) {
         for (Move eachRowRemoval: possibleRowRemoveMoves) {
 
-            std::vector<Move> possibleRingRemoveMoves = gameStateTillNow.possibleRingRemoval
-            (gameStateTillNow.chance);
-            std::vector<std::tuple<Move, Game>> tempCombinedVec;
+            std::vector<Move> possibleRingRemoveMoves = gameStateTillNow->possibleRingRemoval
+            (gameStateTillNow->chance);
+            std::vector<std::tuple<Move, std::shared_ptr<Game>>> tempCombinedVec;
 
             for (Move eachRingRemoval: possibleRingRemoveMoves) {
                 // TODO: just want to use shallow copy here.
@@ -42,15 +50,15 @@ std::vector<std::tuple<Move, Game>> Node::keepCheckingRemovalOfRowAndRing(
                 tempMove.append(eachRingRemoval);
                 // }
 
-                Game tempGameState = gameStateTillNow.clone();
+                std::shared_ptr<Game> tempGameState = gameStateTillNow->clone();
                 // This tempRSREX actually executes.
                 Move tempRSREX = eachRowRemoval;
                 tempRSREX.append(eachRingRemoval);
-                tempGameState.executeMove(tempRSREX);
+                tempGameState->executeMove(tempRSREX);
 
-                std::vector<std::tuple<Move, Game>> tempReturnedVec;
+                std::vector<std::tuple<Move, std::shared_ptr<Game>>> tempReturnedVec;
                 // TODO: multiple game won checks need to be introduced.
-                if (tempGameState.hasSomeoneWon()) {
+                if (tempGameState->hasSomeoneWon()) {
                     tempReturnedVec.push_back(std::make_tuple(tempMove, tempGameState));
                 } else {
                     // tempReturnedVec = keepCheckingRemovalOfRowAndRing
@@ -72,35 +80,37 @@ std::vector<std::tuple<Move, Game>> Node::keepCheckingRemovalOfRowAndRing(
     return vecToReturn;
 }
 
-void Node::flipMakeChildPushBack (Game& gameStateInput, Move& moveInput, Node* self, 
-std::vector<std::tuple<Move, Node*>>& childrenList) {
+void Node::flipMakeChildPushBack (std::shared_ptr<Game> gameStateInput, Move& moveInput, 
+std::shared_ptr<Node> self, 
+std::vector<std::tuple<Move, std::shared_ptr<Node>>>& childrenList) {
     // TODO: chance filps here
-    gameStateInput.chanceFlip();
-    Node* childNode = new Node(gameStateInput, *self);
+    gameStateInput->chanceFlip();
+    std::shared_ptr<Node> childNode = std::make_shared<Node>(gameStateInput, self);
     childrenList.push_back(std::make_tuple(moveInput, childNode));
 }
 
-void Node::seeSMthenRSREX(Game& gameTillNow, Move& moveTillNow, 
-Node* self, std::vector<std::tuple<Move, Node*>>& childrenList) {
+void Node::seeSMthenRSREX(std::shared_ptr<Game> gameTillNow, Move& moveTillNow, 
+std::shared_ptr<Node> self, std::vector<std::tuple<Move, 
+std::shared_ptr<Node>>>& childrenList) {
     std::vector<Move> possibleSMMoves = 
-    gameTillNow.possibleMovementOfRings(gameTillNow.chance);
+    gameTillNow->possibleMovementOfRings(gameTillNow->chance);
     for (Move eachSMMove: possibleSMMoves) {
 
-        Game tempGameStateFromTuple1 = gameTillNow.clone();
-        tempGameStateFromTuple1.executeMove(eachSMMove);
+        std::shared_ptr<Game> tempGameStateFromTuple1 = gameTillNow->clone();
+        tempGameStateFromTuple1->executeMove(eachSMMove);
         Move tempMoveStateFromTuple1 = moveTillNow;
         tempMoveStateFromTuple1.append(eachSMMove);
 
         // std::vector<std::tuple<Move, Game>> possibleRemove2 =
         // Node::keepCheckingRemovalOfRowAndRing
         // (tempGameStateFromTuple1, tempMoveStateFromTuple1, true);
-        std::vector<std::tuple<Move, Game>> possibleRemove2 =
+        std::vector<std::tuple<Move, std::shared_ptr<Game>>> possibleRemove2 =
         Node::keepCheckingRemovalOfRowAndRing
         (tempGameStateFromTuple1, tempMoveStateFromTuple1);
 
         if (possibleRemove2.size() != 0) {
-            for (std::tuple<Move, Game> moveGameTuple2: possibleRemove2) {
-                Game& gameFromTuple2 = std::get<1>(moveGameTuple2);
+            for (std::tuple<Move, std::shared_ptr<Game>> moveGameTuple2: possibleRemove2) {
+                std::shared_ptr<Game> gameFromTuple2 = std::get<1>(moveGameTuple2);
                 Move& moveFromTuple2 = std::get<0>(moveGameTuple2);
                 flipMakeChildPushBack
                 (gameFromTuple2, moveFromTuple2, self, childrenList);
@@ -117,43 +127,47 @@ Node* self, std::vector<std::tuple<Move, Node*>>& childrenList) {
 void Node::defineChildren() {
     childrenDefined = true;
     
-    if (gameState.movesLeftTillPlacementEnd >= 1) {
+    if (gameState->movesLeftTillPlacementEnd >= 1) {
         std::vector<Move> possiblePlaceMoves;
         possiblePlaceMoves.reserve(85*sizeof(Move));
-        possiblePlaceMoves = gameState.possiblePlacement();
+        possiblePlaceMoves = gameState->possiblePlacement();
         for (Move eachMove : possiblePlaceMoves) {
-            Game tempGameState = gameState.clone();
-            tempGameState.executeMove(eachMove);
-            flipMakeChildPushBack(tempGameState, eachMove, this, children);
+            std::shared_ptr<Game> tempGameState = gameState->clone();
+            tempGameState->executeMove(eachMove);
+            flipMakeChildPushBack(tempGameState, eachMove, 
+            shared_from_this(), children);
         }
     } else {
         Move dummyMove = Move();
         // std::vector<std::tuple<Move, Game>> possibleRemove1 = 
         // Node::keepCheckingRemovalOfRowAndRing(gameState, dummyMove, true);
-        std::vector<std::tuple<Move, Game>> possibleRemove1 = 
+        std::vector<std::tuple<Move, std::shared_ptr<Game>>> possibleRemove1 = 
         Node::keepCheckingRemovalOfRowAndRing(gameState, dummyMove);
 
             // although it is tried that keepCheckingRemovalOfRowAndRing 
             // returns same game state and move in case nothing can be done 
             // but still 0 case is handled 
             if (possibleRemove1.size() != 0) {
-                for (std::tuple<Move, Game> moveGameTuple1: possibleRemove1) {
+                for (std::tuple<Move, std::shared_ptr<Game>> moveGameTuple1: possibleRemove1) {
                     // TODO: check has won here.
-                    Game& gameFromTuple1 = std::get<1>(moveGameTuple1);
+                    std::shared_ptr<Game> gameFromTuple1 = std::get<1>(moveGameTuple1);
                     Move& moveFromTuple1 = std::get<0>(moveGameTuple1);
 
-                    if (gameFromTuple1.hasSomeoneWon()) {
+                    if (gameFromTuple1->hasSomeoneWon()) {
                         flipMakeChildPushBack
-                        (gameFromTuple1, moveFromTuple1, this, children);
+                        (gameFromTuple1, moveFromTuple1, 
+                        shared_from_this(), children);
                         continue;
                     } else {
-                        seeSMthenRSREX(gameFromTuple1, moveFromTuple1, this, children);
+                        seeSMthenRSREX(gameFromTuple1, moveFromTuple1, 
+                        shared_from_this(), children);
                     }
 
                 }
             // first removal sequence not possible
             } else {
-                seeSMthenRSREX(gameState, dummyMove, this, children);
+                seeSMthenRSREX(gameState, dummyMove, 
+                shared_from_this(), children);
             }
     }
 }
@@ -175,19 +189,19 @@ utilityOfGameFunction terminalUtility, compareMoveNodeTupleFunction sortComparat
     // odd tree level max node else min
     // at depthLeftTillCutOff 0 return utility
     // TODO: pass placement movement different utility
-    if (gameState.hasSomeoneWon()) {
-        return terminalUtility(gameState);
+    if (gameState->hasSomeoneWon()) {
+        return terminalUtility(*gameState);
     }
-    if (depthLeftTillCutOff == 0 || gameState.hasSomeoneWon()) {
-        return terminalUtility(gameState);
+    if (depthLeftTillCutOff == 0 || gameState->hasSomeoneWon()) {
+        return terminalUtility(*gameState);
     }
 
     if (treeLevel%2 == 1) {
         // Max Node
         ifNotThenDefineSortChildren(sortComparator);
         for (int i=0; i<children.size(); i++) {
-            std::tuple<Move, Node*> currentChild = children[i];
-            Node* nodeFromTuple = std::get<1>(currentChild);
+            std::tuple<Move, std::shared_ptr<Node>> currentChild = children[i];
+            std::shared_ptr<Node> nodeFromTuple = std::get<1>(currentChild);
             double returnedValue = nodeFromTuple->minMaxDepthCutOffSortedAlphaBetaPruning(
             alpha, beta, depthLeftTillCutOff-1, treeLevel+1, terminalUtility, sortComparator);
             if (returnedValue > alpha) {
@@ -203,8 +217,8 @@ utilityOfGameFunction terminalUtility, compareMoveNodeTupleFunction sortComparat
         // Min Node
         ifNotThenDefineSortChildren(sortComparator);
         for (int i=0; i<children.size(); i++) {
-            std::tuple<Move, Node*> currentChild = children[i];
-            Node* nodeFromTuple = std::get<1>(currentChild);
+            std::tuple<Move, std::shared_ptr<Node>> currentChild = children[i];
+            std::shared_ptr<Node> nodeFromTuple = std::get<1>(currentChild);
             double returnedValue = nodeFromTuple->minMaxDepthCutOffSortedAlphaBetaPruning(
             alpha, beta, depthLeftTillCutOff-1, treeLevel+1, terminalUtility, sortComparator);
             if (returnedValue < beta) {
@@ -223,28 +237,33 @@ utilityOfGameFunction terminalUtility, compareMoveNodeTupleFunction sortComparat
 void Node::deleteChildrenExceptBest() {
     for (int i=0; i<children.size(); i++) {
         if (i != childPicked) {
-            Node* eachChild = std::get<1>(children[i]);
+            std::shared_ptr<Node> eachChild = std::get<1>(children[i]);
             eachChild->deleteAllChildrenAndSelf();
-            // delete std::get<1>(children[i]);
+            // std::cerr << "each Child " << i << " - " << eachChild.use_count() << std::endl;
+            eachChild.reset();
         }
     }
-    this->~Node();
+    // std::cerr << "its parent " << parent.use_count() << std::endl;
+    parent.reset();
+    shared_from_this().reset();
 }
 
 void Node::deleteAllChildrenAndSelf() {
     for (int i=0; i<children.size(); i++) {
-        Node* eachChild = std::get<1>(children[i]);
+        std::shared_ptr<Node> eachChild = std::get<1>(children[i]);
         eachChild->deleteAllChildrenAndSelf();
-        // delete std::get<1>(children[i]);
+        // std::cerr << "each Child " << i << " - " << eachChild.use_count() << std::endl;
+        eachChild.reset();
     }
-    // delete parent;
-    this->~Node();
+    // std::cerr << "its parent " << parent.use_count() << std::endl;
+    parent.reset();
+    shared_from_this().reset();
 }
 
 void Node::deleteParentAndCousins() {
     if (parent != NULL) {
         parent->deleteChildrenExceptBest();
     }
-    // delete parent;
+    parent.reset();
     parent = NULL;
 }

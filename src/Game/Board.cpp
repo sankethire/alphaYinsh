@@ -5,6 +5,7 @@
 #include <tuple>
 #include <iostream>
 #include <sstream>
+#include <memory>
 
 Board::Board() {}
 
@@ -30,8 +31,8 @@ Board::Board(int size) {
     }
 }
 
-Board Board::clone() {
-    Board* cloneBoard = new Board();
+std::shared_ptr<Board> Board::clone() {
+    std::shared_ptr<Board> cloneBoard = std::make_shared<Board>();
     cloneBoard->boardSize = boardSize;
     cloneBoard->triLinearBoard.reserve(11*sizeof(std::vector<Point>));
     
@@ -48,7 +49,7 @@ Board Board::clone() {
 
         cloneBoard->triLinearBoard.push_back(colomnVector);
     }
-    return *cloneBoard;
+    return cloneBoard;
 }
 
 Point& Board::getPointTriLinear(std::tuple<int, int> triLinearCoordinate) {

@@ -11,6 +11,7 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include <memory>
 
 Game::Game() {}
 
@@ -23,14 +24,14 @@ int ringsToWinInput, int numberOfMarkersToRemoveInput) {
     movesLeftTillPlacementEnd = 2*ringsToBePlacedPerPlayerInput;
     ringsToWin = ringsToWinInput;
     numberOfMarkersToRemove = numberOfMarkersToRemoveInput;
-    board = Board(sizeOfBoardInput);
-    Player p1 = Player(board);
-    Player p2 = Player(board);
+    board = std::make_shared<Board>(sizeOfBoardInput);
+    std::shared_ptr<Player> p1 = std::make_shared<Player>(board);
+    std::shared_ptr<Player> p2 = std::make_shared<Player>(board);
     playerTuple = std::make_tuple(p1, p2);
 }
 
-Game& Game::clone() {
-    Game* copiedGame = new Game();
+std::shared_ptr<Game> Game::clone() {
+    std::shared_ptr<Game> copiedGame = std::make_shared<Game>();
     copiedGame->phase = phase;
     copiedGame->chance = chance;
     copiedGame->sizeOfBoard = sizeOfBoard;
@@ -39,25 +40,25 @@ Game& Game::clone() {
     copiedGame->ringsToWin = ringsToWin;
     copiedGame->numberOfMarkersToRemove = numberOfMarkersToRemove;
 
-    copiedGame->board = board.clone();
-    Player p1 = std::get<0>(playerTuple).clone(copiedGame->board);
-    Player p2 = std::get<1>(playerTuple).clone(copiedGame->board);
+    copiedGame->board = board->clone();
+    std::shared_ptr<Player> p1 = std::get<0>(playerTuple)->clone(copiedGame->board);
+    std::shared_ptr<Player> p2 = std::get<1>(playerTuple)->clone(copiedGame->board);
     copiedGame->playerTuple = std::make_tuple(p1, p2);
 
-    return *copiedGame;
+    return copiedGame;
 }
 
 std::vector<Move> Game::possiblePlacement() {
     std::vector<Move> movesToReturn;
     // TODO: calculation bound is approx.
     // Board size is currently linked to rings to place, possible make it unrelated.
-    int tempBoardwidth = (2*board.boardSize);
+    int tempBoardwidth = (2*board->boardSize);
     int moveReserveSize = tempBoardwidth*tempBoardwidth;
     movesToReturn.reserve(moveReserveSize*sizeof(Move));
 
-    for (int i=-board.boardSize; i<=board.boardSize; i++) {
-        for (int j=-board.boardSize; j<=board.boardSize; j++) {
-            const Point& p = board.getPointTriLinear(i, j);
+    for (int i=-board->boardSize; i<=board->boardSize; i++) {
+        for (int j=-board->boardSize; j<=board->boardSize; j++) {
+            const Point& p = board->getPointTriLinear(i, j);
             if (p.piece == Point::emptyPiece) {
                 std::vector<Operation> tempOpSeq;
                 tempOpSeq.push_back(Operation(Operation::P, i, j));
@@ -81,9 +82,9 @@ Point& ring, std::tuple<int, int> direction) {
     std::vector<Move> moveVectorReturn;
 
     for (i=ringX+directionX, j=ringY+directionY; 
-    (-board.boardSize<=i) && (i<=board.boardSize) &&
-    (-board.boardSize<=j) && (j<=board.boardSize); i+=directionX, j+=directionY) {
-        Point tempPoint = board.getPointTriLinear(i, j);
+    (-board->boardSize<=i) && (i<=board->boardSize) &&
+    (-board->boardSize<=j) && (j<=board->boardSize); i+=directionX, j+=directionY) {
+        Point tempPoint = board->getPointTriLinear(i, j);
         if (tempPoint.piece == Point::marker) {
             seenAnyMarker = true;
         } else if (tempPoint.piece == Point::emptyPiece) {
@@ -112,10 +113,10 @@ std::vector<std::vector<Move>> Game::possibleMovementForRingAllDirection(Point& 
 
 std::vector<std::vector<std::vector<Move>>> Game::possibleMovementAllRingAllDirection (
 chanceType playerChance) {
-    Player& currentPlayer = getPlayerFromColor(playerChance);
+    std::shared_ptr<Player> currentPlayer = getPlayerFromColor(playerChance);
 
     std::vector<std::vector<std::vector<Move>>> vecToReturn;
-    for (Point& ring: currentPlayer.ringLeft) {
+    for (Point& ring: currentPlayer->ringLeft) {
         vecToReturn.push_back(possibleMovementForRingAllDirection(ring));
     }
     return vecToReturn;
@@ -159,7 +160,7 @@ std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerCha
 
     // lambda function for repitive code.
     auto checkAndAddContigous = [&] (int directionX, int directionY, int i, int j) {
-        Point tempPoint = board.getPointTriLinear(i, j);
+        Point tempPoint = board->getPointTriLinear(i, j);
 
         // seen same color marker 
         if ((tempPoint.color == static_cast<Point::colorType>(playerChance)) 
@@ -188,18 +189,18 @@ std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerCha
     };
 
     // +(0, 1) direction
-    for (int i=-board.boardSize; i<=board.boardSize; i++) {
+    for (int i=-board->boardSize; i<=board->boardSize; i++) {
         tempOpQueue.clear();
         numOfContiguous = 0;
         seenSameColorMarker = false;
 
         // see only majority of existent
         if (i<=0) {
-            jMax = i+board.boardSize;
-            jMin = -board.boardSize;
+            jMax = i+board->boardSize;
+            jMin = -board->boardSize;
         } else {
-            jMin = i-board.boardSize;
-            jMax = board.boardSize;
+            jMin = i-board->boardSize;
+            jMax = board->boardSize;
         }
         for (int j=jMin; j<=jMax; j++) {
             checkAndAddContigous(0, 1, i, j);
@@ -207,16 +208,16 @@ std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerCha
     }
 
     // +(1, 0) direction
-    for (int j=-board.boardSize; j<=board.boardSize; j++) {
+    for (int j=-board->boardSize; j<=board->boardSize; j++) {
         tempOpQueue.clear();
         numOfContiguous = 0;
         seenSameColorMarker = false;
         if (j<=0) {
-            iMax = j+board.boardSize;
-            iMin = -board.boardSize;
+            iMax = j+board->boardSize;
+            iMin = -board->boardSize;
         } else {
-            iMin = j-board.boardSize;
-            iMax = board.boardSize;
+            iMin = j-board->boardSize;
+            iMax = board->boardSize;
         }
         for (int i=iMin; i<=iMax; i++) {
             checkAndAddContigous(1, 0, i, j);
@@ -227,21 +228,21 @@ std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerCha
     int i;
     int j;
     // y = -boardSize starting points
-    for (iMin = -board.boardSize; iMin <= 0; iMin++) {
+    for (iMin = -board->boardSize; iMin <= 0; iMin++) {
         tempOpQueue.clear();
         numOfContiguous = 0;
         seenSameColorMarker = false;
-        for (i = iMin, j = -board.boardSize; (i <= board.boardSize) && (j <= board.boardSize); i++, j++) {
+        for (i = iMin, j = -board->boardSize; (i <= board->boardSize) && (j <= board->boardSize); i++, j++) {
             checkAndAddContigous(1, 1, i, j);
         }
     }
 
     // x = -boardSize starting points
-    for (jMin = -board.boardSize+1; jMin <= 0; jMin++) {
+    for (jMin = -board->boardSize+1; jMin <= 0; jMin++) {
         tempOpQueue.clear();
         numOfContiguous = 0;
         seenSameColorMarker = false;
-        for (i = -board.boardSize, j = jMin; (i <= board.boardSize) && (j <= board.boardSize); i++, j++) {
+        for (i = -board->boardSize, j = jMin; (i <= board->boardSize) && (j <= board->boardSize); i++, j++) {
             checkAndAddContigous(1, 1, i, j);
         }
     }
@@ -250,10 +251,10 @@ std::vector<Move> Game::contiguousMarker(int contiguousNum, chanceType playerCha
 }
 
 std::vector<Move> Game::possibleRingRemoval(chanceType playerChance) {
-    Player& currentPlayer = getPlayerFromColor(playerChance);
+    std::shared_ptr<Player> currentPlayer = getPlayerFromColor(playerChance);
 
     std::vector<Move> movesToReturn;
-    for (Point& ring: currentPlayer.ringLeft) {
+    for (Point& ring: currentPlayer->ringLeft) {
         std::vector<Operation> tempOpSeq;
         tempOpSeq.push_back(Operation(Operation::X, ring.triLinearCoord));
         movesToReturn.push_back(tempOpSeq);
@@ -347,15 +348,15 @@ void Game::executeMove(Move fullMove) {
 }
 
 void Game::executeP(Operation placeOp) {
-    Point& gotPoint = board.getPointTriLinear(placeOp.coordinate);
+    Point& gotPoint = board->getPointTriLinear(placeOp.coordinate);
     if (gotPoint.piece != Point::emptyPiece) {
         throw std::invalid_argument
         ("Can only place on points that are empty and exist");
     }
     gotPoint.color = static_cast<Point::colorType>(chance);
     gotPoint.piece = Point::ring;
-    Player& whichPlayer = getPlayerFromColor(chance);
-    whichPlayer.addRing(gotPoint);
+    std::shared_ptr<Player> whichPlayer = getPlayerFromColor(chance);
+    whichPlayer->addRing(gotPoint);
 }
 
 void Game::executeSM(Move SMMove) {
@@ -371,8 +372,8 @@ void Game::executeSM(Move SMMove) {
     int directionX = std::get<0>(direction);
     int directionY = std::get<1>(direction);
 
-    Point& mPoint = board.getPointTriLinear(mCoord);
-    Point& sPoint = board.getPointTriLinear(sCoord);
+    Point& mPoint = board->getPointTriLinear(mCoord);
+    Point& sPoint = board->getPointTriLinear(sCoord);
 
     Point::colorType colorChance = static_cast<Point::colorType>(chance);
 
@@ -381,17 +382,17 @@ void Game::executeSM(Move SMMove) {
     for (i=sCoordX+directionX, j=sCoordY+directionY; 
     Point::checkInBetween(i, j, std::make_tuple(sCoordX+directionX, sCoordY+directionY), 
     std::make_tuple(mCoordX-directionX, mCoordY-directionY)); i+=directionX, j+=directionY) {
-        Point& tempPoint = board.getPointTriLinear(i, j);
+        Point& tempPoint = board->getPointTriLinear(i, j);
         if (tempPoint.piece == Point::marker) {
             tempPoint.flip();
 
             // Note after flip. update markers owned count.
             if (tempPoint.color == Point::orange) {
-                std::get<1>(playerTuple).markerOwn--;
-                std::get<0>(playerTuple).markerOwn++;
+                std::get<1>(playerTuple)->markerOwn--;
+                std::get<0>(playerTuple)->markerOwn++;
             } else if (tempPoint.color == Point::blue) {
-                std::get<0>(playerTuple).markerOwn--;
-                std::get<1>(playerTuple).markerOwn++;
+                std::get<0>(playerTuple)->markerOwn--;
+                std::get<1>(playerTuple)->markerOwn++;
             } else {
                 throw std::invalid_argument("Marker colors messed up");
             }
@@ -423,11 +424,11 @@ void Game::executeSM(Move SMMove) {
         throw std::invalid_argument("cooridinate of point M are not empty or non existent");
     }
 
-    Player& whichPlayer = getPlayerFromColor(chance);
+    std::shared_ptr<Player> whichPlayer = getPlayerFromColor(chance);
 
-    whichPlayer.removeRing(sPoint);
-    whichPlayer.addRing(mPoint);
-    whichPlayer.markerOwn++;
+    whichPlayer->removeRing(sPoint);
+    whichPlayer->addRing(mPoint);
+    whichPlayer->markerOwn++;
 }
 
 void Game::executeRSREX(Move RSREXMove) {
@@ -443,15 +444,15 @@ void Game::executeRSREX(Move RSREXMove) {
     int directionX = std::get<0>(direction);
     int directionY = std::get<1>(direction);
 
-    Point& rePoint = board.getPointTriLinear(reCoord);
-    Point& rsPoint = board.getPointTriLinear(rsCoord);
+    Point& rePoint = board->getPointTriLinear(reCoord);
+    Point& rsPoint = board->getPointTriLinear(rsCoord);
     Point::colorType colorChance = static_cast<Point::colorType>(chance);
 
     int markersRemovedCount = 0;
     int i, j;
     for (i=rsCoordX, j=rsCoordY; 
     Point::checkInBetween(i, j, rsCoord, reCoord); i+=directionX, j+=directionY) {
-        Point& tempPoint = board.getPointTriLinear(i, j);
+        Point& tempPoint = board->getPointTriLinear(i, j);
         if (tempPoint.piece == Point::marker) {
             if (tempPoint.color == colorChance) {
                 tempPoint.piece = Point::emptyPiece;
@@ -473,7 +474,7 @@ void Game::executeRSREX(Move RSREXMove) {
     }
 
     std::tuple<int,int> xCoord = RSREXMove.operationSequence[2].coordinate;
-    Point& xPoint = board.getPointTriLinear(xCoord);
+    Point& xPoint = board->getPointTriLinear(xCoord);
 
     if (xPoint.piece != Point::ring) {
         throw std::invalid_argument
@@ -488,10 +489,10 @@ void Game::executeRSREX(Move RSREXMove) {
     xPoint.piece = Point::emptyPiece;
     xPoint.color = Point::emptyColor;
 
-    Player& whichPlayer = getPlayerFromColor(chance);
-    whichPlayer.removeRing(xPoint);
-    whichPlayer.ringWon += 1;
-    whichPlayer.markerOwn -= numberOfMarkersToRemove;
+    std::shared_ptr<Player> whichPlayer = getPlayerFromColor(chance);
+    whichPlayer->removeRing(xPoint);
+    whichPlayer->ringWon += 1;
+    whichPlayer->markerOwn -= numberOfMarkersToRemove;
 }
 
 void Game::chanceFlip() {
@@ -502,7 +503,7 @@ void Game::chanceFlip() {
     }
 }
 
-Player& Game::getPlayerFromColor(chanceType playerChance) {
+std::shared_ptr<Player> Game::getPlayerFromColor(chanceType playerChance) {
     if (playerChance == orange) {
         return std::get<0>(playerTuple);
     } else {
@@ -511,9 +512,9 @@ Player& Game::getPlayerFromColor(chanceType playerChance) {
 }
 
 bool Game::hasSomeoneWon() {
-    Player& playerOrange = getPlayerFromColor(orange);
-    Player& playerBlue = getPlayerFromColor(blue);
-    if ((playerBlue.ringWon>=ringsToWin) || (playerBlue.ringWon>=ringsToWin)) {
+    std::shared_ptr<Player> playerOrange = getPlayerFromColor(orange);
+    std::shared_ptr<Player> playerBlue = getPlayerFromColor(blue);
+    if ((playerBlue->ringWon>=ringsToWin) || (playerBlue->ringWon>=ringsToWin)) {
         return true;
     }
     return false;
@@ -522,10 +523,10 @@ bool Game::hasSomeoneWon() {
 std::tuple<double, double> Game::calculateScore() {
     double scoreA, scoreB;
     std::tuple<double,double> scoreTuple;
-    int ringsA = std::get<0>(playerTuple).ringWon;
-    int ringsB = std::get<1>(playerTuple).ringWon;
-    int markersA = std::get<0>(playerTuple).markerOwn;
-    int markersB = std::get<1>(playerTuple).markerOwn;
+    int ringsA = std::get<0>(playerTuple)->ringWon;
+    int ringsB = std::get<1>(playerTuple)->ringWon;
+    int markersA = std::get<0>(playerTuple)->markerOwn;
+    int markersB = std::get<1>(playerTuple)->markerOwn;
 
     if(ringsA == 3){
         scoreA = 10 - ringsB;
@@ -575,10 +576,10 @@ void Game::play() {
     outfile.open("prevGameMoves.txt",  std::ios::out | std::ios::trunc);
     while (true) {
         try {
-            std::cout << "ring won by 0: " << std::get<0>(playerTuple).ringWon
-            << ", " << "ring won by 1: " << std::get<1>(playerTuple).ringWon << std::endl;
+            std::cout << "ring won by 0: " << std::get<0>(playerTuple)->ringWon
+            << ", " << "ring won by 1: " << std::get<1>(playerTuple)->ringWon << std::endl;
             std::cout << "chance of " << chance << std::endl;
-            std::cout << board.toStringBoard();
+            std::cout << board->toStringBoard();
             std::getline(std::cin, moveInputString);
             executeMove(Move(moveInputString, false));
             chanceFlip();
@@ -593,11 +594,11 @@ void Game::play() {
             return;
         } 
 
-        if (std::get<0>(playerTuple).ringWon >= ringsToWin) {
-            std::cout << board.toStringBoard();
+        if (std::get<0>(playerTuple)->ringWon >= ringsToWin) {
+            std::cout << board->toStringBoard();
             std::cout << "0 orange wins" << std::endl;
-        } else if (std::get<1>(playerTuple).ringWon >= ringsToWin) {
-            std::cout << board.toStringBoard();
+        } else if (std::get<1>(playerTuple)->ringWon >= ringsToWin) {
+            std::cout << board->toStringBoard();
             std::cout << "1 blue wins" << std::endl;
         }
     }

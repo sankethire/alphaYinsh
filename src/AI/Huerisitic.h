@@ -6,11 +6,13 @@
 #include "../Game/Move.h"
 
 #include <tuple>
+#include <memory>
 
 namespace Huerisitic {
     // marker differnece 
-    int markerDiff(Game& g);
-    bool markerDiffComparator(std::tuple<Move, Node*> tup1, std::tuple<Move, Node*> tup2);
+    int markerDiff(std::shared_ptr<Game> g);
+    bool markerDiffComparator(std::tuple<Move, std::shared_ptr<Node>> tup1, 
+    std::tuple<Move, std::shared_ptr<Node>> tup2);
 
     // Placement
     double centeringRingScore(Point& toCalculateOnRing, int gameBoardSize);

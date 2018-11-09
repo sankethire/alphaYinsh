@@ -8,24 +8,25 @@
 #include <tuple>
 #include <vector>
 #include <cmath>
+#include <memory>
 
-int Huerisitic::markerDiff(Game& g) {
-    Player* chancePlayer;
-    Player* otherPlayer;
-    if (g.chance == Game::orange) {
-        chancePlayer = &(std::get<0>(g.playerTuple));
-        otherPlayer = &(std::get<1>(g.playerTuple));
+int Huerisitic::markerDiff(std::shared_ptr<Game> g) {
+    std::shared_ptr<Player> chancePlayer;
+    std::shared_ptr<Player> otherPlayer;
+    if (g->chance == Game::orange) {
+        chancePlayer = std::get<0>(g->playerTuple);
+        otherPlayer = std::get<1>(g->playerTuple);
     } else {
-        chancePlayer = &(std::get<1>(g.playerTuple));
-        otherPlayer = &(std::get<0>(g.playerTuple));
+        chancePlayer = std::get<1>(g->playerTuple);
+        otherPlayer = std::get<0>(g->playerTuple);
     }
     return ((chancePlayer->markerOwn)-(otherPlayer->markerOwn));
 }
 
-bool Huerisitic::markerDiffComparator(std::tuple<Move, Node*> tup1, 
-std::tuple<Move, Node*> tup2) {
-    Node* n1 = std::get<1>(tup1);
-    Node* n2 = std::get<1>(tup2);
+bool Huerisitic::markerDiffComparator(std::tuple<Move, std::shared_ptr<Node>> tup1, 
+std::tuple<Move, std::shared_ptr<Node>> tup2) {
+    std::shared_ptr<Node> n1 = std::get<1>(tup1);
+    std::shared_ptr<Node> n2 = std::get<1>(tup2);
     return (markerDiff(n1->gameState) < markerDiff(n2->gameState));
 }
 
@@ -50,11 +51,11 @@ double Huerisitic::centeringAllRingScore(Game& toCalculateOnGame) {
     double centeringOrange = 0;
     double centeringBlue = 0;
     for (Point& eachRing: 
-    toCalculateOnGame.getPlayerFromColor(Game::orange).ringLeft) {
+    toCalculateOnGame.getPlayerFromColor(Game::orange)->ringLeft) {
         centeringOrange += centeringRingScore(eachRing, toCalculateOnGame.sizeOfBoard);
     }
     for (Point& eachRing: 
-    toCalculateOnGame.getPlayerFromColor(Game::blue).ringLeft) {
+    toCalculateOnGame.getPlayerFromColor(Game::blue)->ringLeft) {
         centeringBlue += centeringRingScore(eachRing, toCalculateOnGame.sizeOfBoard);
     }
     if (toCalculateOnGame.chance == Game::orange) {
@@ -117,7 +118,7 @@ double Huerisitic::combinedUtility(Game& toCalculateOnGame) {
         };
 
         auto updateNumInRow = [&] (int i, int j) {
-            Point& gotP = toCalculateOnGame.board.getPointTriLinear(i, j);
+            Point& gotP = toCalculateOnGame.board->getPointTriLinear(i, j);
 
             if (gotP.piece == Point::ring) {
                 if (gotP.color == Point::orange) {
@@ -232,16 +233,16 @@ double Huerisitic::combinedUtility(Game& toCalculateOnGame) {
             flippedScoreReturned = -flippedScoreReturned;
         }
 
-        Player& orangePlayer = toCalculateOnGame.getPlayerFromColor(Game::orange);
-        Player& bluePlayer = toCalculateOnGame.getPlayerFromColor(Game::blue);
+        std::shared_ptr<Player> orangePlayer = toCalculateOnGame.getPlayerFromColor(Game::orange);
+        std::shared_ptr<Player> bluePlayer = toCalculateOnGame.getPlayerFromColor(Game::blue);
 
         // ring player score
         if (toCalculateOnGame.chance == Game::orange) {
-            ringWonScoreReturned = pow(orangePlayer.ringWon, successiveRingCollectIncrease) 
-            - pow(bluePlayer.ringWon, successiveRingCollectIncrease);
+            ringWonScoreReturned = pow(orangePlayer->ringWon, successiveRingCollectIncrease) 
+            - pow(bluePlayer->ringWon, successiveRingCollectIncrease);
         } else {
-            ringWonScoreReturned = pow(bluePlayer.ringWon, successiveRingCollectIncrease) 
-            - pow(orangePlayer.ringWon, successiveRingCollectIncrease);
+            ringWonScoreReturned = pow(bluePlayer->ringWon, successiveRingCollectIncrease) 
+            - pow(orangePlayer->ringWon, successiveRingCollectIncrease);
         }
 
         // FIXME: try this ai doesn't finish rings first

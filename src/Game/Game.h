@@ -7,13 +7,14 @@
 
 #include <vector>
 #include <tuple>
+#include <memory>
 
 class Game {
 public:
     /* FIELDS */
 
     // Board DS
-    Board board;
+    std::shared_ptr<Board> board;
     // Number of rings each player has at start of game. 
     // Game settings
 
@@ -36,7 +37,7 @@ public:
     chanceType chance;
 
     // players in game. 0 moves first.
-    std::tuple<Player, Player> playerTuple;
+    std::tuple<std::shared_ptr<Player>, std::shared_ptr<Player>> playerTuple;
 
     // // possibles moves for player which has current chance
     // std::vector<std::vector<Move>> currentPlayerPossibleMovesAllRings;
@@ -47,7 +48,7 @@ public:
     int ringsToWinInput, int numberOfMarkersToRemoveInput);
 
     // deep copy
-    Game& clone();
+    std::shared_ptr<Game> clone();
 
     // changes board configuration according to move(if valid)
     void executeMove(Move fullMove);
@@ -59,7 +60,7 @@ public:
 
     // Helpers
     void chanceFlip();
-    Player& getPlayerFromColor(chanceType playerChance);
+    std::shared_ptr<Player> getPlayerFromColor(chanceType playerChance);
     bool hasSomeoneWon();
 
     // Play game

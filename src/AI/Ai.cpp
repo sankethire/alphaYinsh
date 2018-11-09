@@ -11,6 +11,7 @@
 #include <sstream>
 #include <fstream>
 #include <limits>
+#include <memory>
 
 Ai::Ai(int playerIdInput, int boardSizeInput, int continousMarkerInput, 
 int timeLimitInput, int depthCutOffInput) {
@@ -29,17 +30,17 @@ void Ai::doMinMax(double infi) {
 
 void Ai::shiftInTree(std::stringstream& ss) {
     double inf = std::numeric_limits<double>::infinity();
-    while (!(treeForMinMax.root->gameState.hasSomeoneWon())) {
+    while (!(treeForMinMax.root->gameState->hasSomeoneWon())) {
         doMinMax(inf);
         Move toDoMove = treeForMinMax.pickChild(treeForMinMax.root->childPicked);
         std::cout << toDoMove.toStr(true) << std::endl;
         std::cerr << "-----------------------------------" << std::endl;
         std::cerr << toDoMove.toStr(true) << std::endl;
-        std::cerr << treeForMinMax.root->gameState.board.toStringBoard();
+        std::cerr << treeForMinMax.root->gameState->board->toStringBoard();
         std::cerr << "-----------------------------------" << std::endl;
         treeForMinMax.root->deleteParentAndCousins();
         ss << toDoMove.toStr(true) << std::endl;
-        if (treeForMinMax.root->gameState.hasSomeoneWon()) {
+        if (treeForMinMax.root->gameState->hasSomeoneWon()) {
             break;
         }
 
@@ -52,17 +53,20 @@ void Ai::shiftInTree(std::stringstream& ss) {
         ss << moveInput << std::endl;
         std::cerr << "-----------------------------------" << std::endl;
         std::cerr << tempMove.toStr(true) << std::endl;
-        std::cerr << treeForMinMax.root->gameState.board.toStringBoard();
+        std::cerr << treeForMinMax.root->gameState->board->toStringBoard();
         std::cerr << "-----------------------------------" << std::endl;
         treeForMinMax.root->deleteParentAndCousins();
     }
 };
 
 void Ai::startBot() {
-    Node* nullParent = NULL;
-    Game* startingGame = new Game(boardSize, boardSize, 3, continousMarker);
-    Node* startingNode = new Node(*startingGame, *nullParent);
+    std::shared_ptr<Node> nullParent = NULL;
+    std::shared_ptr<Game> startingGame = std::make_shared<Game>(boardSize, boardSize, 3, continousMarker);
+    std::shared_ptr<Node> startingNode = std::make_shared<Node>(startingGame, nullParent);
     treeForMinMax = Tree(startingNode);
+    nullParent.reset();
+    startingGame.reset();
+    startingNode.reset();
 
     std::stringstream sst;
     std::ofstream outfile;
@@ -83,9 +87,6 @@ void Ai::startBot() {
     outfile << sst.str();
     outfile.close();
     treeForMinMax.root->deleteAllChildrenAndSelf();
-    delete startingGame;
-    delete startingNode;
-    delete nullParent;
 }
 
 int main(int argc, char** argv) {
@@ -93,11 +94,11 @@ int main(int argc, char** argv) {
     int player_id, board_size, seq_len, time_limit;
     // Get input from server about game specifications
     // FIXME: Change this
-    std::cin >> player_id >> board_size >> time_limit >> seq_len;
-    // player_id = 1;
-    // board_size = 5; 
-    // time_limit = 120;
-    // seq_len = 5;
+    // std::cin >> player_id >> board_size >> time_limit >> seq_len;
+    player_id = 1;
+    board_size = 5; 
+    time_limit = 120;
+    seq_len = 5;
     Ai alphaYinsh = Ai(player_id, board_size, seq_len, time_limit, 2);
     alphaYinsh.startBot();
 }

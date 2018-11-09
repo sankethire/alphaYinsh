@@ -4,21 +4,23 @@
 #include "Node.h"
 #include "../Game/Move.h"
 
+#include <memory>
+
 class Tree {
 public:
     // DATA MEMBERS
-    Node* root;
+    std::shared_ptr<Node> root;
 
     // MEMBER FUNCTIONS
     Tree();
-    Tree(Node* rootInput);
+    Tree(std::shared_ptr<Node> rootInput);
 
     // pick childs sets it as root
     Move pickChild(int indexOfChild);
     void pickChild(Move& moveForObtainingChild);
 
     // helper to find child
-    static bool sameMoveInTuple(std::tuple<Move, Node*> checkThisTuple, Move checkEqualToMove);
+    static bool sameMoveInTuple(std::tuple<Move, std::shared_ptr<Node>> checkThisTuple, Move checkEqualToMove);
 
     int findInChildren(Move equlToThisMove);
 };
