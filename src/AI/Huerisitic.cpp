@@ -67,7 +67,7 @@ double Huerisitic::centeringAllRingScore(Game& toCalculateOnGame) {
 double Huerisitic::combinedUtility(Game& toCalculateOnGame) {
     if (toCalculateOnGame.phase == Game::placement) {
         double weigthRingMobility = 1;
-        double weigthRingCentering = 10;
+        double weigthRingCentering = 100;
 
         double mobilityRingsScoreReturned = mobilityAllRingScore(toCalculateOnGame);
         double centeringRingScoreReturned = centeringAllRingScore(toCalculateOnGame);
@@ -78,14 +78,14 @@ double Huerisitic::combinedUtility(Game& toCalculateOnGame) {
     } else {
         double weigthRingMobility = 0.1;
         double weigthRingCentering = 0.2;
-        double weightMarkerScore = 0.5;
-        double weightFlipped = 5;
-        double weightRingWon = 100;
-        double weightContiguousMarker = 10;
+        double weightMarkerScore = 10;
+        double weightFlipped = 50;
+        double weightRingWon = 10000;
+        double weightContiguousMarker = 100;
 
         double weightSuccessiveMarker = 3;
         double weightExpIncPerIncMarkerTillLimit = 3;
-        double successiveRingCollectIncrease = 2;
+        double successiveRingCollectIncrease = 4;
 
         double mobilityRingsScoreReturned = mobilityAllRingScore(toCalculateOnGame);
         double centeringRingScoreReturned = centeringAllRingScore(toCalculateOnGame);
@@ -266,10 +266,10 @@ double Huerisitic::combinedUtility(Game& toCalculateOnGame) {
 
         // ring player score
         if (toCalculateOnGame.chance == Game::orange) {
-            ringWonScoreReturned = pow(orangePlayer->ringWon, successiveRingCollectIncrease) 
+            ringWonScoreReturned = pow(successiveRingCollectIncrease, orangePlayer->ringWon) 
             - pow(bluePlayer->ringWon, successiveRingCollectIncrease);
         } else {
-            ringWonScoreReturned = pow(bluePlayer->ringWon, successiveRingCollectIncrease) 
+            ringWonScoreReturned = pow(successiveRingCollectIncrease, bluePlayer->ringWon) 
             - pow(orangePlayer->ringWon, successiveRingCollectIncrease);
         }
 

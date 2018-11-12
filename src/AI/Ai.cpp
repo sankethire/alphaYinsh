@@ -99,6 +99,6 @@ int main(int argc, char** argv) {
     // board_size = 5; 
     // time_limit = 120;
     // seq_len = 5;
-    Ai alphaYinsh = Ai(player_id, board_size, seq_len, time_limit, 2);
+    Ai alphaYinsh = Ai(player_id, board_size, seq_len, time_limit, 3);
     alphaYinsh.startBot();
 }

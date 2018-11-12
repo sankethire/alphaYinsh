@@ -189,9 +189,9 @@ utilityOfGameFunction terminalUtility, compareMoveNodeTupleFunction sortComparat
     // odd tree level max node else min
     // at depthLeftTillCutOff 0 return utility
     // TODO: pass placement movement different utility
-    if (gameState->hasSomeoneWon()) {
-        return terminalUtility(*gameState);
-    }
+    // if (gameState->hasSomeoneWon()) {
+    //     return terminalUtility(*gameState);
+    // }
     if (depthLeftTillCutOff == 0 || gameState->hasSomeoneWon()) {
         return terminalUtility(*gameState);
     }
@@ -201,9 +201,16 @@ utilityOfGameFunction terminalUtility, compareMoveNodeTupleFunction sortComparat
         ifNotThenDefineSortChildren(sortComparator);
         for (int i=0; i<children.size(); i++) {
             std::tuple<Move, std::shared_ptr<Node>> currentChild = children[i];
+            Move moveFromTuple = std::get<0>(currentChild);
             std::shared_ptr<Node> nodeFromTuple = std::get<1>(currentChild);
-            double returnedValue = nodeFromTuple->minMaxDepthCutOffSortedAlphaBetaPruning(
-            alpha, beta, depthLeftTillCutOff-1, treeLevel+1, terminalUtility, sortComparator);
+            double returnedValue;
+            if (moveFromTuple.operationSequence[0].opcode != Operation::RS) {
+                returnedValue = nodeFromTuple->minMaxDepthCutOffSortedAlphaBetaPruning(
+                alpha, beta, depthLeftTillCutOff-1, treeLevel+1, terminalUtility, sortComparator);
+            } else {
+                returnedValue = terminalUtility(*(nodeFromTuple->gameState));
+            }
+
             if (returnedValue > alpha) {
                 alpha = returnedValue;
                 childPicked = i;
@@ -218,9 +225,15 @@ utilityOfGameFunction terminalUtility, compareMoveNodeTupleFunction sortComparat
         ifNotThenDefineSortChildren(sortComparator);
         for (int i=0; i<children.size(); i++) {
             std::tuple<Move, std::shared_ptr<Node>> currentChild = children[i];
+            Move moveFromTuple = std::get<0>(currentChild);
             std::shared_ptr<Node> nodeFromTuple = std::get<1>(currentChild);
-            double returnedValue = nodeFromTuple->minMaxDepthCutOffSortedAlphaBetaPruning(
-            alpha, beta, depthLeftTillCutOff-1, treeLevel+1, terminalUtility, sortComparator);
+            double returnedValue;
+            if (moveFromTuple.operationSequence[0].opcode != Operation::RS) {
+                returnedValue = nodeFromTuple->minMaxDepthCutOffSortedAlphaBetaPruning(
+                alpha, beta, depthLeftTillCutOff-1, treeLevel+1, terminalUtility, sortComparator);
+            } else {
+                returnedValue = terminalUtility(*(nodeFromTuple->gameState));
+            }
             if (returnedValue < beta) {
                 beta = returnedValue;
                 childPicked = i;
