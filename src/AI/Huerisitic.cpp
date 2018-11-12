@@ -105,6 +105,11 @@ double Huerisitic::combinedUtility(Game& toCalculateOnGame) {
         int markerInRowOrange;
         int markerInRowBlue;
 
+        int continuousRingInRowOrange;
+        int continuousRingInRowBlue;
+        int continuousMarkerInRowOrange;
+        int continuousMarkerInRowBlue;
+
         double contiguousMarkerOrange = 
         toCalculateOnGame.contiguousMarker(toCalculateOnGame.numberOfMarkersToRemove - 1, Game::orange).size();
         double contiguousMarkerBlue = 
@@ -115,6 +120,10 @@ double Huerisitic::combinedUtility(Game& toCalculateOnGame) {
             ringInRowBlue = 0;
             markerInRowOrange = 0;
             markerInRowBlue = 0;
+            continuousRingInRowOrange = 0;
+            continuousRingInRowBlue = 0;
+            continuousMarkerInRowOrange = 0;
+            continuousMarkerInRowBlue = 0;
         };
 
         auto updateNumInRow = [&] (int i, int j) {
@@ -123,25 +132,44 @@ double Huerisitic::combinedUtility(Game& toCalculateOnGame) {
             if (gotP.piece == Point::ring) {
                 if (gotP.color == Point::orange) {
                     ringInRowOrange++;
+                    continuousRingInRowOrange++;
+                    continuousRingInRowBlue = 0;
+                    continuousMarkerInRowOrange = 0;
+                    continuousMarkerInRowBlue = 0;
                 } else if (gotP.color == Point::blue) {
                     ringInRowBlue++;
+                    continuousRingInRowOrange = 0;
+                    continuousRingInRowBlue++;
+                    continuousMarkerInRowOrange = 0;
+                    continuousMarkerInRowBlue = 0;
                 }
             } else if (gotP.piece == Point::marker) {
                 if (gotP.color == Point::orange) {
                     markerInRowOrange++;
+                    continuousRingInRowOrange = 0;
+                    continuousRingInRowBlue = 0;
+                    continuousMarkerInRowOrange++;
+                    continuousMarkerInRowBlue = 0;
                 } else if (gotP.color == Point::blue) {
                     markerInRowBlue++;
+                    continuousRingInRowOrange = 0;
+                    continuousRingInRowBlue = 0;
+                    continuousMarkerInRowOrange = 0;
+                    continuousMarkerInRowBlue++;
                 }
+            } else if (gotP.piece == Point::emptyPiece) {
+                continuousRingInRowOrange = 0;
+                continuousRingInRowBlue = 0;
+                continuousMarkerInRowOrange = 0;
+                continuousMarkerInRowBlue = 0;
             }
             
-            if (markerInRowBlue < weightExpIncPerIncMarkerTillLimit) {
-                markerScoreOrange += 
-                std::pow(weightSuccessiveMarker, markerInRowBlue);
-            }
-            if (markerInRowOrange < weightExpIncPerIncMarkerTillLimit) {
-                markerScoreOrange += 
-                std::pow(weightSuccessiveMarker, markerInRowOrange);
-            }
+
+            markerScoreBlue += 
+            std::pow(weightSuccessiveMarker, continuousMarkerInRowBlue);
+        
+            markerScoreOrange += 
+            std::pow(weightSuccessiveMarker, continuousMarkerInRowOrange);
         };
 
         auto checkFlipping = [&] () {
