@@ -172,19 +172,25 @@ void Node::defineChildren() {
     }
 }
 
-void Node::sortChildren(compareMoveNodeTupleFunction comparer) {
-    std::sort(children.begin(), children.end(), comparer);
+void Node::sortChildren(compareMoveNodeTupleFunction comparer, 
+Game::chanceType whosUtil) {
+    auto comparerModified = [&] (std::tuple<Move, std::shared_ptr<Node>> tup1,
+    std::tuple<Move, std::shared_ptr<Node>> tup2) {
+        return comparer(tup1, tup2, whosUtil);
+    };
+    std::sort(children.begin(), children.end(), comparerModified);
 }
 
-void Node::ifNotThenDefineSortChildren(compareMoveNodeTupleFunction sortComparator) {
+void Node::ifNotThenDefineSortChildren(compareMoveNodeTupleFunction sortComparator, 
+Game::chanceType whosUtil) {
     if (!childrenDefined) {
         defineChildren();
-        sortChildren(sortComparator);
+        sortChildren(sortComparator, whosUtil);
     }
 }
 
 int Node::minMaxDepthCutOffSortedAlphaBetaPruning(double alpha, 
-double beta, int depthLeftTillCutOff, int treeLevel, 
+double beta, int depthLeftTillCutOff, int treeLevel, Game::chanceType whosUtil, 
 utilityOfGameFunction terminalUtility, compareMoveNodeTupleFunction sortComparator) {
     // odd tree level max node else min
     // at depthLeftTillCutOff 0 return utility
@@ -193,12 +199,12 @@ utilityOfGameFunction terminalUtility, compareMoveNodeTupleFunction sortComparat
     //     return terminalUtility(*gameState);
     // }
     if (depthLeftTillCutOff == 0 || gameState->hasSomeoneWon()) {
-        return terminalUtility(*gameState);
+        return terminalUtility(*gameState, whosUtil);
     }
 
     if (treeLevel%2 == 1) {
         // Max Node
-        ifNotThenDefineSortChildren(sortComparator);
+        ifNotThenDefineSortChildren(sortComparator, whosUtil);
         for (int i=0; i<children.size(); i++) {
             std::tuple<Move, std::shared_ptr<Node>> currentChild = children[i];
             Move moveFromTuple = std::get<0>(currentChild);
@@ -206,9 +212,10 @@ utilityOfGameFunction terminalUtility, compareMoveNodeTupleFunction sortComparat
             double returnedValue;
             if (moveFromTuple.operationSequence[0].opcode != Operation::RS) {
                 returnedValue = nodeFromTuple->minMaxDepthCutOffSortedAlphaBetaPruning(
-                alpha, beta, depthLeftTillCutOff-1, treeLevel+1, terminalUtility, sortComparator);
+                alpha, beta, depthLeftTillCutOff-1, treeLevel+1, whosUtil, 
+                terminalUtility, sortComparator);
             } else {
-                returnedValue = terminalUtility(*(nodeFromTuple->gameState));
+                returnedValue = terminalUtility(*(nodeFromTuple->gameState), whosUtil);
             }
 
             if (returnedValue > alpha) {
@@ -222,7 +229,7 @@ utilityOfGameFunction terminalUtility, compareMoveNodeTupleFunction sortComparat
         return alpha;
     } else {
         // Min Node
-        ifNotThenDefineSortChildren(sortComparator);
+        ifNotThenDefineSortChildren(sortComparator, whosUtil);
         for (int i=0; i<children.size(); i++) {
             std::tuple<Move, std::shared_ptr<Node>> currentChild = children[i];
             Move moveFromTuple = std::get<0>(currentChild);
@@ -230,9 +237,10 @@ utilityOfGameFunction terminalUtility, compareMoveNodeTupleFunction sortComparat
             double returnedValue;
             if (moveFromTuple.operationSequence[0].opcode != Operation::RS) {
                 returnedValue = nodeFromTuple->minMaxDepthCutOffSortedAlphaBetaPruning(
-                alpha, beta, depthLeftTillCutOff-1, treeLevel+1, terminalUtility, sortComparator);
+                alpha, beta, depthLeftTillCutOff-1, treeLevel+1, whosUtil, 
+                terminalUtility, sortComparator);
             } else {
-                returnedValue = terminalUtility(*(nodeFromTuple->gameState));
+                returnedValue = terminalUtility(*(nodeFromTuple->gameState), whosUtil);
             }
             if (returnedValue < beta) {
                 beta = returnedValue;

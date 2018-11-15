@@ -10,10 +10,10 @@
 #include <cmath>
 #include <memory>
 
-int Huerisitic::markerDiff(std::shared_ptr<Game> g) {
+int Huerisitic::markerDiff(std::shared_ptr<Game> g, Game::chanceType whosUtil) {
     std::shared_ptr<Player> chancePlayer;
     std::shared_ptr<Player> otherPlayer;
-    if (g->chance == Game::orange) {
+    if (whosUtil == Game::orange) {
         chancePlayer = std::get<0>(g->playerTuple);
         otherPlayer = std::get<1>(g->playerTuple);
     } else {
@@ -24,10 +24,10 @@ int Huerisitic::markerDiff(std::shared_ptr<Game> g) {
 }
 
 bool Huerisitic::markerDiffComparator(std::tuple<Move, std::shared_ptr<Node>> tup1, 
-std::tuple<Move, std::shared_ptr<Node>> tup2) {
+std::tuple<Move, std::shared_ptr<Node>> tup2, Game::chanceType whosUtil) {
     std::shared_ptr<Node> n1 = std::get<1>(tup1);
     std::shared_ptr<Node> n2 = std::get<1>(tup2);
-    return (markerDiff(n1->gameState) < markerDiff(n2->gameState));
+    return (markerDiff(n1->gameState, whosUtil) < markerDiff(n2->gameState, whosUtil));
 }
 
 double Huerisitic::centeringRingScore(Point& toCalculateOnRing, int gameBoardSize) {
@@ -38,16 +38,18 @@ double Huerisitic::centeringRingScore(Point& toCalculateOnRing, int gameBoardSiz
     return pow(weightExpIncCloserToCenter, gameBoardSize-hexagonNum+1);
 }
 
-double Huerisitic::mobilityAllRingScore(Game& toCalculateOnGame) {
+double Huerisitic::mobilityAllRingScore(Game& toCalculateOnGame, 
+Game::chanceType whosUtil) {
     int movementOrange = toCalculateOnGame.possibleMovementOfRings(Game::orange).size();
     int movementBlue = toCalculateOnGame.possibleMovementOfRings(Game::blue).size();
-    if (toCalculateOnGame.chance == Game::orange) {
+    if (whosUtil == Game::orange) {
         return static_cast<double>(movementOrange-movementBlue);
     }
     return static_cast<double>(movementBlue-movementOrange);
 }
 
-double Huerisitic::centeringAllRingScore(Game& toCalculateOnGame) {
+double Huerisitic::centeringAllRingScore(Game& toCalculateOnGame, 
+Game::chanceType whosUtil) {
     double centeringOrange = 0;
     double centeringBlue = 0;
     for (Point& eachRing: 
@@ -58,37 +60,38 @@ double Huerisitic::centeringAllRingScore(Game& toCalculateOnGame) {
     toCalculateOnGame.getPlayerFromColor(Game::blue)->ringLeft) {
         centeringBlue += centeringRingScore(eachRing, toCalculateOnGame.sizeOfBoard);
     }
-    if (toCalculateOnGame.chance == Game::orange) {
+    if (whosUtil == Game::orange) {
         return centeringOrange-centeringBlue;
     }
     return centeringBlue-centeringOrange;
 }
 
-double Huerisitic::combinedUtility(Game& toCalculateOnGame) {
+double Huerisitic::combinedUtility(Game& toCalculateOnGame, Game::chanceType whosUtil) {
     if (toCalculateOnGame.phase == Game::placement) {
         double weigthRingMobility = 1;
         double weigthRingCentering = 100;
 
-        double mobilityRingsScoreReturned = mobilityAllRingScore(toCalculateOnGame);
-        double centeringRingScoreReturned = centeringAllRingScore(toCalculateOnGame);
+        double mobilityRingsScoreReturned = mobilityAllRingScore(toCalculateOnGame, whosUtil);
+        double centeringRingScoreReturned = centeringAllRingScore(toCalculateOnGame, whosUtil);
 
         return weigthRingMobility*mobilityRingsScoreReturned + 
         weigthRingCentering*centeringRingScoreReturned;
 
     } else {
-        double weigthRingMobility = 0.1;
+        double weigthRingMobility = 0.3;
         double weigthRingCentering = 0.2;
         double weightMarkerScore = 10;
         double weightFlipped = 50;
         double weightRingWon = 10000;
-        double weightContiguousMarker = 100;
+        double weightContiguousMarker = 140;
 
-        double weightSuccessiveMarker = 3;
-        double weightExpIncPerIncMarkerTillLimit = 3;
-        double successiveRingCollectIncrease = 4;
+        double weightSuccessiveMarker = 2;
+        double successiveRingCollectIncrease = 10;
+        double weightSecurity = 10;
+        int threshOfmarkerSecurity = toCalculateOnGame.numberOfMarkersToRemove - 1;
 
-        double mobilityRingsScoreReturned = mobilityAllRingScore(toCalculateOnGame);
-        double centeringRingScoreReturned = centeringAllRingScore(toCalculateOnGame);
+        double mobilityRingsScoreReturned = mobilityAllRingScore(toCalculateOnGame, whosUtil);
+        double centeringRingScoreReturned = centeringAllRingScore(toCalculateOnGame, whosUtil);
         double markerScoreReturned;
         double flippedScoreReturned;
         double ringWonScoreReturned;
@@ -175,8 +178,16 @@ double Huerisitic::combinedUtility(Game& toCalculateOnGame) {
         auto checkFlipping = [&] () {
             if ((ringInRowOrange >= 1) && (ringInRowBlue == 0)) {
                 flippedScoreOrange += (markerInRowBlue-markerInRowOrange);
+                // additional security
+                if (markerInRowBlue >= threshOfmarkerSecurity) {
+                    flippedScoreOrange += weightSecurity*(markerInRowBlue-markerInRowOrange);
+                }
             } else if ((ringInRowBlue >= 1) && (ringInRowOrange == 0)) {
                 flippedScoreBlue += (markerInRowOrange-markerInRowBlue);
+                // additional security
+                if (markerInRowBlue >= threshOfmarkerSecurity) {
+                    flippedScoreOrange += weightSecurity*(markerInRowOrange-markerInRowBlue);
+                }
             }
         };
 
@@ -255,7 +266,7 @@ double Huerisitic::combinedUtility(Game& toCalculateOnGame) {
         markerScoreOrange - markerScoreBlue;
         flippedScoreReturned = flippedScoreOrange - flippedScoreBlue;
         contiguousMarkerScoreReturned = contiguousMarkerOrange - contiguousMarkerBlue;
-        if (toCalculateOnGame.chance == Game::blue) {
+        if (whosUtil == Game::blue) {
             // reverse sign if blue
             markerScoreReturned = -markerScoreReturned;
             flippedScoreReturned = -flippedScoreReturned;
@@ -265,7 +276,7 @@ double Huerisitic::combinedUtility(Game& toCalculateOnGame) {
         std::shared_ptr<Player> bluePlayer = toCalculateOnGame.getPlayerFromColor(Game::blue);
 
         // ring player score
-        if (toCalculateOnGame.chance == Game::orange) {
+        if (whosUtil == Game::orange) {
             ringWonScoreReturned = pow(successiveRingCollectIncrease, orangePlayer->ringWon) 
             - pow(bluePlayer->ringWon, successiveRingCollectIncrease);
         } else {

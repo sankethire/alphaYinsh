@@ -24,8 +24,9 @@ public:
     
     // function pointers needed
     typedef bool (*compareMoveNodeTupleFunction)
-    (std::tuple<Move, std::shared_ptr<Node>>, std::tuple<Move, std::shared_ptr<Node>>);
-    typedef double (*utilityOfGameFunction)(Game&);
+    (std::tuple<Move, std::shared_ptr<Node>>, std::tuple<Move, std::shared_ptr<Node>>, 
+    Game::chanceType);
+    typedef double (*utilityOfGameFunction)(Game&, Game::chanceType);
 
     // FUNCTIONS
     // Node();
@@ -35,7 +36,7 @@ public:
     void defineChildren();
 
     // sorting probably for effecctive alpha beta pruning
-    void sortChildren(compareMoveNodeTupleFunction comparer);
+    void sortChildren(compareMoveNodeTupleFunction comparer, Game::chanceType whosUtil);
 
     // helper for define Children. Not too dependent on node.
     // generates permutation of removals
@@ -51,11 +52,12 @@ public:
 
     // minMax Procedures
     int minMaxDepthCutOffSortedAlphaBetaPruning(double alpha, 
-    double beta, int depthLeftTillCutOff, int treeLevel, 
+    double beta, int depthLeftTillCutOff, int treeLevel, Game::chanceType whosUtil, 
     utilityOfGameFunction terminalUtility, compareMoveNodeTupleFunction sortComparator);
 
     // minMax Helpers
-    void ifNotThenDefineSortChildren(compareMoveNodeTupleFunction sortComparator);
+    void ifNotThenDefineSortChildren(compareMoveNodeTupleFunction sortComparator, 
+    Game::chanceType whosUtil);
 
     void deleteParentAndCousins();
     void deleteChildrenExceptBest();

@@ -24,7 +24,7 @@ int timeLimitInput, int depthCutOffInput) {
 
 void Ai::doMinMax(double infi) {
     treeForMinMax.root->minMaxDepthCutOffSortedAlphaBetaPruning(
-    -infi, infi, depthCutOff, 1, 
+    -infi, infi, depthCutOff, 1, static_cast<Game::chanceType>(playerId), 
     Huerisitic::combinedUtility, Huerisitic::markerDiffComparator);
 };
 
