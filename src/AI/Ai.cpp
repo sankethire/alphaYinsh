@@ -15,7 +15,7 @@
 
 Ai::Ai(int playerIdInput, int boardSizeInput, int continousMarkerInput, 
 int timeLimitInput, int depthCutOffInput) {
-    playerId = playerIdInput;
+    playerId = playerIdInput-1;
     boardSize = boardSizeInput;
     continousMarker = continousMarkerInput;
     timeLimit = timeLimitInput;
