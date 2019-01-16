@@ -1,2 +1,2 @@
 # alphaYinsh
-2nd best Yinsh AI
+Yinsh AI
